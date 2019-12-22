@@ -1,6 +1,6 @@
 use super::*;
 
-pub trait StyleDefaults: Sized {
-    const DEFAULT: Style<Self>;
-    const DEFAULT_BORDER: Border;
+pub trait StyleDefaults: Sized + 'static {
+    const DEFAULT: &'static Style<Self>;
+    const DEFAULT_BORDER: &'static Border;
 }

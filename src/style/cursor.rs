@@ -2,7 +2,7 @@ use sdl2::mouse::Cursor as SDLCursor;
 use super::*;
 
 pub struct Cursor {
-    v: SDLCursor,
+    pub v: SDLCursor,
 }
 
 impl Clone for Cursor {

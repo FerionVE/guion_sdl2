@@ -1,3 +1,5 @@
+use guion::core::ctx::Env;
+use crate::style::color::Color;
 use crate::handler::AsSDLHandler;
 use std::marker::PhantomData;
 use crate::style::default::StyleDefaults;
@@ -13,26 +15,29 @@ use guion::core::style::StyleVerb;
 use sdl2::mouse::Cursor as SDLCursor;
 use sdl2::ttf::Font as SDLFont;
 use guion::core::style::Style as GuionStyle;
+use guion::core::ctx::aliases::*;
 
 pub mod font;
 pub mod cursor;
 pub mod default;
+pub mod color;
 
 pub struct Style<S> where S: StyleDefaults {
     font: Option<Font>,
-    cursor: usize,
+    cursor: Cursor,
     _d: PhantomData<S>,
 }
 
-impl<C,S> GuionStyle<C> for Style<S> where C: Context<Style=Self>, C::Link: AsSDLHandler<C>, S: StyleDefaults {
+impl<E,S> GuionStyle<E> for Style<S> where E: Env<Style=Self>, ECHLink<E>: AsSDLHandler<E::Context>, S: StyleDefaults {
     type Font = Font;
-    type Cursor = usize;
+    type Cursor = Cursor;
+    type Color = Color;
     type PreprocessedText = PPText;
     type PreprocessedChar = PPChar;
 
     #[inline]
     fn _with(&mut self, v: StyleVerb) {
-
+        unimplemented!()
     }
     #[inline]
     fn font(&self) -> Option<&Self::Font> {
@@ -40,18 +45,18 @@ impl<C,S> GuionStyle<C> for Style<S> where C: Context<Style=Self>, C::Link: AsSD
     }
     #[inline]
     fn cursor(&self) -> Self::Cursor {
-        self.cursor
+        self.cursor.clone()
     }
     #[inline]
     fn default() -> &'static Self {
-        &S::DEFAULT
+        S::DEFAULT
     }
     #[inline]
     fn default_border() -> &'static Border {
-        &S::DEFAULT_BORDER
+        S::DEFAULT_BORDER
     }
     #[inline]
-    fn preprocess_text(&self, s: &str, c: &mut C) -> Self::PreprocessedText {
+    fn preprocess_text(&self, s: &str, c: &mut E::Context) -> Self::PreprocessedText {
         unimplemented!()
     }
 }

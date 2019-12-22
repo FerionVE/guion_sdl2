@@ -6,5 +6,4 @@ pub mod imp;
 
 pub struct Render<'a,C> where C: RenderTarget {
     pub c: &'a mut Canvas<C>,
-    pub b: Bounds,
 }
