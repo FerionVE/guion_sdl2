@@ -8,4 +8,8 @@ edition = "2018"
 
 [dependencies]
 guion = { path = "../guion" }
-sdl2 = "0.32"
+
+[dependencies.sdl2]
+version = "0.32"
+default-features = false
+features = ["ttf"]
