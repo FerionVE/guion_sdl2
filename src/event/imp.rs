@@ -1,28 +1,33 @@
-use guion::core::event::Destination;
+use guion::core::util::bounds::Offset;
+use crate::event::position::*;
+use crate::event::destination::*;
+use crate::event::consuming::*;
 use guion::core::util::bounds::Bounds;
 use super::*;
 
-impl<E> GuionEvent<E> for Event where E: Env<Event=Self> {
+impl<E> GuionEvent<E> for Event where E: Env<Event=Self>, E::EventDest: SDLDestination, E::EventConsuming: SDLConsuming {
+    #[inline]
     fn filter(self, subbounds: &Bounds) -> Option<Self> {
-
-    }
-    /// True if container widgets should sent this to only one widget  
-    fn consuming(&self) -> bool {
-
-    }
-    /// Where there Event should be initially injected into the context
-    fn destination(&self) -> E::EventDest {
+        let pos = pos_of(&self.e,self.ws.0,self.ws.1);
         
+        let pos = pos.map_or(true, |p| p.is_inside(subbounds));
+
+        if pos {
+            Some(self)
+        }else{
+            None
+        }
     }
-}
-/// (consuming,dest,)
-#[inline]
-fn destination_of<D: Destination>(e: &SDLEvent) -> D {
-    match e {
-        SDLEvent::KeyDown{..} => D::SELECTED,
-        SDLEvent::KeyUp{..} => D::SELECTED,
-        SDLEvent::TextEditing{..} => D::SELECTED,
-        SDLEvent::TextInput{..} => D::SELECTED,
-        _ => D::ROOT,
+    #[inline]
+    fn consuming(&self) -> bool {
+        E::EventConsuming::consuming_of(self)
+    }
+    #[inline]
+    fn destination(&self) -> E::EventDest {
+        E::EventDest::destination_of(self)
+    }
+    #[inline]
+    fn position(&self) -> Option<Offset> {
+        pos_of(&self.e,self.ws.0,self.ws.1)
     }
 }
