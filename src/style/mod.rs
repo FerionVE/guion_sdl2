@@ -1,6 +1,7 @@
+use crate::handler::HandlerInner;
+use crate::as_inner::AsInner;
 use guion::core::ctx::Env;
 use crate::style::color::Color;
-use crate::handler::AsSDLHandler;
 use std::marker::PhantomData;
 use crate::style::default::StyleDefaults;
 use crate::style::font::Font;
@@ -18,12 +19,27 @@ pub mod default;
 pub mod color;
 
 pub struct Style<S> where S: StyleDefaults {
-    font: Option<Font>,
-    cursor: Cursor,
+    pub inner: StyleInner,
     _d: PhantomData<S>,
 }
 
-impl<E,S> GuionStyle<E> for Style<S> where E: Env<Style=Self>, ECHLink<E>: AsSDLHandler<E::Context>, S: StyleDefaults {
+pub struct StyleInner {
+    font: Option<Font>,
+    cursor: Cursor,
+}
+
+impl<S> AsInner<StyleInner> for Style<S> where S: StyleDefaults {
+    #[inline]
+    fn inner(&self) -> &StyleInner {
+        &self.inner
+    }
+    #[inline]
+    fn inner_mut(&mut self) -> &mut StyleInner {
+        &mut self.inner
+    }
+}
+
+impl<E,S> GuionStyle<E> for Style<S> where E: Env<Style=Self>, ECHLink<E>: AsInner<HandlerInner>, S: StyleDefaults {
     type Font = Font;
     type Cursor = Cursor;
     type Color = Color;
@@ -36,11 +52,11 @@ impl<E,S> GuionStyle<E> for Style<S> where E: Env<Style=Self>, ECHLink<E>: AsSDL
     }
     #[inline]
     fn font(&self) -> Option<&Self::Font> {
-        self.font.as_ref()
+        self.inner.font.as_ref()
     }
     #[inline]
     fn cursor(&self) -> Self::Cursor {
-        self.cursor.clone()
+        self.inner.cursor.clone()
     }
     #[inline]
     fn default() -> &'static Self {

@@ -1,8 +1,8 @@
+use crate::handler::HandlerInner;
+use crate::style::StyleInner;
+use crate::as_inner::AsInner;
 use crate::style::cursor::Cursor;
 use crate::style::color::Color;
-use crate::handler::AsSDLHandler;
-use crate::style::default::StyleDefaults;
-use crate::style::Style;
 use sdl2::rect::Rect;
 use sdl2::render::BlendMode;
 use guion::core::ctx::aliases::*;
@@ -15,18 +15,25 @@ impl<'a,E,C> GuionRender<E> for Render<'a,C> where E: Env<Renderer=Self>, C: Ren
 
 }
 
-impl<'a,E,C,SS> RenderStdWidgets<E> for Render<'a,C> where E: Env<Renderer=Self,Style=Style<SS>>, ECHLink<E>: AsSDLHandler<E::Context>, C: RenderTarget, SS: StyleDefaults {
+impl<'a,E,C> RenderStdWidgets<E> for Render<'a,C> where
+    E: Env<Renderer=Self>,
+    E::Style: AsInner<StyleInner>,
+    ESColor<E>: Into<Color>,
+    ESCursor<E>: Into<Cursor>,
+    ECHLink<E>: AsInner<HandlerInner>,
+    C: RenderTarget
+{
     #[inline]
-    fn fill_rect(&mut self, b: &Bounds, c: Color) {
+    fn fill_rect(&mut self, b: &Bounds, c: ESColor<E>) {
         self.c.set_blend_mode(BlendMode::None);
-        self.c.set_draw_color(c.v);
+        self.c.set_draw_color(c.into().v);
         self.c.fill_rect(rect(b)).expect("SDL Render Failure @ fill_rect");
     }
     #[inline]
-    fn border_rect(&mut self, b: &Bounds, c: Color, thickness: u32) {
+    fn border_rect(&mut self, b: &Bounds, c: ESColor<E>, thickness: u32) {
         if thickness == 0 {return;}
         self.c.set_blend_mode(BlendMode::None);
-        self.c.set_draw_color(c.v);
+        self.c.set_draw_color(c.into().v);
         for i in 1..thickness {
             if let Some(r) = rect(&b.step((i-1) as i32)) {
                 self.c.draw_rect(r).expect("SDL Render Failure @ draw_rect");
@@ -38,8 +45,8 @@ impl<'a,E,C,SS> RenderStdWidgets<E> for Render<'a,C> where E: Env<Renderer=Self,
         unimplemented!()
     }
     #[inline]
-    fn set_cursor(&mut self, b: &Bounds, cursor: Cursor) {
-        cursor.v.set()
+    fn set_cursor(&mut self, b: &Bounds, cursor: ESCursor<E>) {
+        cursor.into().v.set()
     }
     #[inline]
     fn draw_text_button(&mut self, b: &Bounds, pressed: bool, caption: &str, style: &E::Style) {
