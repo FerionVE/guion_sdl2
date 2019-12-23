@@ -3,17 +3,12 @@ use crate::style::color::Color;
 use crate::handler::AsSDLHandler;
 use std::marker::PhantomData;
 use crate::style::default::StyleDefaults;
-use guion::core::ctx::Context;
 use crate::style::font::Font;
 use crate::style::cursor::Cursor;
 use crate::style::font::PPChar;
 use crate::style::font::PPText;
-use std::sync::Arc;
-use sdl2::ttf::Sdl2TtfContext;
 use guion::core::util::border::Border;
 use guion::core::style::StyleVerb;
-use sdl2::mouse::Cursor as SDLCursor;
-use sdl2::ttf::Font as SDLFont;
 use guion::core::style::Style as GuionStyle;
 use guion::core::ctx::aliases::*;
 

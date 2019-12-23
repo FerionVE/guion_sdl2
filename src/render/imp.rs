@@ -1,9 +1,7 @@
 use crate::style::cursor::Cursor;
 use crate::style::color::Color;
 use crate::handler::AsSDLHandler;
-use guion::core::ctx::Widgets;
 use crate::style::default::StyleDefaults;
-use guion::core::ctx::Context;
 use crate::style::Style;
 use sdl2::rect::Rect;
 use sdl2::render::BlendMode;

@@ -1,5 +1,4 @@
 use sdl2::mouse::Cursor as SDLCursor;
-use super::*;
 
 pub struct Cursor {
     pub v: SDLCursor,

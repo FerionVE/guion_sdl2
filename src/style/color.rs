@@ -1,6 +1,5 @@
 use sdl2::pixels::Color as SDLColor;
 use guion::core::style::color::Color as GuionColor;
-use super::*;
 
 pub struct Color {
     pub v: SDLColor,
