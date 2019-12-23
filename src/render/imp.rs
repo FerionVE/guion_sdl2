@@ -1,6 +1,6 @@
+use guion::core::util::AsRefMut;
 use crate::handler::HandlerInner;
 use crate::style::StyleInner;
-use crate::as_inner::AsInner;
 use crate::style::cursor::Cursor;
 use crate::style::color::Color;
 use sdl2::rect::Rect;
@@ -17,11 +17,11 @@ impl<'a,E,C> GuionRender<E> for Render<'a,C> where E: Env<Renderer=Self>, C: Ren
 
 impl<'a,E,C> RenderStdWidgets<E> for Render<'a,C> where
     E: Env<Renderer=Self>,
-    E::Style: AsInner<StyleInner>,
+    E::Style: AsRefMut<StyleInner>,
     ESColor<E>: Into<Color>,
     ESCursor<E>: Into<Cursor>,
-    ECHLink<E>: AsInner<HandlerInner>,
-    C: RenderTarget
+    ECHandler<E>: AsRefMut<HandlerInner>,
+    C: RenderTarget,
 {
     #[inline]
     fn fill_rect(&mut self, b: &Bounds, c: ESColor<E>) {

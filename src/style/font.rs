@@ -35,7 +35,7 @@ pub struct PPChar {
 
 }
 
-impl<E,S> PreprocessedText<Style<S>,E> for PPText where E: Env<Style=Style<S>>, ECHLink<E>: AsInner<HandlerInner>, S: StyleDefaults {
+impl<E,S> PreprocessedText<Style<S>,E> for PPText where E: Env<Style=Style<S>>, ECHandler<E>: AsRefMut<HandlerInner>, S: StyleDefaults {
     fn size(&self) -> Dims {
         unimplemented!()
     }

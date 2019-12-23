@@ -1,5 +1,5 @@
+use guion::core::util::AsRefMut;
 use crate::handler::HandlerInner;
-use crate::as_inner::AsInner;
 use guion::core::ctx::Env;
 use crate::style::color::Color;
 use std::marker::PhantomData;
@@ -28,18 +28,18 @@ pub struct StyleInner {
     cursor: Cursor,
 }
 
-impl<S> AsInner<StyleInner> for Style<S> where S: StyleDefaults {
+impl<S> AsRefMut<StyleInner> for Style<S> where S: StyleDefaults {
     #[inline]
-    fn inner(&self) -> &StyleInner {
+    fn as_ref(&self) -> &StyleInner {
         &self.inner
     }
     #[inline]
-    fn inner_mut(&mut self) -> &mut StyleInner {
+    fn as_mut(&mut self) -> &mut StyleInner {
         &mut self.inner
     }
 }
 
-impl<E,S> GuionStyle<E> for Style<S> where E: Env<Style=Self>, ECHLink<E>: AsInner<HandlerInner>, S: StyleDefaults {
+impl<E,S> GuionStyle<E> for Style<S> where E: Env<Style=Self>, ECHandler<E>: AsRefMut<HandlerInner>, S: StyleDefaults {
     type Font = Font;
     type Cursor = Cursor;
     type Color = Color;

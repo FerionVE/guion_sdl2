@@ -3,7 +3,7 @@ use guion::core::ctx::Env;
 use guion::core::util::bounds::Bounds;
 use super::*;
 
-impl<S,C> GuionHandler<C> for Handler<S,C> where S: GuionHandler<C>, C: Context, C::Link: AsHandler<Self,C> + AsHandler<S,C> + 'static {
+impl<S,C> GuionHandler<C> for Handler<S,C> where S: GuionHandler<C>, C: Context, C::Handler: AsHandler<Self,C> + 'static {
     #[inline] 
     fn _render<E: Env>(senf: &mut C, i: &E::WidgetID, r: (&mut E::Renderer,&Bounds)) {
         S::_render::<E>(senf,i,r);
