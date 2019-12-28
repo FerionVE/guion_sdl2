@@ -5,6 +5,7 @@ use guion::core::util::bounds::Offset;
 use guion::core::util::bounds::Dims;
 use guion::core::style::font::PreprocessedChar;
 use guion::core::style::font::PreprocessedText;
+use guion::core::backend::Backend;
 use super::*;
 #[derive(Clone,PartialEq)]
 pub struct Font {
@@ -35,7 +36,7 @@ pub struct PPChar {
 
 }
 
-impl<E,S> PreprocessedText<Style<S>,E> for PPText where E: Env<Style=Style<S>>, ECHandler<E>: AsRefMut<HandlerInner>, S: StyleDefaults {
+impl<E,S> PreprocessedText<Style<S>,E> for PPText where E: Env, E::Backend: Backend<E,Style=Style<S>>, ECHandler<E>: AsRefMut<HandlerInner>, S: StyleDefaults {
     fn size(&self) -> Dims {
         unimplemented!()
     }

@@ -7,17 +7,19 @@ use sdl2::rect::Rect;
 use sdl2::render::BlendMode;
 use guion::core::ctx::aliases::*;
 use guion::core::render::widgets::RenderStdWidgets;
-use guion::core::ctx::Env;
+use guion::core::env::Env;
 use guion::core::render::Render as GuionRender;
+use guion::core::backend::Backend;
 use super::*;
 
-impl<'a,E,C> GuionRender<E> for Render<'a,C> where E: Env<Renderer=Self>, C: RenderTarget {
+impl<'a,E,C> GuionRender<E> for Render<'a,C> where E: Env, E::Backend: Backend<E,Renderer=Self>, C: RenderTarget {
 
 }
 
 impl<'a,E,C> RenderStdWidgets<E> for Render<'a,C> where
-    E: Env<Renderer=Self>,
-    E::Style: AsRefMut<StyleInner>,
+    E: Env,
+    E::Backend: Backend<E,Renderer=Self>,
+    EStyle<E>: AsRefMut<StyleInner>,
     ESColor<E>: Into<Color>,
     ESCursor<E>: Into<Cursor>,
     ECHandler<E>: AsRefMut<HandlerInner>,
@@ -49,11 +51,11 @@ impl<'a,E,C> RenderStdWidgets<E> for Render<'a,C> where
         cursor.into().v.set()
     }
     #[inline]
-    fn draw_text_button(&mut self, b: &Bounds, pressed: bool, caption: &str, style: &E::Style) {
+    fn draw_text_button(&mut self, b: &Bounds, pressed: bool, caption: &str, style: &EStyle<E>) {
 
     }
     #[inline]
-    fn draw_selected(&mut self, b: &Bounds, s: &E::Style) {
+    fn draw_selected(&mut self, b: &Bounds, s: &EStyle<E>) {
 
     }
 }

@@ -1,6 +1,6 @@
 use guion::core::util::AsRefMut;
 use crate::handler::HandlerInner;
-use guion::core::ctx::Env;
+use guion::core::env::Env;
 use crate::style::color::Color;
 use std::marker::PhantomData;
 use crate::style::default::StyleDefaults;
@@ -12,6 +12,7 @@ use guion::core::util::border::Border;
 use guion::core::style::StyleVerb;
 use guion::core::style::Style as GuionStyle;
 use guion::core::ctx::aliases::*;
+use guion::core::backend::Backend;
 
 pub mod font;
 pub mod cursor;
@@ -39,7 +40,7 @@ impl<S> AsRefMut<StyleInner> for Style<S> where S: StyleDefaults {
     }
 }
 
-impl<E,S> GuionStyle<E> for Style<S> where E: Env<Style=Self>, ECHandler<E>: AsRefMut<HandlerInner>, S: StyleDefaults {
+impl<E,S> GuionStyle<E> for Style<S> where E: Env, E::Backend: Backend<E,Style=Self>, ECHandler<E>: AsRefMut<HandlerInner>, S: StyleDefaults {
     type Font = Font;
     type Cursor = Cursor;
     type Color = Color;

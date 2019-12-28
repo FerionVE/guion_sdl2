@@ -1,6 +1,6 @@
 use super::*;
 
-pub trait SDLConsuming {
+pub trait SDLConsuming: Clone {
     const JOYPAD: bool;
     const CONTROLLER: bool;
     const GESTURE: bool;
@@ -83,7 +83,7 @@ pub trait SDLConsuming {
         }
     }
 }
-
+#[derive(Clone)]
 pub struct StdConsuming;
 
 impl SDLConsuming for StdConsuming {

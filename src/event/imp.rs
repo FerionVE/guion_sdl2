@@ -1,11 +1,18 @@
+use guion::core::backend::Backend;
+use guion::core::ctx::aliases::*;
 use guion::core::util::bounds::Offset;
 use crate::event::position::*;
 use crate::event::destination::*;
 use crate::event::consuming::*;
 use guion::core::util::bounds::Bounds;
+use guion::core::event::key::Key as GuionKey;
 use super::*;
 
-impl<E> GuionEvent<E> for Event where E: Env<Event=Self>, E::EventDest: SDLDestination, E::EventConsuming: SDLConsuming {
+//TODO fix C: Clone requirement
+impl<E,K,D,C> GuionEvent<E> for Event<K,D,C> where E: Env, E::Backend: Backend<E,Event=Self>, K: GuionKey, D: SDLDestination, C: SDLConsuming {
+    type Dest = D;
+    type Key = K;
+    
     #[inline]
     fn filter(self, subbounds: &Bounds) -> Option<Self> {
         let pos = pos_of(&self.e,self.ws.0,self.ws.1);
@@ -20,11 +27,11 @@ impl<E> GuionEvent<E> for Event where E: Env<Event=Self>, E::EventDest: SDLDesti
     }
     #[inline]
     fn consuming(&self) -> bool {
-        E::EventConsuming::consuming_of(self)
+        C::consuming_of(self)
     }
     #[inline]
-    fn destination(&self) -> E::EventDest {
-        E::EventDest::destination_of(self)
+    fn destination(&self) -> Self::Dest {
+        Self::Dest::destination_of(self)
     }
     #[inline]
     fn position(&self) -> Option<Offset> {
