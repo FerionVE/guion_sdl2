@@ -11,6 +11,7 @@ pub mod imp;
 pub mod destination;
 pub mod consuming;
 pub mod position;
+pub mod support;
 
 #[derive(Clone)]
 pub struct Event<K,D,C> where D: SDLDestination, C: SDLConsuming {

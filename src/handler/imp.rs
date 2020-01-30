@@ -6,25 +6,25 @@ use guion::core::util::bounds::Bounds;
 use guion::core::ctx::aliases::*;
 use super::*;
 
-impl<S,C> GuionHandler<C> for Handler<S,C> where S: GuionHandler<C>, C: Context, C::Handler: AsHandler<Self,C> + 'static {
+impl<S,E> GuionHandler<E> for Handler<S,E> where S: GuionHandler<E>, E: Env, ECHandler<E>: AsHandler<Self,E> + 'static {
     #[inline] 
-    fn _render<E>(l: Link<E>, r: (&mut ERenderer<E>,&Bounds)) where E: Env<Context=C>, C: Widgets<E> {
-        S::_render::<E>(l,r);
+    fn _render(l: Link<E>, r: (&mut ERenderer<E>,&Bounds)) {
+        S::_render(l,r);
         unimplemented!()
     }
     #[inline] 
-    fn _event<E>(l: Link<E>, e: (EEvent<E>,&Bounds)) where E: Env<Context=C>, C: Widgets<E> {
-        S::_event::<E>(l,e);
+    fn _event(l: Link<E>, e: (EEvent<E>,&Bounds)) {
+        S::_event(l,e);
         unimplemented!()
     }
     #[inline] 
-    fn _event_root<E>(l: Link<E>, e: (EEvent<E>,&Bounds)) where E: Env<Context=C>, C: Widgets<E> {
-        S::_event_root::<E>(l,e);
+    fn _event_root(l: Link<E>, e: (EEvent<E>,&Bounds)) {
+        S::_event_root(l,e);
         unimplemented!()
     }
     #[inline] 
-    fn _size<E>(l: Link<E>) -> Size where E: Env<Context=C>, C: Widgets<E> {
+    fn _size(l: Link<E>) -> ESize<E> {
         unimplemented!();
-        S::_size::<E>(l)
+        S::_size(l)
     }
 }
