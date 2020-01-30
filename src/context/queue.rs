@@ -1,11 +1,8 @@
-use guion::core::ctx::aliases::EEvent;
-use guion::core::env::Env;
-use guion::core::ctx::queue::{Queue as GuionQueue,Enqueue};
 use super::*;
 
-impl<E> GuionQueue<E> for Context where E: Env {
+impl<E> GuionQueue<E> for Context where E: Env, E::Context: GuionContext<E,Queue=Self> {
     fn wake(&self) {
-
+        
     }
     fn enqueue_render(&self, force: bool) {
 

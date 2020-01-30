@@ -1,7 +1,6 @@
-use guion::core::event::Destination;
 use super::*;
 
-pub trait SDLDestination: Destination {
+pub trait SDLDestination: GuionDestination {
     const JOYPAD: Self;
     const CONTROLLER: Self;
     const GESTURE: Self;
@@ -13,7 +12,7 @@ pub trait SDLDestination: Destination {
     const MOUSE: Self;
     const WHEEL: Self;
     const CLIPBOARD_UPDATE: Self;
-    const DROP_FILE: Self;
+    const DND: Self;
     const USER: Self;
     const UNKNOWN: Self;
 
@@ -76,7 +75,15 @@ pub trait SDLDestination: Destination {
 
             SDLEvent::ClipboardUpdate{..} => Self::CLIPBOARD_UPDATE,
 
-            SDLEvent::DropFile{..} => Self::DROP_FILE,
+            SDLEvent::DropFile{..} => Self::DND,
+            SDLEvent::DropText{..} => Self::DND,
+            SDLEvent::DropBegin{..} => Self::DND,
+            SDLEvent::DropComplete{..} => Self::DND,
+
+            SDLEvent::AudioDeviceAdded{..} => Self::APP,
+            SDLEvent::AudioDeviceRemoved{..} => Self::APP,
+            SDLEvent::RenderTargetsReset{..} => Self::APP,
+            SDLEvent::RenderDeviceReset{..} => Self::APP,
 
             SDLEvent::User{..} => Self::USER,
 
@@ -85,16 +92,16 @@ pub trait SDLDestination: Destination {
     }
 }
 #[derive(Clone)]
-pub struct StdDest<D> where D: Destination {
+pub struct StdDest<D> where D: GuionDestination {
     pub v: D,
 }
 
-impl<D> Destination for StdDest<D> where D: Destination {
+impl<D> GuionDestination for StdDest<D> where D: GuionDestination {
     const ROOT: Self = Self{v: D::ROOT};
     const SELECTED: Self = Self{v: D::SELECTED};
 }
 
-impl<D> SDLDestination for StdDest<D> where D: Destination {
+impl<D> SDLDestination for StdDest<D> where D: GuionDestination {
     const JOYPAD: Self = Self{v: D::SELECTED};
     const CONTROLLER: Self = Self{v: D::SELECTED};
     const GESTURE: Self = Self{v: D::ROOT};
@@ -106,7 +113,7 @@ impl<D> SDLDestination for StdDest<D> where D: Destination {
     const MOUSE: Self = Self{v: D::ROOT};
     const WHEEL: Self = Self{v: D::ROOT};
     const CLIPBOARD_UPDATE: Self = Self{v: D::ROOT};
-    const DROP_FILE: Self = Self{v: D::ROOT};
+    const DND: Self = Self{v: D::ROOT};
     const USER: Self = Self{v: D::ROOT};
     const UNKNOWN: Self = Self{v: D::ROOT};
 }

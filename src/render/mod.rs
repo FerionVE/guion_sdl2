@@ -1,6 +1,6 @@
-use guion::core::util::bounds::Bounds;
 use sdl2::render::Canvas;
 use sdl2::render::RenderTarget;
+use super::*;
 
 pub mod imp;
 

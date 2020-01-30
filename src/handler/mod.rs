@@ -1,10 +1,4 @@
-use guion::core::ctx::aliases::ECHandler;
-use guion::core::env::Env;
-use guion::core::util::AsRefMut;
-use std::marker::PhantomData;
-use guion::core::ctx::AsHandler;
-use guion::core::ctx::handler::Handler as GuionHandler;
-use guion::core::ctx::Context;
+use super::*;
 
 pub mod imp;
 
@@ -29,7 +23,7 @@ impl<S,E> AsRefMut<HandlerInner> for Handler<S,E> where S: GuionHandler<E>, E: E
     }
 }
 
-impl<S,E> AsHandler<Self,E> for Handler<S,E> where S: GuionHandler<E>, E: Env, E::Context: Context<E,Handler=Self> {
+impl<S,E> AsHandler<Self,E> for Handler<S,E> where S: GuionHandler<E>, E: Env, E::Context: GuionContext<E,Handler=Self> {
     fn as_mut(c: &mut E::Context) -> &mut Self {
         c._handler_mut()
     }
@@ -38,7 +32,7 @@ impl<S,E> AsHandler<Self,E> for Handler<S,E> where S: GuionHandler<E>, E: Env, E
     }
 }
 
-impl<S,E> AsHandler<S,E> for Handler<S,E> where S: GuionHandler<E>, E: Env, E::Context: Context<E,Handler=Self> {
+impl<S,E> AsHandler<S,E> for Handler<S,E> where S: GuionHandler<E>, E: Env, E::Context: GuionContext<E,Handler=Self> {
     fn as_mut(c: &mut E::Context) -> &mut S {
         &mut c._handler_mut().sup
     }

@@ -12,7 +12,7 @@ pub trait SDLConsuming: Clone {
     const MOUSE: bool;
     const WHEEL: bool;
     const CLIPBOARD_UPDATE: bool;
-    const DROP_FILE: bool;
+    const DND: bool;
     const USER: bool;
     const UNKNOWN: bool;
 
@@ -75,7 +75,15 @@ pub trait SDLConsuming: Clone {
 
             SDLEvent::ClipboardUpdate{..} => Self::CLIPBOARD_UPDATE,
 
-            SDLEvent::DropFile{..} => Self::DROP_FILE,
+            SDLEvent::DropFile{..} => Self::DND,
+            SDLEvent::DropText{..} => Self::DND,
+            SDLEvent::DropBegin{..} => Self::DND,
+            SDLEvent::DropComplete{..} => Self::DND,
+
+            SDLEvent::AudioDeviceAdded{..} => Self::APP,
+            SDLEvent::AudioDeviceRemoved{..} => Self::APP,
+            SDLEvent::RenderTargetsReset{..} => Self::APP,
+            SDLEvent::RenderDeviceReset{..} => Self::APP,
 
             SDLEvent::User{..} => Self::USER,
 
@@ -98,7 +106,7 @@ impl SDLConsuming for StdConsuming {
     const MOUSE: bool = true;
     const WHEEL: bool = true;
     const CLIPBOARD_UPDATE: bool = false;
-    const DROP_FILE: bool = true;
+    const DND: bool = true;
     const USER: bool = false;
     const UNKNOWN: bool = false;
 }

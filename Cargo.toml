@@ -8,8 +8,10 @@ edition = "2018"
 
 [dependencies]
 guion = { path = "../guion" }
+#qwutils = { git = "https://github.com/qwertz19281/rust_utils", rev = "473447e77a14d935b705088a134f1cc71633311e" }
+qwutils = { path = "../qwutils" }
 
 [dependencies.sdl2]
-version = "0.32"
+version = "0.33"
 default-features = false
 features = ["ttf"]

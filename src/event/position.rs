@@ -61,6 +61,14 @@ pub fn pos_of(e: &SDLEvent, wx: f32, wy: f32) -> Option<Offset> {
         SDLEvent::ClipboardUpdate{..} => None,
         
         SDLEvent::DropFile{..} => None,
+        SDLEvent::DropText{..} => None,
+        SDLEvent::DropBegin{..} => None,
+        SDLEvent::DropComplete{..} => None,
+
+        SDLEvent::AudioDeviceAdded{..} => None,
+        SDLEvent::AudioDeviceRemoved{..} => None,
+        SDLEvent::RenderTargetsReset{..} => None,
+        SDLEvent::RenderDeviceReset{..} => None,
         
         SDLEvent::User{..} => None,
         

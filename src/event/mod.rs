@@ -1,26 +1,23 @@
+use crate::event::key::Key;
 use crate::event::consuming::SDLConsuming;
 use crate::event::destination::SDLDestination;
-use std::marker::PhantomData;
-use std::ops::DerefMut;
-use std::ops::Deref;
-use guion::core::env::Env;
-use guion::core::event::Event as GuionEvent;
-use sdl2::event::Event as SDLEvent;
+use super::*;
 
 pub mod imp;
 pub mod destination;
 pub mod consuming;
 pub mod position;
 pub mod support;
+pub mod key;
 
 #[derive(Clone)]
-pub struct Event<K,D,C> where D: SDLDestination, C: SDLConsuming {
+pub struct Event<K,D,C> where K: GuionKey + FromInto<Key> + 'static, D: SDLDestination, C: SDLConsuming {
     pub e: SDLEvent,
     ws: (f32,f32),
     _m: PhantomData<(K,D,C)>,
 }
 
-impl<K,D,C> Deref for Event<K,D,C> where D: SDLDestination, C: SDLConsuming {
+impl<K,D,C> Deref for Event<K,D,C> where K: GuionKey + FromInto<Key> + 'static, D: SDLDestination, C: SDLConsuming {
     type Target = SDLEvent;
 
     fn deref(&self) -> &Self::Target {
@@ -28,7 +25,7 @@ impl<K,D,C> Deref for Event<K,D,C> where D: SDLDestination, C: SDLConsuming {
     }
 }
 
-impl<K,D,C> DerefMut for Event<K,D,C> where D: SDLDestination, C: SDLConsuming {
+impl<K,D,C> DerefMut for Event<K,D,C> where K: GuionKey + FromInto<Key> + 'static, D: SDLDestination, C: SDLConsuming {
     fn deref_mut(&mut self) -> &mut Self::Target {
         &mut self.e
     }

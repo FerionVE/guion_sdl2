@@ -1,9 +1,3 @@
-use guion::core::ctx::Widgets;
-use guion::core::widget::link::Link;
-use guion::core::lazout::Size;
-use guion::core::env::Env;
-use guion::core::util::bounds::Bounds;
-use guion::core::ctx::aliases::*;
 use super::*;
 
 impl<S,E> GuionHandler<E> for Handler<S,E> where S: GuionHandler<E>, E: Env, ECHandler<E>: AsHandler<Self,E> + 'static {

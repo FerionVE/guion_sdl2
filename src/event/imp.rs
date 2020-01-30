@@ -1,15 +1,10 @@
-use guion::core::backend::Backend;
-use guion::core::ctx::aliases::*;
-use guion::core::util::bounds::Offset;
 use crate::event::position::*;
 use crate::event::destination::*;
 use crate::event::consuming::*;
-use guion::core::util::bounds::Bounds;
-use guion::core::event::key::Key as GuionKey;
 use super::*;
 
 //TODO fix C: Clone requirement
-impl<E,K,D,C> GuionEvent<E> for Event<K,D,C> where E: Env, E::Backend: Backend<E,Event=Self>, K: GuionKey, D: SDLDestination, C: SDLConsuming {
+impl<E,K,D,C> GuionEvent<E> for Event<K,D,C> where K: GuionKey + FromInto<Key> + 'static, E: Env, E::Backend: GuionBackend<E,Event=Self>, D: SDLDestination, C: SDLConsuming {
     type Dest = D;
     type Key = K;
     

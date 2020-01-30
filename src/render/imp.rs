@@ -1,24 +1,19 @@
-use guion::core::util::AsRefMut;
 use crate::handler::HandlerInner;
 use crate::style::StyleInner;
 use crate::style::cursor::Cursor;
 use crate::style::color::Color;
 use sdl2::rect::Rect;
 use sdl2::render::BlendMode;
-use guion::core::ctx::aliases::*;
 use guion::core::render::widgets::RenderStdWidgets;
-use guion::core::env::Env;
-use guion::core::render::Render as GuionRender;
-use guion::core::backend::Backend;
 use super::*;
 
-impl<'a,E,C> GuionRender<E> for Render<'a,C> where E: Env, E::Backend: Backend<E,Renderer=Self>, C: RenderTarget {
+impl<'a,E,C> GuionRender<E> for Render<'a,C> where E: Env, E::Backend: GuionBackend<E,Renderer=Self>, C: RenderTarget {
 
 }
 
 impl<'a,E,C> RenderStdWidgets<E> for Render<'a,C> where
     E: Env,
-    E::Backend: Backend<E,Renderer=Self>,
+    E::Backend: GuionBackend<E,Renderer=Self>,
     EStyle<E>: AsRefMut<StyleInner>,
     ESColor<E>: Into<Color>,
     ESCursor<E>: Into<Cursor>,
