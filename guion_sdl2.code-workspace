@@ -5,7 +5,7 @@
 		}
 	],
 	"settings": {
-		"rust-client.channel": "1.41",
+		"rust-client.channel": "1.41.0",
 		"search.usePCRE2": true
 	}
 }
