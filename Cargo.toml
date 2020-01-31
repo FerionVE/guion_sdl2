@@ -7,9 +7,10 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-guion = { path = "../guion" }
-#qwutils = { git = "https://github.com/qwertz19281/rust_utils", rev = "473447e77a14d935b705088a134f1cc71633311e" }
-qwutils = { path = "../qwutils" }
+guion = { git = "https://git.mkg20001.io/ferionve/guion", rev = "9829d55128e0349c7aab57afff701b8ac91ef870" }
+#guion = { path = "../guion" }
+qwutils = { git = "https://github.com/qwertz19281/rust_utils", rev = "3dd92de46947d65ec59a3c2aa8a885d09171ad4c" }
+#qwutils = { path = "../qwutils" }
 
 [dependencies.sdl2]
 version = "0.33"
