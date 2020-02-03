@@ -12,15 +12,21 @@ pub struct SimpleContext {
     pub handler: StandardCtx<Handler<(),Self>,Self>,
 }
 
-impl Context for SimpleContext {
-    
+impl Context<SimpleEnv> for SimpleContext {
+    type Handler = ();
+    type Queue = ();
+
+    fn queue_mut(&mut self) -> &mut Self::Queue { todo!() }
+    fn queue(&self) -> &Self::Queue { todo!() }
+    fn _handler_mut(&mut self) -> &mut Self::Handler { todo!() }
+    fn _handler(&self) -> &Self::Handler { todo!() }
 }
 
 impl Widgets<SimpleEnv> for SimpleContext {
     fn widget(&self, i: &SimpleID) -> Option<&dyn Widget<SimpleEnv>> {
-        unimplemented!()
+        todo!()
     }
     fn widget_mut(&mut self, i: &SimpleID) -> Option<&mut dyn Widget<SimpleEnv>> {
-        unimplemented!()
+        todo!()
     }
 }

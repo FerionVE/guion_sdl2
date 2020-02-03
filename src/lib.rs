@@ -4,6 +4,7 @@ pub mod style;
 pub mod handler;
 pub mod swmple;
 pub mod context;
+pub mod simple;
 
 pub use qwutils;
 pub use guion;

@@ -7,11 +7,11 @@ use sdl2::render::BlendMode;
 use guion::core::render::widgets::RenderStdWidgets;
 use super::*;
 
-impl<'a,E,C> GuionRender<E> for Render<'a,C> where E: Env, E::Backend: GuionBackend<E,Renderer=Self>, C: RenderTarget {
+impl<E,C> GuionRender<E> for Render<C> where E: Env, E::Backend: GuionBackend<E,Renderer=Self>, C: RenderTarget {
 
 }
 
-impl<'a,E,C> RenderStdWidgets<E> for Render<'a,C> where
+impl<E,C> RenderStdWidgets<E> for Render<C> where
     E: Env,
     E::Backend: GuionBackend<E,Renderer=Self>,
     EStyle<E>: AsRefMut<StyleInner>,

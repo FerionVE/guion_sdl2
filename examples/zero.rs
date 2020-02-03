@@ -4,6 +4,7 @@ use guion_sdl2::*;
 use sdl2::*;
 use context::Context;
 use guion::widgets::null::Null;
+use simple::env::SimpleEnv;
 
 fn main() {
     let sdl = sdl2::init().unwrap();
@@ -16,7 +17,11 @@ fn main() {
         sdl
     };
 
-    let g = Null::new();
+    let g: Null<SimpleEnv> = Null::new(
+        SimpleID::new(),
+        None,
+
+    );
 
     //TODO Widget resolve impl
 }
