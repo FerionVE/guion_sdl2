@@ -5,6 +5,10 @@ pub mod handler;
 pub mod swmple;
 pub mod context;
 
+pub use qwutils;
+pub use guion;
+pub use sdl2;
+
 use sdl2::EventPump;
 use sdl2::EventSubsystem;
 use sdl2::TimerSubsystem;

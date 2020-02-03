@@ -8,10 +8,11 @@ use super::*;
 pub mod queue;
 //pub mod imp;
 
+//TODO make fields private
 pub struct Context {
-    sdl: Sdl,
-    video: VideoSubsystem,
-    timer: TimerSubsystem,
-    event: EventSubsystem,
-    pump: EventPump,
+    pub sdl: Sdl,
+    pub video: VideoSubsystem,
+    pub timer: TimerSubsystem,
+    pub event: EventSubsystem,
+    pub pump: EventPump,
 }
