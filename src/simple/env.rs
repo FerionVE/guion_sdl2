@@ -2,20 +2,23 @@ use crate::style::Style;
 use crate::event::{key::Key, Event, destination::StdDest};
 use crate::render::Render;
 use guion::core::backend::Backend;
-use crate::simple::ctx::SimpleContext;
 use guion::core::widget::Widget;
-use guion::core::env::Env;
-use guion::macro_prelude::id::WidgetID;
+use guion::core::{id::WidgetID, env::Env};
 use super::*;
 use sdl2::video::Window;
 use event::consuming::StdConsuming;
+use style::default::StyleDefaults;
+use context::Context;
+use stor::SimpleStor;
+use handler::Handler;
 
 pub struct SimpleEnv;
 pub struct SimpleBackend;
 
 impl Env for SimpleEnv {
     type Backend = SimpleBackend;
-    type Context = SimpleContext;
+    type Context = Context<Self,Handler<(),Self>>;
+    type Storage = SimpleStor;
     ///regularly just dyn Widget
     type DynWidget = dyn Widget<Self>;
     type WidgetID = SimpleID;
@@ -23,8 +26,8 @@ impl Env for SimpleEnv {
 
 impl Backend<SimpleEnv> for SimpleBackend {
     type Renderer = Render<Window>;
-    type Event = Event<Key,StdDest<StandardDest>,StdConsuming>; //TODO ditch Consuming
-    type Style = Style<SimpleEnv>;
+    type Event = Event<Key,StdDest<SimpleDest>,StdConsuming>; //TODO ditch Consuming
+    type Style = Style<SimpleStyle>;
 }
 
 #[derive(Clone,PartialEq,Hash)]
@@ -48,11 +51,18 @@ pub struct SimplePath {
 
 //TODO move this to guion
 #[derive(Clone)]
-pub struct StandardDest {
+pub struct SimpleDest {
     pub v: usize,
 }
 
-impl GuionDestination for StandardDest {
+impl GuionDestination for SimpleDest {
     const ROOT: Self = Self{v: 0};
     const SELECTED: Self = Self{v: 1};
+}
+
+
+pub struct SimpleStyle;
+
+impl StyleDefaults for SimpleStyle {
+    
 }

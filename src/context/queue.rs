@@ -1,6 +1,6 @@
 use super::*;
 
-impl<E> GuionQueue<E> for Context where E: Env, E::Context: GuionContext<E,Queue=Self> {
+impl<E,H> GuionQueue<E> for Context<E,H> where E: Env<Context=Self>, H: GuionHandler<E> + AsRefMut<HandlerInner> {
     fn wake(&self) {
         
     }
