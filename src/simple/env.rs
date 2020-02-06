@@ -17,7 +17,7 @@ pub struct SimpleBackend;
 
 impl Env for SimpleEnv {
     type Backend = SimpleBackend;
-    type Context = Context<Self,Handler<(),Self>>;
+    type Context = Context<Self,EEEE>;
     type Storage = SimpleStor;
     ///regularly just dyn Widget
     type DynWidget = dyn Widget<Self>;
@@ -29,6 +29,8 @@ impl Backend<SimpleEnv> for SimpleBackend {
     type Event = Event<Key,StdDest<SimpleDest>,StdConsuming>; //TODO ditch Consuming
     type Style = Style<SimpleStyle>;
 }
+
+type EEEE = Handler<(),SimpleEnv>;
 
 #[derive(Clone,PartialEq,Hash)]
 pub struct SimpleID {

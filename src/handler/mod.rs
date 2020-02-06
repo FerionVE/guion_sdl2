@@ -2,7 +2,7 @@ use super::*;
 
 pub mod imp;
 
-pub struct Handler<S,E> where S: GuionHandler<E>, E: Env, ECHandler<E>: AsHandler<Self,E> + 'static {
+pub struct Handler<S,E> where S: GuionHandler<E>, E: Env + 'static {
     pub sup: S,
     pub inner: HandlerInner,
     _c: PhantomData<E>,
@@ -12,7 +12,7 @@ pub struct HandlerInner {
     
 }
 
-impl<S,E> AsRefMut<HandlerInner> for Handler<S,E> where S: GuionHandler<E>, E: Env, ECHandler<E>: AsHandler<Self,E> + 'static {
+impl<S,E> AsRefMut<HandlerInner> for Handler<S,E> where S: GuionHandler<E>, E: Env + 'static {
     #[inline]
     fn as_ref(&self) -> &HandlerInner {
         &self.inner

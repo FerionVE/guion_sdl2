@@ -10,12 +10,18 @@ pub mod queue;
 pub mod imp;
 
 //TODO make fields private
-pub struct Context<E,H> where E: Env<Context=Self>, H: GuionHandler<E> + AsRefMut<HandlerInner> {
+pub struct Context<E,H> where E: Env<Context=Self> + Sync, H: GuionHandler<E> + AsRefMut<HandlerInner> {
     pub sdl: Sdl,
     pub video: VideoSubsystem,
     pub timer: TimerSubsystem,
     pub event: EventSubsystem,
     pub pump: EventPump,
-    pub _e: PhantomData<E>,
+    _e: PhantomData<E>,
     pub handler: H,
+}
+
+pub struct CtxQueue<E> where E: Env {
+    pub event: EventSubsystem,
+    pub timer: TimerSubsystem,
+    _e: PhantomData<E>,
 }

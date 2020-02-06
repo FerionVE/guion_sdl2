@@ -1,6 +1,6 @@
 use super::*;
 
-impl<E,H> GuionQueue<E> for Context<E,H> where E: Env<Context=Self>, H: GuionHandler<E> + AsRefMut<HandlerInner> {
+impl<E> GuionQueue<E> for CtxQueue<E> where E: Env + Sync, E::Context: GuionContext<E,Queue=Self> {
     fn wake(&self) {
         
     }
@@ -10,7 +10,7 @@ impl<E,H> GuionQueue<E> for Context<E,H> where E: Env<Context=Self>, H: GuionHan
     fn enqueue_event(&self, e: EEvent<E>) {
 
     }
-    fn euqueue_widget_mut(&self, f: impl FnOnce(&mut E::DynWidget)) {
+    fn enqueue_widget_mut(&self, f: impl FnOnce(&mut E::DynWidget)) {
         
     }
 }
