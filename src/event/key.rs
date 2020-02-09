@@ -33,7 +33,7 @@ impl GuionKey for Key {
 
 impl PartialEq for Key {
     fn eq(&self, o: &Self) -> bool {
-        unimplemented!()
+        todo!()
         //if one or both origins are none -> true
     }
 }

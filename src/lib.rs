@@ -30,6 +30,7 @@ use guion::core::util::bounds::Bounds as Bounds;
 use guion::core::event::key::Key as GuionPressedKey;
 use guion::core::event::key::Key as GuionKey;
 use guion::core::util::border::Border;
+use guion::core::path::{WidgetPath as GuionPath,SubPath as GuionSubPath};
 
 use sdl2::keyboard::Keycode as SDLKeycode;
 use sdl2::mouse::MouseButton as SDLMouseButton;

@@ -6,12 +6,12 @@ pub struct Cursor {
 
 impl Clone for Cursor {
     fn clone(&self) -> Self {
-        unimplemented!()
+        todo!()
     }
 }
 
 impl PartialEq for Cursor {
     fn eq(&self, o: &Self) -> bool {
-        unimplemented!()
+        todo!()
     }
 }

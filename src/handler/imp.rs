@@ -1,24 +1,24 @@
 use super::*;
 
-impl<S,E> GuionHandler<E> for Handler<S,E> where S: GuionHandler<E>, E: Env, ECHandler<E>: AsHandler<Self,E> + 'static {
+impl<S,E> GuionHandler<E> for Handler<S,E> where S: GuionHandler<E>, E: Env {
     #[inline] 
     fn _render(l: Link<E>, r: (&mut ERenderer<E>,&Bounds)) {
         S::_render(l,r);
-        unimplemented!()
+        todo!()
     }
     #[inline] 
     fn _event(l: Link<E>, e: (EEvent<E>,&Bounds)) {
         S::_event(l,e);
-        unimplemented!()
+        todo!()
     }
     #[inline] 
     fn _event_root(l: Link<E>, e: (EEvent<E>,&Bounds)) {
         S::_event_root(l,e);
-        unimplemented!()
+        todo!()
     }
     #[inline] 
     fn _size(l: Link<E>) -> ESize<E> {
-        unimplemented!();
+        todo!();
         S::_size(l)
     }
 }

@@ -1,3 +1,4 @@
+use guion::core::lazout::Size;
 use crate::style::Style;
 use crate::event::{key::Key, Event, destination::StdDest};
 use crate::render::Render;
@@ -7,10 +8,10 @@ use guion::core::{id::WidgetID, env::Env};
 use super::*;
 use sdl2::video::Window;
 use event::consuming::StdConsuming;
-use style::default::StyleDefaults;
 use context::Context;
 use stor::SimpleStor;
 use handler::Handler;
+use valid::SimpleValidState;
 
 pub struct SimpleEnv;
 pub struct SimpleBackend;
@@ -22,12 +23,15 @@ impl Env for SimpleEnv {
     ///regularly just dyn Widget
     type DynWidget = dyn Widget<Self>;
     type WidgetID = SimpleID;
+    type WidgetPath = Vec<SimpleID>;
+    type ValidState = SimpleValidState;
 }
 
 impl Backend<SimpleEnv> for SimpleBackend {
     type Renderer = Render<Window>;
     type Event = Event<Key,StdDest<SimpleDest>,StdConsuming>; //TODO ditch Consuming
-    type Style = Style<SimpleStyle>;
+    type Style = Style;
+    type Size = Size;
 }
 
 type EEEE = Handler<(),SimpleEnv>;
@@ -38,17 +42,13 @@ pub struct SimpleID {
 }
 
 impl SimpleID {
-    pub fn new() {
+    pub fn new() -> Self {
         todo!()
     }
 }
 
 impl WidgetID for SimpleID {
     
-}
-
-pub struct SimplePath {
-    pub v: Vec<SimpleID>,
 }
 
 //TODO move this to guion
@@ -60,11 +60,4 @@ pub struct SimpleDest {
 impl GuionDestination for SimpleDest {
     const ROOT: Self = Self{v: 0};
     const SELECTED: Self = Self{v: 1};
-}
-
-
-pub struct SimpleStyle;
-
-impl StyleDefaults for SimpleStyle {
-    
 }

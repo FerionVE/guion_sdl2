@@ -1,6 +1,5 @@
 use crate::handler::HandlerInner;
 use crate::style::color::Color;
-use crate::style::default::StyleDefaults;
 use crate::style::font::Font;
 use crate::style::cursor::Cursor;
 use crate::style::font::PPChar;
@@ -13,9 +12,8 @@ pub mod cursor;
 pub mod default;
 pub mod color;
 
-pub struct Style<S> where S: StyleDefaults {
+pub struct Style {
     pub inner: StyleInner,
-    _d: PhantomData<S>,
 }
 
 pub struct StyleInner {
@@ -23,7 +21,7 @@ pub struct StyleInner {
     cursor: Cursor,
 }
 
-impl<S> AsRefMut<StyleInner> for Style<S> where S: StyleDefaults {
+impl AsRefMut<StyleInner> for Style {
     #[inline]
     fn as_ref(&self) -> &StyleInner {
         &self.inner
@@ -34,7 +32,7 @@ impl<S> AsRefMut<StyleInner> for Style<S> where S: StyleDefaults {
     }
 }
 
-impl<E,S> GuionStyle<E> for Style<S> where E: Env, E::Backend: GuionBackend<E,Style=Self>, ECHandler<E>: AsRefMut<HandlerInner>, S: StyleDefaults {
+impl<E> GuionStyle<E> for Style where E: Env, E::Backend: GuionBackend<E,Style=Self>, ECHandler<E>: AsRefMut<HandlerInner> {
     type Font = Font;
     type Cursor = Cursor;
     type Color = Color;
@@ -43,7 +41,7 @@ impl<E,S> GuionStyle<E> for Style<S> where E: Env, E::Backend: GuionBackend<E,St
 
     #[inline]
     fn _with(&mut self, v: StyleVerb) {
-        unimplemented!()
+        todo!()
     }
     #[inline]
     fn font(&self) -> Option<&Self::Font> {
@@ -54,27 +52,19 @@ impl<E,S> GuionStyle<E> for Style<S> where E: Env, E::Backend: GuionBackend<E,St
         self.inner.cursor.clone()
     }
     #[inline]
-    fn default() -> &'static Self {
-        S::DEFAULT
-    }
-    #[inline]
-    fn default_border() -> &'static Border {
-        S::DEFAULT_BORDER
-    }
-    #[inline]
     fn preprocess_text(&self, s: &str, c: &mut E::Context) -> Self::PreprocessedText {
-        unimplemented!()
+        todo!()
     }
 }
 
-impl<S> PartialEq for Style<S> where S: StyleDefaults {
-    fn eq(&self, o: &Style<S>) -> bool {
-        unimplemented!()
+impl PartialEq for Style {
+    fn eq(&self, o: &Style) -> bool {
+        todo!()
     }
 }
 
-impl<S> Clone for Style<S> where S: StyleDefaults {
+impl Clone for Style {
     fn clone(&self) -> Self {
-        unimplemented!()
+        todo!()
     }
 }

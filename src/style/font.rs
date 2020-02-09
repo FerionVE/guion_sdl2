@@ -36,26 +36,26 @@ pub struct PPChar {
 
 }
 
-impl<E,S> PreprocessedText<E> for PPText where E: Env, E::Backend: Backend<E,Style=Style<S>>, ECHandler<E>: AsRefMut<HandlerInner>, S: StyleDefaults {
+impl<E> PreprocessedText<E> for PPText where E: Env, E::Backend: Backend<E,Style=Style>, ECHandler<E>: AsRefMut<HandlerInner> {
     fn size(&self) -> Dims {
-        unimplemented!()
+        todo!()
     }
-    fn style(&self) -> &Style<S> {
-        unimplemented!()
+    fn style(&self) -> &Style {
+        todo!()
     }
     fn chars(&self) -> &[PPChar] {
-        unimplemented!()
+        todo!()
     }
     fn back(&self) -> String {
-        unimplemented!()
+        todo!()
     }
 }
 
 impl PreprocessedChar for PPChar {
     fn offset(&self) -> Offset {
-        unimplemented!()
+        todo!()
     }
     fn char(&self) -> char {
-        unimplemented!()
+        todo!()
     }
 }
