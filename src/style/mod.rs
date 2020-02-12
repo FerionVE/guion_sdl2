@@ -14,6 +14,7 @@ pub mod color;
 
 pub struct Style {
     pub inner: StyleInner,
+    pub current_color: Color,
 }
 
 pub struct StyleInner {
@@ -41,7 +42,7 @@ impl<E> GuionStyle<E> for Style where E: Env, E::Backend: GuionBackend<E,Style=S
 
     #[inline]
     fn _with(&mut self, v: StyleVerb) {
-        todo!()
+        //TODO impl
     }
     #[inline]
     fn font(&self) -> Option<&Self::Font> {
@@ -55,6 +56,10 @@ impl<E> GuionStyle<E> for Style where E: Env, E::Backend: GuionBackend<E,Style=S
     fn preprocess_text(&self, s: &str, c: &mut E::Context) -> Self::PreprocessedText {
         todo!()
     }
+    #[inline]
+    fn color(&self) -> ESColor<E> {
+        self.current_color.clone() //TODO perffix
+    }
 }
 
 impl PartialEq for Style {
@@ -65,6 +70,12 @@ impl PartialEq for Style {
 
 impl Clone for Style {
     fn clone(&self) -> Self {
-        todo!()
+        Self{
+            inner: StyleInner{
+                font: self.inner.font.clone(),
+                cursor: self.inner.cursor.clone(),
+            },
+            current_color: self.current_color.clone(),
+        }
     }
 }

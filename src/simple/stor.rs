@@ -7,6 +7,14 @@ pub struct SimpleStor {
     pub root: Box<dyn Widget<SimpleEnv>>,
 }
 
+impl SimpleStor {
+    pub fn new(root: Box<dyn Widget<SimpleEnv>>) -> Self {
+        Self{
+            root
+        }
+    }
+}
+
 impl GuionWidgets<SimpleEnv> for SimpleStor {
     fn widget<'a>(&'a self, i: WPSlice<SimpleEnv>) -> Result<Resolved<'a,SimpleEnv>,()> {
         resolve_in_root(&*self.root, i)

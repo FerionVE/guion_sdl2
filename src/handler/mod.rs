@@ -8,6 +8,16 @@ pub struct Handler<S,E> where S: GuionHandler<E>, E: Env + 'static {
     _c: PhantomData<E>,
 }
 
+impl<S,E> Handler<S,E> where S: GuionHandler<E>, E: Env + 'static {
+    pub fn new(sup: S) -> Self {
+        Self{
+            sup,
+            inner: HandlerInner{},
+            _c: PhantomData,
+        }
+    }
+}
+
 pub struct HandlerInner {
     
 }

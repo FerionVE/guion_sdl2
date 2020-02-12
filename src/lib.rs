@@ -34,6 +34,7 @@ use guion::core::path::{WidgetPath as GuionPath,SubPath as GuionSubPath};
 
 use sdl2::keyboard::Keycode as SDLKeycode;
 use sdl2::mouse::MouseButton as SDLMouseButton;
+use sdl2::mouse::Cursor as SDLCursor;
 
 use guion::core::event::Event as GuionEvent;
 use sdl2::event::Event as SDLEvent;

@@ -43,7 +43,7 @@ impl<E,C> RenderStdWidgets<E> for Render<C> where
     }
     #[inline]
     fn set_cursor(&mut self, b: &Bounds, cursor: ESCursor<E>) {
-        cursor.into().v.set()
+        SDLCursor::from_system(cursor.into().v).unwrap().set() //Cursor::set
     }
     #[inline]
     fn draw_text_button(&mut self, b: &Bounds, pressed: bool, caption: &str, style: &EStyle<E>) {

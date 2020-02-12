@@ -1,3 +1,4 @@
+use core::sync::atomic::AtomicUsize;
 use guion::core::lazout::Size;
 use crate::style::Style;
 use crate::event::{key::Key, Event, destination::StdDest};
@@ -12,6 +13,7 @@ use context::Context;
 use stor::SimpleStor;
 use handler::Handler;
 use valid::SimpleValidState;
+use std::sync::atomic::Ordering;
 
 pub struct SimpleEnv;
 pub struct SimpleBackend;
@@ -36,14 +38,18 @@ impl Backend<SimpleEnv> for SimpleBackend {
 
 type EEEE = Handler<(),SimpleEnv>;
 
+static ID_ITER: AtomicUsize = AtomicUsize::new(0);
+
 #[derive(Clone,PartialEq,Hash)]
 pub struct SimpleID {
-    pub v: usize,
+    pub v: usize, //TODO protect
 }
 
 impl SimpleID {
     pub fn new() -> Self {
-        todo!()
+        Self{
+            v: ID_ITER.fetch_add(1,Ordering::Relaxed)
+        }
     }
 }
 

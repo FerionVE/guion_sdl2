@@ -1,5 +1,5 @@
 use super::*;
-
+#[derive(Clone)]
 pub struct Color {
     pub v: SDLColor,
 }
