@@ -38,7 +38,7 @@ impl<E,C> RenderStdWidgets<E> for Render<C> where
         }
     }
     #[inline]
-    fn render_preprocessed_text(&mut self, b: &Bounds, text: &ESPPText<E>) {
+    fn render_preprocessed_text(&mut self, b: &Bounds, text: &ESPPText<E>, style: &EStyle<E>, variant: &ESVariant<E>, c: &mut E::Context) {
         todo!()
     }
     #[inline]
@@ -46,11 +46,11 @@ impl<E,C> RenderStdWidgets<E> for Render<C> where
         SDLCursor::from_system(cursor.into().v).unwrap().set() //Cursor::set
     }
     #[inline]
-    fn draw_text_button(&mut self, b: &Bounds, pressed: bool, caption: &str, style: &EStyle<E>) {
+    fn draw_text_button(&mut self, b: &Bounds, pressed: bool, caption: &str, style: &EStyle<E>, variant: &ESVariant<E>) {
 
     }
     #[inline]
-    fn draw_selected(&mut self, b: &Bounds, s: &EStyle<E>) {
+    fn draw_selected(&mut self, b: &Bounds, s: &EStyle<E>, variant: &ESVariant<E>) {
 
     }
 }
