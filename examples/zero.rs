@@ -7,8 +7,8 @@ use guion::{
         env::Env,
         path::WPSlice,
         util::bounds::Bounds,
-        widget::Widget,
-        style::Color as GuionColor,
+        widget::{link::Link, Widget},
+        style::Color as GuionColor, render::link::RenderLink,
     },
     standard::ctx::StandardCtx,
     widgets::null::Null,
@@ -17,12 +17,12 @@ use guion_sdl2::render::Render;
 use guion_sdl2::*;
 use handler::Handler;
 use sdl2::event::Event;
-use sdl2::{keyboard::Keycode, video::Window, pixels::Color as SDLColor};
+use sdl2::{keyboard::Keycode, video::Window, pixels::Color as SDLColor, rect::Rect};
 use simple::{
     env::{SimpleEnv, SimpleID},
     stor::SimpleStor,
 };
-use render::imp::rect;
+use render::imp::to_rect;
 use guion_sdl2::style::color::Color;
 
 fn main() {
@@ -32,7 +32,7 @@ fn main() {
 
     let mut c = Context::from_sdl2(sdl, h).unwrap();
 
-    let g: Null<SimpleEnv> = Null::new(SimpleID::new(), None, Vec::new());
+    let g: Null<SimpleEnv> = Null::new(SimpleID::new(), Vec::new());
     let stor = SimpleStor::new(Box::new(g));
     let resolved = stor.widget(WPSlice { slice: &[] }).unwrap();
 
@@ -62,31 +62,19 @@ fn main() {
             r.c.set_draw_color(SDLColor::RGBA(0,0,0,0));
             let rect = r.c.viewport();
             eprintln!("Render");
-            simple_render_widget(
-                &mut r,
-                &mut c,
-                resolved.clone(),
-                Bounds::from_xywh(0, 0, rect.width(), rect.height()),
-            );
+
+            r.c.fill_rect(rect_0(&rect)).unwrap();
+
+            RenderLink::simple(&mut r, (rect.width(),rect.height()), &mut c)
+                .render_widget(c.link(resolved.clone()));
+
             r.c.present();
         }
     }
 }
 
-fn simple_render_widget(
-    r: &mut Render<Window>,
-    c: &mut <SimpleEnv as Env>::Context,
-    w: Resolved<SimpleEnv>,
-    b: Bounds,
-) {
-    let mut border = c.default_border().clone();
-    w.border(&mut border);
-    let sliced = b.inside(&border);
-
-    let mut style = c.default_style().clone();
-    w.style(&mut style);
-
-    r.c.fill_rect(rect(&b)).unwrap();
-
-    c.link(w).render((r, &sliced, &style));
+fn rect_0(r: &Rect) -> Rect {
+    let mut r = r.clone();
+    r.reposition((0,0));
+    r
 }

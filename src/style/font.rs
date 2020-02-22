@@ -36,11 +36,15 @@ pub struct PPChar {
 
 }
 
-impl<E> PreprocessedText<E> for PPText where E: Env, E::Backend: Backend<E,Style=Style>, ECHandler<E>: AsRefMut<HandlerInner> {
+impl<E> PreprocessedText<E> for PPText where
+    E: Env + EnvFlexStyleVariant,
+    EStyle<E>: GuionStyle<E,PreprocessedText=Self,PreprocessedChar=PPChar>,
+    ECHandler<E>: AsRefMut<HandlerInner>
+{
     fn size(&self) -> Dims {
         todo!()
     }
-    fn style(&self) -> &Style {
+    fn style(&self) -> &EStyle<E> {
         todo!()
     }
     fn chars(&self) -> &[PPChar] {

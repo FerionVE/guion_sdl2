@@ -25,8 +25,8 @@ impl GuionWidgets<SimpleEnv> for SimpleStor {
             stor: self,
         })
     }
-    fn widget_mut<'a>(&'a mut self, i: WPSlice<SimpleEnv>) -> Result<ResolvedMut<'a,SimpleEnv>,()> {
-        resolve_in_root_mut(&mut *self.root, i)
+    fn _widget_mut<'a>(&'a mut self, i: WPSlice<SimpleEnv>, invalidate: bool) -> Result<ResolvedMut<'a,SimpleEnv>,()> {
+        resolve_in_root_mut(&mut *self.root, i, invalidate)
         .ok_or(())
         .map(|o: (WidgetRefMut<'a,SimpleEnv>,EWPRc<SimpleEnv>)| ResolvedMut{
             wref: o.0,

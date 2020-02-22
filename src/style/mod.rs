@@ -1,10 +1,9 @@
 use crate::handler::HandlerInner;
 use crate::style::color::Color;
 use crate::style::font::Font;
-use crate::style::cursor::Cursor;
 use crate::style::font::PPChar;
 use crate::style::font::PPText;
-use guion::core::style::StyleVerb;
+use guion::core::{env::EnvFlexStyleVariant, style::{StyleVariantSupport, StdVerb, standard::StdStyleVariant, cursor::StdCursor, StyleVariantGetStdCursor}};
 use super::*;
 
 pub mod font;
@@ -12,70 +11,52 @@ pub mod cursor;
 pub mod default;
 pub mod color;
 
+#[derive(Clone)]
 pub struct Style {
-    pub inner: StyleInner,
-    pub current_color: Color,
-}
-
-pub struct StyleInner {
     font: Option<Font>,
-    cursor: Cursor,
+    cursor: StdCursor,
 }
 
-impl AsRefMut<StyleInner> for Style {
-    #[inline]
-    fn as_ref(&self) -> &StyleInner {
-        &self.inner
-    }
-    #[inline]
-    fn as_mut(&mut self) -> &mut StyleInner {
-        &mut self.inner
-    }
-}
-
-impl<E> GuionStyle<E> for Style where E: Env, E::Backend: GuionBackend<E,Style=Self>, ECHandler<E>: AsRefMut<HandlerInner> {
+impl<E> GuionStyle<E> for Style where
+    E: Env + EnvFlexStyleVariant,
+    E::Backend: GuionBackend<E,Style=Self>,
+    E::StyleVariant: StyleVariantGetStdCursor,
+    ECHandler<E>: AsRefMut<HandlerInner>
+{
     type Font = Font;
-    type Cursor = Cursor;
+    type Cursor = StdCursor;
     type Color = Color;
     type PreprocessedText = PPText;
     type PreprocessedChar = PPChar;
+    type Variant = E::StyleVariant;
 
-    #[inline]
-    fn _with(&mut self, v: StyleVerb) {
-        //TODO impl
+    fn font(&self, v: &Self::Variant) -> Option<&Self::Font> {
+        todo!()
     }
-    #[inline]
-    fn font(&self) -> Option<&Self::Font> {
-        self.inner.font.as_ref()
+    fn cursor(&self, v: &Self::Variant) -> Self::Cursor {
+        v.cursor()
     }
-    #[inline]
-    fn cursor(&self) -> Self::Cursor {
-        self.inner.cursor.clone()
+    fn color(&self, v: &Self::Variant) -> Self::Color {
+        Color::from_rgba8([127,0,0,255])
     }
-    #[inline]
     fn preprocess_text(&self, s: &str, c: &mut E::Context) -> Self::PreprocessedText {
         todo!()
     }
-    #[inline]
-    fn color(&self) -> ESColor<E> {
-        self.current_color.clone() //TODO perffix
-    }
-}
 
-impl PartialEq for Style {
-    fn eq(&self, o: &Style) -> bool {
+    #[inline]
+    fn is_cached_valid(&self, s: &Self::PreprocessedText, _c: &mut E::Context) -> bool {
         todo!()
     }
+
 }
 
-impl Clone for Style {
-    fn clone(&self) -> Self {
-        Self{
-            inner: StyleInner{
-                font: self.inner.font.clone(),
-                cursor: self.inner.cursor.clone(),
-            },
-            current_color: self.current_color.clone(),
-        }
+impl AsRefMut<Self> for Style {
+    #[inline]
+    fn as_ref(&self) -> &Self {
+        self
+    }
+    #[inline]
+    fn as_mut(&mut self) -> &mut Self {
+        self
     }
 }

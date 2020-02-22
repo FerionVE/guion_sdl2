@@ -5,7 +5,7 @@ use crate::event::{key::Key, Event, destination::StdDest};
 use crate::render::Render;
 use guion::core::backend::Backend;
 use guion::core::widget::Widget;
-use guion::core::{id::WidgetID, env::Env};
+use guion::core::{id::WidgetID, env::{EnvFlexStyleVariant, Env}, style::standard::StdStyleVariant};
 use super::*;
 use sdl2::video::Window;
 use event::consuming::StdConsuming;
@@ -27,6 +27,9 @@ impl Env for SimpleEnv {
     type WidgetID = SimpleID;
     type WidgetPath = Vec<SimpleID>;
     type ValidState = SimpleValidState;
+}
+impl EnvFlexStyleVariant for SimpleEnv {
+    type StyleVariant = StdStyleVariant;
 }
 
 impl Backend<SimpleEnv> for SimpleBackend {

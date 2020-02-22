@@ -23,11 +23,10 @@ impl<E> GuionQueue<E> for CtxQueue<E> where E: Env + Sync, E::Context: GuionCont
     fn enqueue_widget_closure(&self, path: WPSlice<E>, f: impl FnOnce(&E::DynWidget)) {
         todo!()
     }
-    fn enqueue_widget_validate(&self, path: WPSlice<E>) {
-        todo!()
-    }
     fn enqueue_widget_invalidate(&self, path: WPSlice<E>) {
         todo!()
     }
-    
+    fn enqueue_widget_validate(&self, path: WPSlice<E>) {
+        todo!()
+    }
 }
