@@ -37,9 +37,9 @@ pub struct PPChar {
 }
 
 impl<E> PreprocessedText<E> for PPText where
-    E: Env + EnvFlexStyleVariant,
+    E: Env + EnvFlexStyleVariant + Sync,
     EStyle<E>: GuionStyle<E,PreprocessedText=Self,PreprocessedChar=PPChar>,
-    ECHandler<E>: AsRefMut<HandlerInner>
+    E::Context: AsRefMut<Core<E>>
 {
     fn size(&self) -> Dims {
         todo!()

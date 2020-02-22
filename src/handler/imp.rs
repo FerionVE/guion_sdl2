@@ -1,7 +1,7 @@
 use guion::core::render::link::RenderLink;
 use super::*;
 
-impl<S,E> GuionHandler<E> for Handler<S,E> where S: GuionHandler<E>, E: Env {
+impl<S,E> GuionHandler<E> for Handler<S,E> where S: GuionHandler<E>, E: Env + Sync {
     #[inline] 
     fn _render(l: Link<E>, r: &mut RenderLink<E>) {
         S::_render(l,r);

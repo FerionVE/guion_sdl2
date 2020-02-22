@@ -1,4 +1,4 @@
-use core::sync::atomic::AtomicUsize;
+use std::sync::atomic::AtomicUsize;
 use guion::core::lazout::Size;
 use crate::style::Style;
 use crate::event::{key::Key, Event, destination::StdDest};
@@ -9,18 +9,18 @@ use guion::core::{id::WidgetID, env::{EnvFlexStyleVariant, Env}, style::standard
 use super::*;
 use sdl2::video::Window;
 use event::consuming::StdConsuming;
-use context::Context;
 use stor::SimpleStor;
 use handler::Handler;
 use valid::SimpleValidState;
 use std::sync::atomic::Ordering;
+use ctx::SimpleCtx;
 
 pub struct SimpleEnv;
 pub struct SimpleBackend;
 
 impl Env for SimpleEnv {
     type Backend = SimpleBackend;
-    type Context = Context<Self,EEEE>;
+    type Context = SimpleCtx;
     type Storage = SimpleStor;
     ///regularly just dyn Widget
     type DynWidget = dyn Widget<Self>;

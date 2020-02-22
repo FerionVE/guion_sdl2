@@ -1,4 +1,3 @@
-use crate::handler::HandlerInner;
 use crate::style::color::Color;
 use sdl2::rect::Rect;
 use sdl2::render::BlendMode;
@@ -11,12 +10,12 @@ impl<E,C> GuionRender<E> for Render<C> where E: Env, E::Backend: GuionBackend<E,
 }
 
 impl<E,C> RenderStdWidgets<E> for Render<C> where
-    E: Env,
+    E: Env + Sync,
     E::Backend: GuionBackend<E,Renderer=Self>,
     EStyle<E>: AsRefMut<Style>,
     ESColor<E>: Into<Color>,
     ESCursor<E>: Into<StdCursor>,
-    ECHandler<E>: AsRefMut<HandlerInner>,
+    E::Context: AsRefMut<Core<E>>,
     C: RenderTarget,
 {
     #[inline]

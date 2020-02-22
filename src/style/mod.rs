@@ -1,4 +1,3 @@
-use crate::handler::HandlerInner;
 use crate::style::color::Color;
 use crate::style::font::Font;
 use crate::style::font::PPChar;
@@ -18,10 +17,10 @@ pub struct Style {
 }
 
 impl<E> GuionStyle<E> for Style where
-    E: Env + EnvFlexStyleVariant,
+    E: Env + EnvFlexStyleVariant + Sync,
     E::Backend: GuionBackend<E,Style=Self>,
     E::StyleVariant: StyleVariantGetStdCursor,
-    ECHandler<E>: AsRefMut<HandlerInner>
+    E::Context: AsRefMut<Core<E>>
 {
     type Font = Font;
     type Cursor = StdCursor;
@@ -48,6 +47,9 @@ impl<E> GuionStyle<E> for Style where
         todo!()
     }
 
+    fn static_default() -> Self {
+        Default::default()
+    }
 }
 
 impl AsRefMut<Self> for Style {

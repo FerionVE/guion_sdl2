@@ -1,36 +1,28 @@
 extern crate guion_sdl2;
 
-use context::Context;
 use guion::{
     core::{
-        ctx::{Context as GuionContext, Resolved, Widgets as GuionWidgets},
-        env::Env,
+        ctx::{Context as GuionContext, Widgets as GuionWidgets},
         path::WPSlice,
-        util::bounds::Bounds,
         widget::{link::Link, Widget},
         style::Color as GuionColor, render::link::RenderLink,
     },
-    standard::ctx::StandardCtx,
+    standard::ctx::StdHandler,
     widgets::null::Null,
 };
 use guion_sdl2::render::Render;
 use guion_sdl2::*;
-use handler::Handler;
 use sdl2::event::Event;
-use sdl2::{keyboard::Keycode, video::Window, pixels::Color as SDLColor, rect::Rect};
+use sdl2::{keyboard::Keycode, pixels::Color as SDLColor, rect::Rect};
 use simple::{
     env::{SimpleEnv, SimpleID},
-    stor::SimpleStor,
+    stor::SimpleStor, ctx::SimpleCtx,
 };
-use render::imp::to_rect;
-use guion_sdl2::style::color::Color;
 
 fn main() {
     let sdl = sdl2::init().unwrap();
 
-    let h: Handler<(), SimpleEnv> = Handler::new(());
-
-    let mut c = Context::from_sdl2(sdl, h).unwrap();
+    let mut c = SimpleCtx::from_sdl2(sdl).unwrap();
 
     let g: Null<SimpleEnv> = Null::new(SimpleID::new(), Vec::new());
     let stor = SimpleStor::new(Box::new(g));

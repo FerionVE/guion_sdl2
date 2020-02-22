@@ -1,28 +1,23 @@
 use super::*;
+use crate::core::Core;
 
 pub mod imp;
 
-pub struct Handler<S,E> where S: GuionHandler<E>, E: Env + 'static {
+pub struct Handler<S,E> where S: GuionHandler<E>, E: Env + Sync + 'static {
     pub sup: S,
-    pub inner: HandlerInner,
-    _c: PhantomData<E>,
+    pub inner: Core<E>,
 }
 
-impl<S,E> Handler<S,E> where S: GuionHandler<E>, E: Env + 'static {
-    pub fn new(sup: S) -> Self {
+impl<S,E> Handler<S,E> where S: GuionHandler<E>, E: Env + Sync + 'static {
+    pub fn new(inner: Core<E>, sup: S) -> Self {
         Self{
             sup,
-            inner: HandlerInner{},
-            _c: PhantomData,
+            inner,
         }
     }
 }
 
-pub struct HandlerInner {
-    
-}
-
-impl<S,E> AsRefMut<HandlerInner> for Handler<S,E> where S: GuionHandler<E>, E: Env + 'static {
+/*impl<S,E> AsRefMut<HandlerInner> for Handler<S,E> where S: GuionHandler<E>, E: Env + 'static {
     #[inline]
     fn as_ref(&self) -> &HandlerInner {
         &self.inner
@@ -49,4 +44,4 @@ impl<S,E> AsHandler<S,E> for Handler<S,E> where S: GuionHandler<E>, E: Env, E::C
     fn as_ref(c: &E::Context) -> &S {
         &c._handler().sup
     }
-}
+}*/

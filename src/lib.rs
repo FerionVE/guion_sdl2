@@ -2,7 +2,7 @@ pub mod event;
 pub mod render;
 pub mod style;
 pub mod handler;
-pub mod context;
+pub mod core;
 pub mod simple;
 
 pub use qwutils;
@@ -49,7 +49,6 @@ use guion::core::widget::link::Link;
 
 use guion::core::util::AsRefMut;
 
-use guion::core::ctx::AsHandler;
 use guion::core::ctx::handler::Handler as GuionHandler;
 use guion::core::ctx::Context as GuionContext;
 
@@ -59,3 +58,5 @@ use sdl2::pixels::Color as SDLColor;
 use guion::core::style::color::Color as GuionColor;
 
 use guion::core::style::Style as GuionStyle;
+
+use crate::core::*;

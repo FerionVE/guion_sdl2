@@ -4,36 +4,34 @@ use sdl2::TimerSubsystem;
 use sdl2::VideoSubsystem;
 use sdl2::Sdl;
 use super::*;
-use handler::HandlerInner;
 
 pub mod queue;
-pub mod imp;
+//pub mod imp;
 
 //TODO make fields private
-pub struct Context<E,H> where E: Env<Context=Self> + Sync, H: GuionHandler<E>, EStyle<E>: Default {
+pub struct Core<E> where E: Env + Sync {
     pub sdl: Sdl,
     pub video: VideoSubsystem,
     pub timer: TimerSubsystem,
     pub event: EventSubsystem,
     pub pump: EventPump,
-    pub handler: H,
-    pub queue: CtxQueue<E>,
+    pub queue: Queue<E>,
     pub default_border: Border,
     pub default_style: EStyle<E>,
 }
 
-pub struct CtxQueue<E> where E: Env {
+pub struct Queue<E> where E: Env {
     pub event: EventSubsystem,
     pub timer: TimerSubsystem,
     _e: PhantomData<E>,
 }
 
-impl<E,H> Context<E,H> where E: Env<Context=Self> + Sync, H: GuionHandler<E>, EStyle<E>: Default {
-    pub fn from_sdl2(sdl: Sdl, handler: H) -> Result<Self,String> {
+impl<E> Core<E> where E: Env + Sync {
+    pub fn from_sdl2(sdl: Sdl) -> Result<Self,String> {
         let event = sdl.event()?;
         let pump = sdl.event_pump()?;
         let timer = sdl.timer()?;
-        let queue = CtxQueue{
+        let queue = Queue{
             event: event.clone(),
             timer: timer.clone(),
             _e: PhantomData,
@@ -41,11 +39,11 @@ impl<E,H> Context<E,H> where E: Env<Context=Self> + Sync, H: GuionHandler<E>, ES
         let video = sdl.video()?;
 
         let default_border = Border::new(4,4,4,4);
-        let default_style = Default::default();
+        let default_style = EStyle::<E>::static_default();
 
         Ok(
             Self {
-                event,pump,timer,queue,video,handler,sdl,default_border,default_style
+                event,pump,timer,queue,video,sdl,default_border,default_style
             }
         )
     }

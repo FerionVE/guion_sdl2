@@ -1,7 +1,7 @@
 use super::*;
 use guion::core::path::WPSlice;
 
-impl<E> GuionQueue<E> for CtxQueue<E> where E: Env + Sync, E::Context: GuionContext<E,Queue=Self> {
+impl<E> GuionQueue<E> for Queue<E> where E: Env + Sync, E::Context: GuionContext<E,Queue=Self> {
     fn wake(&self) {
         todo!()
     }
