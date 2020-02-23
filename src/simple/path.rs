@@ -2,7 +2,7 @@ use super::*;
 use env::{SimpleEnv, SimpleID};
 use std::{any::{TypeId, Any}, rc::Rc};
 use guion::core::path::WPSlice;
-use guion::core::path::AsWPSlice;
+use guion::core::{widget::as_widget::*, path::AsWPSlice, ctx::*};
 
 impl GuionPath<SimpleEnv> for Vec<SimpleID> {
     type SubPath = SimpleID;
@@ -90,5 +90,32 @@ impl Deref for RcSimplePath {
     type Target = Vec<SimpleID>;
     fn deref(&self) -> &Self::Target {
         &*self.0
+    }
+}
+
+//TODO move as macro to guion
+impl AsWidget<SimpleEnv> for Vec<SimpleID> {
+    fn as_ref(&self) -> Resolvable<SimpleEnv> {
+        Resolvable::Path(self.clone().into())
+    }
+    fn as_mut(&mut self) -> ResolvableMut<SimpleEnv> {
+        ResolvableMut::Path(self.clone().into())
+    }
+}
+impl AsWidgetImmediate<'static,SimpleEnv> for Vec<SimpleID> {
+    fn into_ref(self) -> Resolvable<'static,SimpleEnv> {
+        Resolvable::Path(self.into())
+    }
+    fn as_ref<'s>(&'s self) -> Resolvable<'s,SimpleEnv> where 'static: 's {
+        Resolvable::Path(self.clone().into())
+    }
+    
+}
+impl AsWidgetImmediateMut<'static,SimpleEnv> for Vec<SimpleID> {
+    fn into_mut(self) -> ResolvableMut<'static,SimpleEnv> {
+        ResolvableMut::Path(self.into())
+    }
+    fn as_mut<'s>(&'s mut self) -> ResolvableMut<'s,SimpleEnv> where 'static: 's {
+        ResolvableMut::Path(self.clone().into())
     }
 }
