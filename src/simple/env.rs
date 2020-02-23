@@ -43,7 +43,7 @@ type EEEE = Handler<(),SimpleEnv>;
 
 static ID_ITER: AtomicUsize = AtomicUsize::new(0);
 
-#[derive(Clone,PartialEq,Hash)]
+#[derive(Clone,PartialEq,Hash,Debug)]
 pub struct SimpleID {
     pub v: usize, //TODO protect
 }

@@ -4,6 +4,8 @@ use sdl2::TimerSubsystem;
 use sdl2::VideoSubsystem;
 use sdl2::Sdl;
 use super::*;
+use guion::core::{ctx::invalidate, render::link::RenderLink};
+use guion::core::path::{WPSlice, AsWPSlice};
 
 pub mod queue;
 //pub mod imp;
@@ -23,7 +25,8 @@ pub struct Core<E> where E: Env + Sync {
 pub struct Queue<E> where E: Env {
     pub event: EventSubsystem,
     pub timer: TimerSubsystem,
-    _e: PhantomData<E>,
+    pub validate: Vec<E::WidgetPath>,
+    pub invalidate: Vec<E::WidgetPath>,
 }
 
 impl<E> Core<E> where E: Env + Sync {
@@ -34,7 +37,8 @@ impl<E> Core<E> where E: Env + Sync {
         let queue = Queue{
             event: event.clone(),
             timer: timer.clone(),
-            _e: PhantomData,
+            validate: Vec::with_capacity(4096),
+            invalidate: Vec::with_capacity(4096),
         };
         let video = sdl.video()?;
 
@@ -46,5 +50,27 @@ impl<E> Core<E> where E: Env + Sync {
                 event,pump,timer,queue,video,sdl,default_border,default_style
             }
         )
+    }
+}
+
+/// render widget and process validation
+pub fn render<E>(r: &mut RenderLink<E>, w: WPSlice<E>, stor: &mut E::Storage, c: &mut E::Context) where E: Env, ECQueue<E>: AsRefMut<Queue<E>> {
+    {
+        let q = c.queue_mut().as_mut();
+        for p in &q.invalidate {
+            invalidate(stor,p.slice()).expect("Lost Widget in invalidate");
+        }
+        q.invalidate.clear();
+    }
+    let w = c.link(
+        stor.widget(w).expect("Lost Widget in render")
+    );
+    r.render_widget(w);
+    {
+        let q = c.queue_mut().as_mut();
+        for p in &q.validate {
+            invalidate(stor,p.slice()).expect("Lost Widget in invalidate");
+        }
+        q.validate.clear();
     }
 }

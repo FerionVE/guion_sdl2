@@ -17,6 +17,7 @@ impl SimpleStor {
 
 impl GuionWidgets<SimpleEnv> for SimpleStor {
     fn widget<'a>(&'a self, i: WPSlice<SimpleEnv>) -> Result<Resolved<'a,SimpleEnv>,()> {
+        //eprintln!("{:?}",i.slice);
         resolve_in_root(&*self.root, i)
         .ok_or(())
         .map(|o: (Rc<WidgetRef<'a,SimpleEnv>>,EWPRc<SimpleEnv>)| Resolved{

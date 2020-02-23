@@ -5,10 +5,10 @@ use guion::{
         ctx::{Context as GuionContext, Widgets as GuionWidgets},
         path::WPSlice,
         widget::{link::Link, Widget},
-        style::Color as GuionColor, render::link::RenderLink,
+        style::Color as GuionColor, render::link::RenderLink, lazout::Orientation,
     },
     standard::ctx::StdHandler,
-    widgets::null::Null,
+    widgets::{pain::Pane, null::Null},
 };
 use guion_sdl2::render::Render;
 use guion_sdl2::*;
@@ -24,7 +24,16 @@ fn main() {
 
     let mut c = SimpleCtx::from_sdl2(sdl).unwrap();
 
-    let g: Null<SimpleEnv> = Null::new(SimpleID::new(), Vec::new());
+    //let g: Null<SimpleEnv> = Null::new(SimpleID::new(), Vec::new());
+    let g = Pane::new(
+        SimpleID::new(),
+        vec![
+            Null::new(SimpleID::new(), vec![]),
+            Null::new(SimpleID::new(), vec![]),
+        ],
+        Orientation::Vertical,
+    );
+
     let stor = SimpleStor::new(Box::new(g));
     let resolved = stor.widget(WPSlice { slice: &[] }).unwrap();
 
