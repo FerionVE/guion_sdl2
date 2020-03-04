@@ -8,7 +8,7 @@ impl<E> GuionQueue<E> for Queue<E> where E: Env + Sync, E::Context: GuionContext
     fn enqueue_render(&self, force: bool) {
         todo!()
     }
-    fn enqueue_event(&self, e: EEvent<E>) {
+    fn enqueue_event(&self, e: (EEvent<E>,&Bounds,u64)) {
         todo!()
     }
     fn enqueue_widget_mut(&self, path: WPSlice<E>, f: fn(&mut E::DynWidget), invalidate: bool) {

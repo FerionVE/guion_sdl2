@@ -33,6 +33,9 @@ impl GuionPath<SimpleEnv> for Vec<SimpleID> {
     fn from_slice(s: WPSlice<SimpleEnv>) -> Self {
         s.slice.to_owned()
     }
+    fn concatenated_slice(a: WPSlice<SimpleEnv>, b: WPSlice<SimpleEnv>) -> Self {
+        todo!()
+    }
 }
 
 impl AsWPSlice<SimpleEnv> for Vec<SimpleID> { //TODO this trait shouldn't exist anymore
@@ -66,7 +69,7 @@ impl GuionSubPath<SimpleEnv> for SimpleID {
 }
 
 #[repr(transparent)]
-pub struct RcSimplePath(Rc<Vec<SimpleID>>);
+pub struct RcSimplePath(pub Rc<Vec<SimpleID>>); //TODO un-pub field again??
 
 impl RefClonable for RcSimplePath {
     fn refc(&self) -> Self {

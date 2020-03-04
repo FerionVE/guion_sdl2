@@ -1,9 +1,9 @@
 use crate::event::key::Key;
 use guion::core::event::variants::*;
-use guion::core::event::VariantSupport;
+use guion::core::event::{Variant, VariantSupport};
 use super::*;
 
-macro_rules! variant {
+/*macro_rules! variant {
     ($type:ty,$recv:pat,$cast:block,$back:block) => {
         impl<K,D,C,E> VariantSupport<$type,E> for Event<K,D,C> where K: GuionKey + FromInto<Key> + 'static, D: SDLDestination, C: SDLConsuming, E: Env, E::Backend: GuionBackend<E,Event=Self> {
             fn from_variant(v: $type) -> Self {
@@ -20,7 +20,7 @@ macro_rules! variant {
 }
 
 variant!(
-    KbdDown<K>,
+    KbdDown<E>,
     SDLEvent::KeyDown{
         timestamp,
         window_id,
@@ -38,4 +38,20 @@ variant!(
     },{
         todo!()
     }
-);
+);*/
+
+impl<K,D,C,E,T> VariantSupport<T,E> for Event<K,D,C> where
+    K: GuionKey + FromInto<Key> + 'static,
+    D: SDLDestination,
+    C: SDLConsuming,
+    E: Env,
+    E::Backend: GuionBackend<E,Event=Self>,
+    T: Variant<E>
+{
+    fn from_variant(v: T) -> Self {
+        todo!()
+    }
+    fn to_variant(&self) -> Option<T> {
+        todo!()
+    }
+}

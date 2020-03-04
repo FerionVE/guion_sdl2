@@ -98,18 +98,20 @@ pub struct StdDest<D> where D: GuionDestination {
 
 impl<D> GuionDestination for StdDest<D> where D: GuionDestination {
     const ROOT: Self = Self{v: D::ROOT};
-    const SELECTED: Self = Self{v: D::SELECTED};
+    const FOCUSED: Self = Self{v: D::FOCUSED};
+    const HOVERED: Self = Self{v: D::HOVERED};
+    const INVALID: Self = Self{v: D::INVALID};
 }
 
 impl<D> SDLDestination for StdDest<D> where D: GuionDestination {
-    const JOYPAD: Self = Self{v: D::SELECTED};
-    const CONTROLLER: Self = Self{v: D::SELECTED};
+    const JOYPAD: Self = Self{v: D::FOCUSED};
+    const CONTROLLER: Self = Self{v: D::FOCUSED};
     const GESTURE: Self = Self{v: D::ROOT};
     const FINGER: Self = Self{v: D::ROOT};
     const APP: Self = Self{v: D::ROOT};
     const WINDOW: Self = Self{v: D::ROOT};
-    const KEYBOARD: Self = Self{v: D::SELECTED};
-    const TEXT_OP: Self = Self{v: D::SELECTED};
+    const KEYBOARD: Self = Self{v: D::FOCUSED};
+    const TEXT_OP: Self = Self{v: D::FOCUSED};
     const MOUSE: Self = Self{v: D::ROOT};
     const WHEEL: Self = Self{v: D::ROOT};
     const CLIPBOARD_UPDATE: Self = Self{v: D::ROOT};

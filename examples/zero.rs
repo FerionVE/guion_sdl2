@@ -7,7 +7,7 @@ use guion::{
         widget::{link::Link, Widget},
         style::Color as GuionColor, render::link::RenderLink, lazout::Orientation,
     },
-    standard::ctx::StdHandler,
+    standard::handler::StdHandler,
     widgets::{pain::Pane, null::Null},
 };
 use guion_sdl2::render::Render;
@@ -72,6 +72,8 @@ fn main() {
             r.c.present();
         }
     }
+
+    let pommes: &'static [u8] = include_bytes!("/home/aleren/Musik/akweh.wav");
 }
 
 fn rect_0(r: &Rect) -> Rect {

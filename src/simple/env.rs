@@ -15,6 +15,7 @@ use valid::SimpleValidState;
 use std::sync::atomic::Ordering;
 use ctx::SimpleCtx;
 
+#[derive(Clone)]
 pub struct SimpleEnv;
 pub struct SimpleBackend;
 
@@ -68,5 +69,7 @@ pub struct SimpleDest {
 
 impl GuionDestination for SimpleDest {
     const ROOT: Self = Self{v: 0};
-    const SELECTED: Self = Self{v: 1};
+    const FOCUSED: Self = Self{v: 1};
+    const HOVERED: Self = Self{v: 2};
+    const INVALID: Self = Self{v: std::usize::MAX};
 }

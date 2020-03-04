@@ -32,4 +32,9 @@ impl<E,K,D,C> GuionEvent<E> for Event<K,D,C> where K: GuionKey + FromInto<Key> +
     fn position(&self) -> Option<Offset> {
         pos_of(&self.e,self.ws.0,self.ws.1)
     }
+    #[inline]
+    fn _root_only(&self) -> bool {
+        //todo!()
+        false
+    }
 }

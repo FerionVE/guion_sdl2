@@ -8,12 +8,12 @@ impl<S,E> GuionHandler<E> for Handler<S,E> where S: GuionHandler<E>, E: Env + Sy
         //todo!() //TODO impl everything
     }
     #[inline] 
-    fn _event(l: Link<E>, e: (EEvent<E>,&Bounds)) {
+    fn _event(l: Link<E>, e: (EEvent<E>,&Bounds,u64)) {
         S::_event(l,e);
         //todo!()
     }
     #[inline] 
-    fn _event_root(l: Link<E>, e: (EEvent<E>,&Bounds)) {
+    fn _event_root(l: Link<E>, e: (EEvent<E>,&Bounds,u64)) {
         S::_event_root(l,e);
         //todo!()
     }

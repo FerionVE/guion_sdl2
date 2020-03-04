@@ -2,6 +2,8 @@ use crate::simple::env::SimpleEnv;
 use super::*;
 use guion::{core::{path::WPSlice, widget::{immediate::{WidgetRefMut, WidgetRef}, Widget}, ctx::{ResolvedMut, Resolved, resolve_in_root, resolve_in_root_mut}}};
 use std::rc::Rc;
+use ctx::SimpleCtx;
+use path::RcSimplePath;
 
 pub struct SimpleStor {
     pub root: Box<dyn Widget<SimpleEnv>>,
@@ -33,5 +35,13 @@ impl GuionWidgets<SimpleEnv> for SimpleStor {
             wref: o.0,
             path: o.1,
         })
+    }
+    fn trace_bounds(&self, ctx: &mut SimpleCtx, i: WPSlice<SimpleEnv>, b: &Bounds, force: bool) -> Result<Bounds,()> {
+        let l = ctx.link(Resolved{
+            wref: Rc::new(self.root.as_immediate()),
+            path: RcSimplePath(Rc::new(vec![])),
+            stor: self,
+        });
+        self.root.trace_bounds(l,i,b,force)
     }
 }
