@@ -15,3 +15,23 @@ impl<C> Render<C> where C: RenderTarget {
         }
     }
 }
+
+impl<C> Deref for Render<C> where C: RenderTarget {
+    type Target = Canvas<C>;
+    fn deref(&self) -> &Self::Target {
+        &self.c
+    }
+}
+impl<C> DerefMut for Render<C> where C: RenderTarget {
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.c
+    }
+}
+impl<C> AsRefMut<Canvas<C>> for Render<C> where C: RenderTarget {
+    fn as_ref(&self) -> &Canvas<C> {
+        &self.c
+    }
+    fn as_mut(&mut self) -> &mut Canvas<C> {
+        &mut self.c
+    }
+}

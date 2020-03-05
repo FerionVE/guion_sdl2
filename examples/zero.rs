@@ -19,12 +19,15 @@ use simple::{
     stor::SimpleStor, ctx::SimpleCtx,
 };
 
+//minimal example using the simple module
 fn main() {
+    //initialze sdl
     let sdl = sdl2::init().unwrap();
 
+    //create a SimpleCtx context
     let mut c = SimpleCtx::from_sdl2(sdl).unwrap();
 
-    //let g: Null<SimpleEnv> = Null::new(SimpleID::new(), Vec::new());
+    //build a widget
     let g = Pane::new(
         SimpleID::new(),
         vec![
@@ -34,11 +37,14 @@ fn main() {
         Orientation::Vertical,
     );
 
+    //build the widget tree root TODO
     let stor = SimpleStor::new(Box::new(g));
+    //reference to the root widget
     let resolved = stor.widget(WPSlice { slice: &[] }).unwrap();
 
     //TODO Widget resolve impl
 
+    //create a sdl window
     let window = c
         .video
         .window("GUION_SDL2", 800, 600)
@@ -47,10 +53,13 @@ fn main() {
         .build()
         .unwrap();
 
+    //retrieve the canvas and build the renderer
     let canvas = window.into_canvas().build().unwrap();
     let mut r = Render::from_canvas(canvas);
 
+    //main loop
     'running: loop {
+        //wait/poll events
         if let Some(event) = c.pump.wait_event_timeout(200) {
             match event {
                 Event::Quit { .. }
@@ -60,20 +69,21 @@ fn main() {
                 } => break 'running,
                 _ => {}
             }
-            r.c.set_draw_color(SDLColor::RGBA(0,0,0,0));
-            let rect = r.c.viewport();
+
+            //black the background
             eprintln!("Render");
+            r.set_draw_color(SDLColor::RGBA(0,0,0,0));
+            let rect = r.c.viewport();
+            r.fill_rect(rect_0(&rect)).unwrap();
 
-            r.c.fill_rect(rect_0(&rect)).unwrap();
-
+            //build the RenderLink and call it on the root widget
             RenderLink::simple(&mut r, (rect.width(),rect.height()), &mut c)
                 .render_widget(c.link(resolved.clone()));
 
-            r.c.present();
+            //let sdl render it
+            r.present();
         }
     }
-
-    let pommes: &'static [u8] = include_bytes!("/home/aleren/Musik/akweh.wav");
 }
 
 fn rect_0(r: &Rect) -> Rect {

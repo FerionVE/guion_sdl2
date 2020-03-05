@@ -17,6 +17,7 @@ qwutils = { git = "https://github.com/qwertz19281/rust_utils", rev = "3dd92de469
 version = "0.33"
 default-features = false
 features = ["ttf"]
+#apt install libsdl2-dev libsdl2-ttf-dev
 
 [profile.release]
 lto = true
