@@ -1,4 +1,5 @@
 use super::*;
+use qwutils::imp::option::OptionExt;
 #[derive(Clone)]
 pub enum Key {
     Kbd(SDLKeycode),
@@ -33,7 +34,18 @@ impl GuionKey for Key {
 
 impl PartialEq for Key {
     fn eq(&self, o: &Self) -> bool {
-        todo!()
+        match self {
+            Key::Kbd(key) => match o {
+                Key::Kbd(okey) => key == okey,
+                _ => false,
+            }
+            Key::Mouse(key,origin) => match o {
+                Key::Mouse(okey,oorigin) => 
+                    key == okey && origin.with_if(oorigin,|a,b| a==b ).unwrap_or(true),
+                _ => false,
+            }
+        }
+        //todo!()
         //if one or both origins are none -> true
     }
 }

@@ -4,7 +4,7 @@ use guion::core::ctx::Context;
 use guion::standard::handler::StdHandler;
 use crate::handler::Handler;
 use crate::simple::env::SimpleEnv;
-use guion::core::widget::Widget;
+use guion::core::{state::handler::AsHandlerStateful, widget::Widget};
 use crate::simple::env::SimpleID;
 use std::collections::HashMap;
 use crate::core::Queue;
@@ -69,6 +69,15 @@ impl AsRefMut<Core<SimpleEnv>> for SimpleCtx {
     }
     fn as_mut(&mut self) -> &mut Core<SimpleEnv> {
         &mut self.handler.sup.inner
+    }
+}
+impl AsHandlerStateful<SimpleEnv> for SimpleCtx {
+    type T = SimpleHandler;
+    fn stateful_mut(&mut self) -> &mut Self::T {
+        &mut self.handler
+    }
+    fn stateful(&self) -> &Self::T {
+        &self.handler
     }
 }
 

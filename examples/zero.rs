@@ -3,9 +3,8 @@ extern crate guion_sdl2;
 use guion::{
     core::{
         ctx::{Context as GuionContext, Widgets as GuionWidgets},
-        path::WPSlice,
         widget::{link::Link, Widget},
-        style::Color as GuionColor, render::link::RenderLink, lazout::Orientation,
+        style::Color as GuionColor, render::link::RenderLink, lazout::Orientation, util::bounds::Bounds,
     },
     standard::handler::StdHandler,
     widgets::{pain::Pane, null::Null},
@@ -16,8 +15,9 @@ use sdl2::event::Event;
 use sdl2::{keyboard::Keycode, pixels::Color as SDLColor, rect::Rect};
 use simple::{
     env::{SimpleEnv, SimpleID},
-    stor::SimpleStor, ctx::SimpleCtx,
+    stor::SimpleStor, ctx::SimpleCtx, path::SimplePath,
 };
+use event::cast::parse_event;
 
 //minimal example using the simple module
 fn main() {
@@ -37,10 +37,11 @@ fn main() {
         Orientation::Vertical,
     );
 
-    //build the widget tree root TODO
+    let root_path = SimplePath::new(&[],g.id());
+    //build the widget tree root
     let stor = SimpleStor::new(Box::new(g));
     //reference to the root widget
-    let resolved = stor.widget(WPSlice { slice: &[] }).unwrap();
+    let resolved = stor.widget(root_path).unwrap();
 
     //TODO Widget resolve impl
 
@@ -70,6 +71,22 @@ fn main() {
                 _ => {}
             }
 
+            let rect = r.c.viewport();
+            let bounds = (rect.width(),rect.height());
+            let bbounds = &Bounds::from_xywh(0,0,bounds.0,bounds.1);
+
+            println!("{:?}",event);
+
+            let parsed = parse_event::<SimpleEnv>(&event, (0f32,0f32)); //TODO window size
+
+            c.link(resolved.clone())._event_root(
+                (parsed.event,bbounds,parsed.ts as u64)
+            );
+
+            r.c.set_draw_color(SDLColor::RGBA(0,0,0,0));
+            
+            eprintln!("Render");
+
             //black the background
             eprintln!("Render");
             r.set_draw_color(SDLColor::RGBA(0,0,0,0));
@@ -77,7 +94,7 @@ fn main() {
             r.fill_rect(rect_0(&rect)).unwrap();
 
             //build the RenderLink and call it on the root widget
-            RenderLink::simple(&mut r, (rect.width(),rect.height()), &mut c)
+            RenderLink::simple(&mut r, bounds, &mut c)
                 .render_widget(c.link(resolved.clone()));
 
             //let sdl render it

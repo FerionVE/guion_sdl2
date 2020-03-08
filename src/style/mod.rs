@@ -19,7 +19,7 @@ pub struct Style {
 impl<E> GuionStyle<E> for Style where
     E: Env + EnvFlexStyleVariant + Sync,
     E::Backend: GuionBackend<E,Style=Self>,
-    E::StyleVariant: StyleVariantGetStdCursor,
+    E::StyleVariant: Into<StdStyleVariant>,
     E::Context: AsRefMut<Core<E>>
 {
     type Font = Font;
@@ -33,10 +33,14 @@ impl<E> GuionStyle<E> for Style where
         todo!()
     }
     fn cursor(&self, v: &Self::Variant) -> Self::Cursor {
-        v.cursor()
+        v.clone().into().cursor()
     }
     fn color(&self, v: &Self::Variant) -> Self::Color {
-        Color::from_rgba8([127,0,0,255])
+        if v.clone().into().hovered {
+            Color::from_rgba8([127,0,255,255])
+        }else{
+            Color::from_rgba8([127,0,0,255])
+        }
     }
     fn preprocess_text(&self, s: &str, c: &mut E::Context) -> Self::PreprocessedText {
         todo!()

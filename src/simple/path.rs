@@ -1,46 +1,81 @@
 use super::*;
 use env::{SimpleEnv, SimpleID};
-use std::{any::{TypeId, Any}, rc::Rc};
-use guion::core::path::WPSlice;
-use guion::core::{widget::as_widget::*, path::AsWPSlice, ctx::*};
+use std::{any::{TypeId, Any}, rc::Rc, sync::Arc, ops::{RangeBounds, Range}, slice::SliceIndex};
+use guion::core::{widget::as_widget::*, ctx::*};
+use qwutils::RefClonable;
 
-impl GuionPath<SimpleEnv> for Vec<SimpleID> {
+#[derive(PartialEq,Clone)]
+pub struct SimplePath {
+    pub v: Arc<Vec<SimpleID>>,
+    pub slice: Range<usize>,
+}
+
+impl GuionPath<SimpleEnv> for SimplePath {
     type SubPath = SimpleID;
-    type RcPath = RcSimplePath;
     fn attach(&mut self, sub: Self::SubPath) {
-        self.push(sub)
+        Arc::make_mut(&mut self.v).push(sub);
+        self.slice.end += 1;
     }
-    fn attached(mut self, sub: Self::SubPath) -> Self {
-        self.push(sub);
+    fn attached(mut self, sub: Self::SubPath) -> Self { //TODO can be default impl
+        self.attach(sub);
         self
+    }
+    fn concatenated_slice(a: &Self, b: &Self) -> Self {
+        let (aa,bb) = (a._get(),b._get());
+        let mut dest = Vec::with_capacity(aa.len()+bb.len()+1);
+        dest.push(a._root().clone());
+        dest.extend_from_slice(aa);
+        dest.extend_from_slice(bb);
+        Self{
+            slice: 1..dest.len(),
+            v: Arc::new(dest),
+        }
     }
     fn id(&self) -> &SimpleID {
         self.tip()
     }
     fn tip(&self) -> &Self::SubPath {
-        &self[self.len()-1]
+        &self.v[self.slice.end-1]
     }
-    fn parent(&self) -> Option<WPSlice<SimpleEnv>> {
-        Self::parent_of_slice(self.slice())
+    fn parent(&self) -> Option<Self> {
+        if self.slice.len() <= 1 {return None;}
+        Some(self.slice(0..self.slice.len()-1))
     }
-    fn id_of_slice(s: WPSlice<SimpleEnv>) -> &SimpleID {
-        &s.slice[s.slice.len()-1]
+    fn is_empty(&self) -> bool {
+        self.slice.len() == 0
     }
-    fn parent_of_slice(s: WPSlice<SimpleEnv>) -> Option<WPSlice<SimpleEnv>> {
-        if s.slice.len() <= 1 {return None;}
-        Some(s.slice(0..s.slice.len()-1))
+    fn slice<T>(&self, range: T) -> Self where T: RangeBounds<usize> {
+        Self{
+            v: self.v.refc(),
+            slice: slice_range(&self.slice,range),
+        }
     }
-    fn from_slice(s: WPSlice<SimpleEnv>) -> Self {
-        s.slice.to_owned()
-    }
-    fn concatenated_slice(a: WPSlice<SimpleEnv>, b: WPSlice<SimpleEnv>) -> Self {
-        todo!()
+    fn index<T>(&self, i: T) -> &Self::SubPath where T: SliceIndex<[Self::SubPath],Output=Self::SubPath> {
+        &self._get()[i]
     }
 }
 
-impl AsWPSlice<SimpleEnv> for Vec<SimpleID> { //TODO this trait shouldn't exist anymore
-    fn slice(&self) -> WPSlice<SimpleEnv> {
-        WPSlice{slice: &self[..]}
+impl SimplePath {
+    pub fn new(range: &[SimpleID], root_id: SimpleID) -> Self {
+        let mut dest = Vec::with_capacity(range.len()+1);
+        dest.push(root_id);
+        dest.extend_from_slice(range);
+        Self{
+            slice: 1..dest.len(),
+            v: Arc::new(dest),
+        }
+    }
+    fn _get(&self) -> &[SimpleID] {
+        &self.v[self.slice.clone()]
+    }
+    fn _root(&self) -> &SimpleID {
+        &self.v[0]
+    }
+}
+
+impl RefClonable for SimplePath {
+    fn refc(&self) -> Self {
+        self.clone()
     }
 }
 
@@ -68,36 +103,8 @@ impl GuionSubPath<SimpleEnv> for SimpleID {
     }
 }
 
-#[repr(transparent)]
-pub struct RcSimplePath(pub Rc<Vec<SimpleID>>); //TODO un-pub field again??
-
-impl RefClonable for RcSimplePath {
-    fn refc(&self) -> Self {
-        Self(self.0.refc())
-    }
-}
-
-impl From<Vec<SimpleID>> for RcSimplePath {
-    fn from(s: Vec<SimpleID>) -> Self {
-        Self(Rc::new(s))
-    }
-}
-
-impl Into<Vec<SimpleID>> for RcSimplePath {
-    fn into(self) -> Vec<SimpleID> {
-        (*self.0).clone() //TODO optimize
-    }
-}
-
-impl Deref for RcSimplePath {
-    type Target = Vec<SimpleID>;
-    fn deref(&self) -> &Self::Target {
-        &*self.0
-    }
-}
-
 //TODO move as macro to guion
-impl AsWidget<SimpleEnv> for Vec<SimpleID> {
+impl AsWidget<SimpleEnv> for SimplePath {
     fn as_ref(&self) -> Resolvable<SimpleEnv> {
         Resolvable::Path(self.clone().into())
     }
@@ -105,7 +112,7 @@ impl AsWidget<SimpleEnv> for Vec<SimpleID> {
         ResolvableMut::Path(self.clone().into())
     }
 }
-impl AsWidgetImmediate<'static,SimpleEnv> for Vec<SimpleID> {
+impl AsWidgetImmediate<'static,SimpleEnv> for SimplePath {
     fn into_ref(self) -> Resolvable<'static,SimpleEnv> {
         Resolvable::Path(self.into())
     }
@@ -114,11 +121,27 @@ impl AsWidgetImmediate<'static,SimpleEnv> for Vec<SimpleID> {
     }
     
 }
-impl AsWidgetImmediateMut<'static,SimpleEnv> for Vec<SimpleID> {
+impl AsWidgetImmediateMut<'static,SimpleEnv> for SimplePath {
     fn into_mut(self) -> ResolvableMut<'static,SimpleEnv> {
         ResolvableMut::Path(self.into())
     }
     fn as_mut<'s>(&'s mut self) -> ResolvableMut<'s,SimpleEnv> where 'static: 's {
         ResolvableMut::Path(self.clone().into())
     }
+}
+
+fn slice_range<S>(range: &Range<usize>, slice: S) -> Range<usize> where S: RangeBounds<usize> {
+    let (os,oe) = (range.start,range.end);
+    let (mut s,mut e) = (os,oe);
+    match range.end_bound() {
+        std::ops::Bound::Included(b) => e = oe.min(b-1+os),
+        std::ops::Bound::Excluded(b) => e = oe.min(b+os),
+        std::ops::Bound::Unbounded => (),
+    }
+    match range.start_bound() {
+        std::ops::Bound::Included(b) => s = os.max(b+os),
+        std::ops::Bound::Excluded(b) => s = os.max(b-1+os),
+        std::ops::Bound::Unbounded => (),
+    }
+    s..e
 }

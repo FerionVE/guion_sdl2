@@ -5,7 +5,6 @@ use sdl2::VideoSubsystem;
 use sdl2::Sdl;
 use super::*;
 use guion::core::{ctx::invalidate, render::link::RenderLink};
-use guion::core::path::{WPSlice, AsWPSlice};
 
 pub mod queue;
 //pub mod imp;
@@ -54,11 +53,11 @@ impl<E> Core<E> where E: Env + Sync {
 }
 
 /// render widget and process validation
-pub fn render<E>(r: &mut RenderLink<E>, w: WPSlice<E>, stor: &mut E::Storage, c: &mut E::Context) where E: Env, ECQueue<E>: AsRefMut<Queue<E>> {
+pub fn render<E>(r: &mut RenderLink<E>, w: E::WidgetPath, stor: &mut E::Storage, c: &mut E::Context) where E: Env, ECQueue<E>: AsRefMut<Queue<E>> {
     {
         let q = c.queue_mut().as_mut();
         for p in &q.invalidate {
-            invalidate(stor,p.slice()).expect("Lost Widget in invalidate");
+            invalidate::<E>(stor,p.refc()).expect("Lost Widget in invalidate");
         }
         q.invalidate.clear();
     }
@@ -69,7 +68,7 @@ pub fn render<E>(r: &mut RenderLink<E>, w: WPSlice<E>, stor: &mut E::Storage, c:
     {
         let q = c.queue_mut().as_mut();
         for p in &q.validate {
-            invalidate(stor,p.slice()).expect("Lost Widget in invalidate");
+            invalidate::<E>(stor,p.refc()).expect("Lost Widget in invalidate");
         }
         q.validate.clear();
     }
