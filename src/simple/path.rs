@@ -20,16 +20,9 @@ impl GuionPath<SimpleEnv> for SimplePath {
         self.attach(sub);
         self
     }
-    fn concatenated_slice(a: &Self, b: &Self) -> Self {
-        let (aa,bb) = (a._get(),b._get());
-        let mut dest = Vec::with_capacity(aa.len()+bb.len()+1);
-        dest.push(a._root().clone());
-        dest.extend_from_slice(aa);
-        dest.extend_from_slice(bb);
-        Self{
-            slice: 1..dest.len(),
-            v: Arc::new(dest),
-        }
+    fn attach_subpath(&mut self, sub: &Self) {
+        let senf = Arc::make_mut(&mut self.v);
+        
     }
     fn id(&self) -> &SimpleID {
         self.tip()

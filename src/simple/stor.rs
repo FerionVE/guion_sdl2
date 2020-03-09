@@ -20,18 +20,16 @@ impl SimpleStor {
 impl GuionWidgets<SimpleEnv> for SimpleStor {
     fn widget<'a>(&'a self, i: SimplePath) -> Result<Resolved<'a,SimpleEnv>,()> {
         //eprintln!("{:?}",i.slice);
-        resolve_in_root(&*self.root, i)
-        .ok_or(())
-        .map(|o: (Rc<WidgetRef<'a,SimpleEnv>>,SimplePath)| Resolved{
+       let o = resolve_in_root(&*self.root, i)?;
+        Ok(Resolved{
             wref: o.0,
             path: o.1,
             stor: self,
         })
     }
     fn _widget_mut<'a>(&'a mut self, i: SimplePath, invalidate: bool) -> Result<ResolvedMut<'a,SimpleEnv>,()> {
-        resolve_in_root_mut(&mut *self.root, i, invalidate)
-        .ok_or(())
-        .map(|o: (WidgetRefMut<'a,SimpleEnv>,SimplePath)| ResolvedMut{
+        let o = resolve_in_root_mut(&mut *self.root, i, invalidate)?;
+        Ok(ResolvedMut{
             wref: o.0,
             path: o.1,
         })
