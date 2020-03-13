@@ -5,9 +5,10 @@ use guion::{
         ctx::{Context as GuionContext, Widgets as GuionWidgets},
         widget::{link::Link, Widget},
         style::Color as GuionColor, render::link::RenderLink, lazout::Orientation, util::bounds::Bounds,
+        lazout::Size,
     },
     standard::handler::StdHandler,
-    widgets::{pain::Pane, null::Null},
+    widgets::{pain::{toggle::TOwned, Pane}, null::Null, beton::Beton},
 };
 use guion_sdl2::render::Render;
 use guion_sdl2::*;
@@ -28,11 +29,12 @@ fn main() {
     let mut c = SimpleCtx::from_sdl2(sdl).unwrap();
 
     //build a widget
-    let g = Pane::new(
+    let g: Pane<Box<dyn Widget<SimpleEnv>>,SimpleEnv,TOwned> = Pane::new(
         SimpleID::new(),
         vec![
-            Null::new(SimpleID::new(), vec![]),
-            Null::new(SimpleID::new(), vec![]),
+            Null::<SimpleEnv>::new(SimpleID::new(), vec![]).erase_move(),
+            Beton::<SimpleEnv>::new(SimpleID::new(), Size::empty()).erase_move(),
+            Null::<SimpleEnv>::new(SimpleID::new(), vec![]).erase_move(),
         ],
         Orientation::Vertical,
     );

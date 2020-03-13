@@ -1,6 +1,6 @@
 use super::*;
 use qwutils::imp::option::OptionExt;
-#[derive(Clone)]
+#[derive(Clone,Debug)]
 pub enum Key {
     Kbd(SDLKeycode),
     Mouse(SDLMouseButton,Option<u32>),
