@@ -2,6 +2,7 @@ use super::*;
 use guion::core::{util::bounds::Dims, event::{imp::StdVarSup, VariantSupport, variants::RootEvent, Variant}};
 use SDLKeycode;
 
+#[allow(unused)]
 pub fn parse_event<E>(s: &SDLEvent, window_size: (u32,u32)) -> ParsedEvent<E>
 where
     E: Env,
@@ -247,10 +248,10 @@ where
             sdl2::event::WindowEvent::Exposed => ret(is,Some(window_id),timestamp),
             sdl2::event::WindowEvent::Moved(x,y) => ret(RootEvent::WindowMove{
                 pos: Offset{x: *x, y: *y},
-                size: Dims{w: window_size.0, h: window_size.1},
+                size: Dims::from(window_size),
             },Some(window_id),timestamp),
             sdl2::event::WindowEvent::Resized(w,h) => ret(RootEvent::WindowResize{
-                size: Dims{w: *w as u32, h: *h as u32}
+                size: Dims{w: *w as u32, h: *h as u32},
             },Some(window_id),timestamp),
             sdl2::event::WindowEvent::SizeChanged(_, _) => ret(is,Some(window_id),timestamp),
             sdl2::event::WindowEvent::Minimized => ret(is,Some(window_id),timestamp),

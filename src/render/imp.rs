@@ -5,7 +5,7 @@ use guion::core::{style::cursor::StdCursor, render::widgets::RenderStdWidgets};
 use super::*;
 use style::{cursor::to_sdl_cursor, Style};
 
-impl<E,C> GuionRender<E> for Render<C> where E: Env, E::Backend: GuionBackend<E,Renderer=Self>, C: RenderTarget {
+impl<E,C> GuionRender<E> for Render<C> where E: Env, E::Backend: GuionBackend<E,Renderer=Self>, C: RenderTarget, Canvas<C>: RenderSurface {
 
 }
 
@@ -16,13 +16,15 @@ impl<E,C> RenderStdWidgets<E> for Render<C> where
     ESColor<E>: Into<Color>,
     ESCursor<E>: Into<StdCursor>,
     E::Context: AsRefMut<Core<E>>,
-    C: RenderTarget,
+    C: RenderTarget, Canvas<C>: RenderSurface,
 {
     #[inline]
     fn fill_rect(&mut self, b: &Bounds, c: ESColor<E>) {
-        self.c.set_blend_mode(BlendMode::None);
-        self.c.set_draw_color(c.into().v);
-        self.c.fill_rect(to_rect(b)).expect("SDL Render Failure @ fill_rect");
+        if let Some(b) = to_rect(b) {
+            self.c.set_blend_mode(BlendMode::None);
+            self.c.set_draw_color(c.into().v);
+            self.c.fill_rect(Some(b)).expect("SDL Render Failure @ fill_rect");
+        }
     }
     #[inline]
     fn border_rect(&mut self, b: &Bounds, c: ESColor<E>, thickness: u32) {
@@ -33,6 +35,19 @@ impl<E,C> RenderStdWidgets<E> for Render<C> where
             if let Some(r) = to_rect(&b.step(i as i32)) {
                 self.c.draw_rect(r).expect("SDL Render Failure @ draw_rect");
             }
+        }
+    }
+    #[inline]
+    fn render_text(&mut self, b: &Bounds, text: &str, style: &EStyle<E>, variant: &ESVariant<E>, ctx: &mut E::Context) {
+        let c = style.color(variant);
+        let core: &mut Core<E> = ctx.as_mut();
+        let t = core.font.render(text,c).expect("FontError TODO");
+        
+        let tb = t.rect().size();
+        let b = b.inner_centered(tb.into());
+
+        if let Some(b) = to_rect(&b) {
+            self.c.render_surface(b,&t,t.rect()).expect("TTOOF");
         }
     }
     #[inline]

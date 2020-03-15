@@ -9,18 +9,19 @@ use crate::simple::env::SimpleID;
 use std::collections::HashMap;
 use crate::core::Queue;
 use style::Style;
+use sdl2::ttf::Sdl2TtfContext;
 
 pub struct SimpleCtx {
     pub handler: StdHandler<Handler<(),SimpleEnv>,SimpleEnv>,
 }
 
 impl SimpleCtx {
-    pub fn from_sdl2(sdl: Sdl) -> Result<Self,String> {
+    pub fn from_sdl2(sdl: Sdl, ttf: Sdl2TtfContext) -> Result<Self,String> {
         Ok(
             Self{
                 handler: StdHandler::new(
                     Handler::new(
-                        Core::from_sdl2(sdl)?,
+                        Core::from_sdl2(sdl,ttf)?,
                         (),
                     )
                 )

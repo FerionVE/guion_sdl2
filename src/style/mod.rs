@@ -71,6 +71,7 @@ impl AsRefMut<Self> for Style {
 
 pub fn stupid_colors(i: StdStyleVariant) -> [u8;4] {
     match i {
+        StdStyleVariant{obj: Obj::Text,..} => [255,255,255,255],
         StdStyleVariant{obj: Obj::Foreground,pressed: true,..} => [0,192,0,255],
         StdStyleVariant{obj: Obj::Foreground,hovered: true,..} => [64,128,64,255],
         StdStyleVariant{obj: Obj::Foreground,..} => [64,64,64,255],
