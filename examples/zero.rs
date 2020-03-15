@@ -4,7 +4,7 @@ use guion::{
     core::{
         ctx::{Context as GuionContext, Widgets as GuionWidgets},
         widget::{link::Link, Widget},
-        style::Color as GuionColor, render::link::RenderLink, lazout::Orientation, util::bounds::Bounds,
+        style::{StdVerb, Color as GuionColor}, render::link::RenderLink, lazout::Orientation, util::bounds::Bounds,
         lazout::Size,
     },
     standard::handler::StdHandler,
@@ -33,7 +33,14 @@ fn main() {
         SimpleID::new(),
         vec![
             Null::<SimpleEnv>::new(SimpleID::new(), vec![]).erase_move(),
-            Beton::<SimpleEnv>::new(SimpleID::new(), Size::empty()).erase_move(),
+            Pane::new(
+                SimpleID::new(),
+                vec![
+                    Beton::<SimpleEnv>::new(SimpleID::new(), Size::empty()).with_trigger(|_|eprintln!("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")).erase_move(),
+                    Beton::<SimpleEnv>::new(SimpleID::new(), Size::empty()).with_trigger(|_|eprintln!("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB")).erase_move(),
+                ],
+                Orientation::Horizontal,
+            ).erase_move(),
             Null::<SimpleEnv>::new(SimpleID::new(), vec![]).erase_move(),
         ],
         Orientation::Vertical,
@@ -79,15 +86,11 @@ fn main() {
 
             println!("{:?}",event);
 
-            let parsed = parse_event::<SimpleEnv>(&event, (0f32,0f32)); //TODO window size
+            let parsed = parse_event::<SimpleEnv>(&event, bounds); //TODO window size
 
             c.link(resolved.clone())._event_root(
                 (parsed.event,bbounds,parsed.ts as u64)
             );
-
-            r.c.set_draw_color(SDLColor::RGBA(0,0,0,0));
-            
-            eprintln!("Render");
 
             //black the background
             eprintln!("Render");
@@ -96,8 +99,10 @@ fn main() {
             r.fill_rect(rect_0(&rect)).unwrap();
 
             //build the RenderLink and call it on the root widget
-            RenderLink::simple(&mut r, bounds, &mut c)
-                .render_widget(c.link(resolved.clone()));
+            let mut rl = RenderLink::simple(&mut r, bounds, &mut c);
+            rl.with(&[StdVerb::ObjBackground])
+                .fill_rect();
+            rl.render_widget(c.link(resolved.clone()));
 
             //let sdl render it
             r.present();

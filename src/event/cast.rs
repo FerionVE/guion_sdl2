@@ -2,14 +2,14 @@ use super::*;
 use guion::core::{util::bounds::Dims, event::{imp::StdVarSup, VariantSupport, variants::RootEvent, Variant}};
 use SDLKeycode;
 
-pub fn parse_event<E>(s: &SDLEvent, ws: (f32, f32)) -> ParsedEvent<E>
+pub fn parse_event<E>(s: &SDLEvent, window_size: (u32,u32)) -> ParsedEvent<E>
 where
     E: Env,
     EEDest<E>: SDLDestination,
     EEKey<E>: From<Key>,
     EEvent<E>: StdVarSup<E> + VariantSupport<Event, E>,
 {
-    let is = Event { e: s.clone(), ws };
+    let is = Event { e: s.clone(), ws: (window_size.0 as f32, window_size.1 as f32) };
 
     match s {
         SDLEvent::KeyDown {
@@ -247,6 +247,7 @@ where
             sdl2::event::WindowEvent::Exposed => ret(is,Some(window_id),timestamp),
             sdl2::event::WindowEvent::Moved(x,y) => ret(RootEvent::WindowMove{
                 pos: Offset{x: *x, y: *y},
+                size: Dims{w: window_size.0, h: window_size.1},
             },Some(window_id),timestamp),
             sdl2::event::WindowEvent::Resized(w,h) => ret(RootEvent::WindowResize{
                 size: Dims{w: *w as u32, h: *h as u32}
@@ -256,7 +257,7 @@ where
             sdl2::event::WindowEvent::Maximized => ret(is,Some(window_id),timestamp),
             sdl2::event::WindowEvent::Restored => ret(is,Some(window_id),timestamp),
             sdl2::event::WindowEvent::Enter => ret(is,Some(window_id),timestamp),
-            sdl2::event::WindowEvent::Leave => ret(is,Some(window_id),timestamp),
+            sdl2::event::WindowEvent::Leave => ret(RootEvent::MouseLeaveWindow{},Some(window_id),timestamp),
             sdl2::event::WindowEvent::FocusGained => ret(is,Some(window_id),timestamp),
             sdl2::event::WindowEvent::FocusLost => ret(is,Some(window_id),timestamp),
             sdl2::event::WindowEvent::Close => ret(is,Some(window_id),timestamp),

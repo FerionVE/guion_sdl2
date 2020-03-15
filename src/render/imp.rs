@@ -29,8 +29,8 @@ impl<E,C> RenderStdWidgets<E> for Render<C> where
         if thickness == 0 {return;}
         self.c.set_blend_mode(BlendMode::None);
         self.c.set_draw_color(c.into().v);
-        for i in 1..thickness {
-            if let Some(r) = to_rect(&b.step((i-1) as i32)) {
+        for i in 0..thickness {
+            if let Some(r) = to_rect(&b.step(i as i32)) {
                 self.c.draw_rect(r).expect("SDL Render Failure @ draw_rect");
             }
         }

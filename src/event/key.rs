@@ -22,6 +22,7 @@ impl GuionKey for Key {
     type Origin = KeyOrigin;
     const MOUSE_LEFT: Self = Self::Mouse(SDLMouseButton::Left,None);
     const ENTER: Self = Self::Kbd(SDLKeycode::Return);
+    const SPACE: Self = Self::Kbd(SDLKeycode::Space);
     const TAB: Self = Self::Kbd(SDLKeycode::Tab);
 
     fn origin(&self) -> Self::Origin {

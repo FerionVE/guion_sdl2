@@ -2,7 +2,7 @@ use crate::style::color::Color;
 use crate::style::font::Font;
 use crate::style::font::PPChar;
 use crate::style::font::PPText;
-use guion::core::{env::EnvFlexStyleVariant, style::{StyleVariantSupport, StdVerb, standard::StdStyleVariant, cursor::StdCursor, StyleVariantGetStdCursor}};
+use guion::core::{env::EnvFlexStyleVariant, style::{StyleVariantSupport, StdVerb, standard::{Obj, StdStyleVariant}, cursor::StdCursor, StyleVariantGetStdCursor}};
 use super::*;
 
 pub mod font;
@@ -36,11 +36,13 @@ impl<E> GuionStyle<E> for Style where
         v.clone().into().cursor()
     }
     fn color(&self, v: &Self::Variant) -> Self::Color {
-        if v.clone().into().hovered {
+        /*if v.clone().into().hovered {
             Color::from_rgba8([127,0,255,255])
         }else{
             Color::from_rgba8([127,0,0,255])
-        }
+        }*/
+
+        Color::from_rgba8(stupid_colors(v.clone().into()))
     }
     fn preprocess_text(&self, s: &str, c: &mut E::Context) -> Self::PreprocessedText {
         todo!()
@@ -64,5 +66,19 @@ impl AsRefMut<Self> for Style {
     #[inline]
     fn as_mut(&mut self) -> &mut Self {
         self
+    }
+}
+
+pub fn stupid_colors(i: StdStyleVariant) -> [u8;4] {
+    match i {
+        StdStyleVariant{obj: Obj::Foreground,pressed: true,..} => [0,192,0,255],
+        StdStyleVariant{obj: Obj::Foreground,hovered: true,..} => [64,128,64,255],
+        StdStyleVariant{obj: Obj::Foreground,..} => [64,64,64,255],
+        StdStyleVariant{obj: Obj::Border,pressed: true,..} => [0,0,0,255],
+        StdStyleVariant{obj: Obj::Border,focused: true,..} => [255,127,0,255],
+        StdStyleVariant{obj: Obj::Border,..} => [0,255,0,255],
+        StdStyleVariant{obj: Obj::Background,..} => [32,32,32,255],
+        StdStyleVariant{obj: Obj::Default,..} => [32,32,32,255],
+        _ => [127,0,0,255],
     }
 }
