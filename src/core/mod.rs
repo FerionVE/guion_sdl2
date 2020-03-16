@@ -1,5 +1,5 @@
 use super::*;
-use guion::core::{ctx::invalidate, render::link::RenderLink};
+use guion::core::{ctx::invalidate, render::link::RenderLink, widget::WidgetMut};
 use render::font::TextProd;
 use sdl2::EventPump;
 use sdl2::EventSubsystem;
@@ -34,7 +34,7 @@ where
     pub timer: TimerSubsystem,
     pub validate: Vec<E::WidgetPath>,
     pub invalidate: Vec<E::WidgetPath>,
-    pub mut_fn: Vec<(E::WidgetPath, fn(&mut E::DynWidget), bool)>,
+    pub mut_fn: Vec<(E::WidgetPath, fn(&mut dyn WidgetMut<E>), bool)>,
 }
 
 impl<E> Core<E>
@@ -102,8 +102,8 @@ where
 
     for (p, f, i) in &q.mut_fn {
         let mut w = stor._widget_mut(p.refc(), *i).expect("TODO");
-        f(w.wref.widget_mut());
-    }
+        f(w.widget());
+    };
     q.mut_fn.clear();
 
     for p in &q.invalidate {

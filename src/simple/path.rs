@@ -97,28 +97,19 @@ impl GuionSubPath<SimpleEnv> for SimpleID {
 }
 
 //TODO move as macro to guion
-impl AsWidget<SimpleEnv> for SimplePath {
-    fn as_ref(&self) -> Resolvable<SimpleEnv> {
-        Resolvable::Path(self.clone().into())
-    }
-    fn as_mut(&mut self) -> ResolvableMut<SimpleEnv> {
-        ResolvableMut::Path(self.clone().into())
-    }
-}
-impl AsWidgetImmediate<'static,SimpleEnv> for SimplePath {
-    fn into_ref(self) -> Resolvable<'static,SimpleEnv> {
-        Resolvable::Path(self.into())
-    }
+impl AsWidget<'static,SimpleEnv> for SimplePath {
     fn as_ref<'s>(&'s self) -> Resolvable<'s,SimpleEnv> where 'static: 's {
         Resolvable::Path(self.clone().into())
     }
-    
-}
-impl AsWidgetImmediateMut<'static,SimpleEnv> for SimplePath {
-    fn into_mut(self) -> ResolvableMut<'static,SimpleEnv> {
-        ResolvableMut::Path(self.into())
+    fn consume_ref(self) -> Resolvable<'static,SimpleEnv> {
+        Resolvable::Path(self.clone().into())
     }
+}
+impl AsWidgetMut<'static,SimpleEnv> for SimplePath {
     fn as_mut<'s>(&'s mut self) -> ResolvableMut<'s,SimpleEnv> where 'static: 's {
+        ResolvableMut::Path(self.clone().into())
+    }
+    fn consume_mut(self) -> ResolvableMut<'static,SimpleEnv> {
         ResolvableMut::Path(self.clone().into())
     }
 }

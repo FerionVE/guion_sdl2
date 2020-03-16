@@ -3,12 +3,12 @@ extern crate guion_sdl2;
 use guion::{
     core::{
         ctx::{Context as GuionContext, Widgets as GuionWidgets},
-        widget::{link::Link, Widget, dyn_widget::DynWidget},
+        widget::{link::Link, Widget, WidgetMut},
         style::{StdVerb, Color as GuionColor}, render::link::RenderLink, lazout::Orientation, util::bounds::Bounds,
         lazout::Size,
     },
     standard::handler::StdHandler,
-    widgets::{pain::{toggle::TOwned, Pane}, null::Null, beton::Beton},
+    widgets::{pain::{toggle::TOwned, Pane}, beton::Beton},
 };
 use guion_sdl2::render::Render;
 use guion_sdl2::*;
@@ -32,23 +32,23 @@ fn main() {
     let mut c = SimpleCtx::from_sdl2(sdl,ttf).unwrap();
 
     //build a widget
-    let g: Pane<Box<dyn Widget<SimpleEnv>>,SimpleEnv,TOwned> = Pane::new(
+    let g: Pane<_,SimpleEnv> = Pane::new(
         SimpleID::new(),
         vec![
-            Null::<SimpleEnv>::new(SimpleID::new(), vec![]).erase_move(),
+            //Null::<SimpleEnv>::new(SimpleID::new(), vec![]).erase_move(),
             Pane::new(
                 SimpleID::new(),
                 vec![
-                    Beton::<SimpleEnv>::new(SimpleID::new(), Size::empty())
+                    Beton::new(SimpleID::new(), Size::empty())
                         .with_text("0".to_owned())
                         .with_trigger(button_action),
-                    Beton::<SimpleEnv>::new(SimpleID::new(), Size::empty())
+                    Beton::new(SimpleID::new(), Size::empty())
                         .with_text("0".to_owned())
                         .with_trigger(button_action),
                 ],
                 Orientation::Horizontal,
-            ).erase_move(),
-            Null::<SimpleEnv>::new(SimpleID::new(), vec![]).erase_move(),
+            ),
+            //Null::<SimpleEnv>::new(SimpleID::new(), vec![]).erase_move(),
         ],
         Orientation::Vertical,
     );
@@ -123,8 +123,11 @@ fn rect_0(r: &Rect) -> Rect {
 }
 
 fn button_action(mut l: Link<SimpleEnv>) {
-    fn button_mutate(w: &mut dyn Widget<SimpleEnv>) {
-        let w = w.downcast_mut::<Beton<SimpleEnv>>().unwrap();
+    fn button_mutate(w: &mut dyn WidgetMut<SimpleEnv>) {
+        w.debug_type_name();
+        //TODO impl "intelligent" downcast (ref elision, etc.)
+        //let w = w.w_downcast_mut::<&mut dyn WidgetMut<SimpleEnv>>().unwrap();
+        let w = w.downcast_mut::<Beton<SimpleEnv,String>>().unwrap();
         let i: u32 = w.text.parse().unwrap();
         w.text = (i+1).to_string();
     }

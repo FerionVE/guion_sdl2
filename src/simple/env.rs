@@ -24,8 +24,6 @@ impl Env for SimpleEnv {
     type Backend = SimpleBackend;
     type Context = SimpleCtx;
     type Storage = SimpleStor;
-    ///regularly just dyn Widget
-    type DynWidget = dyn Widget<Self>;
     type WidgetID = SimpleID;
     type WidgetPath = SimplePath;
     type ValidState = SimpleValidState;
