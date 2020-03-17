@@ -51,7 +51,7 @@ where
             xrel,
             yrel,
         } => ret(RootEvent::MouseMove{
-            dest: Offset{x: *x, y: *y},
+            pos: Offset{x: *x, y: *y},
         },Some(window_id),timestamp),
         SDLEvent::MouseButtonDown {
             timestamp,
