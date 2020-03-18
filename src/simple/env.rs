@@ -1,5 +1,5 @@
 use std::sync::atomic::AtomicUsize;
-use guion::core::lazout::Size;
+use guion::core::layout::Size;
 use crate::style::Style;
 use crate::event::{key::Key, Event, destination::StdDest};
 use crate::render::Render;

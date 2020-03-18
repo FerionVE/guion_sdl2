@@ -2,13 +2,13 @@ extern crate guion_sdl2;
 
 use guion::{
     core::{
-        ctx::{Context as GuionContext, Widgets as GuionWidgets},
-        widget::{link::Link, Widget, WidgetMut},
-        style::{StdVerb, Color as GuionColor}, render::link::RenderLink, lazout::Orientation, util::bounds::Bounds,
-        lazout::Size,
+        ctx::{Context as GuionContext, Widgets as GuionWidgets, aliases::WidgetRefMut},
+        widget::*,
+        style::{StdVerb, Color as GuionColor}, render::link::RenderLink, layout::Orientation, util::bounds::Bounds,
+        layout::Size,
     },
     standard::handler::StdHandler,
-    widgets::{pain::{toggle::TOwned, Pane}, beton::Beton},
+    widgets::{pane::Pane, button::Button, null::Null},
 };
 use guion_sdl2::render::Render;
 use guion_sdl2::*;
@@ -21,6 +21,7 @@ use simple::{
 };
 use event::cast::parse_event;
 use std::any::Any;
+use link::Link;
 
 //minimal example using the simple module
 fn main() {
@@ -35,20 +36,20 @@ fn main() {
     let g: Pane<_,SimpleEnv> = Pane::new(
         SimpleID::new(),
         vec![
-            //Null::<SimpleEnv>::new(SimpleID::new(), vec![]).erase_move(),
+            Null::new(SimpleID::new()).boxed(),
             Pane::new(
                 SimpleID::new(),
                 vec![
-                    Beton::new(SimpleID::new(), Size::empty())
+                    Button::new(SimpleID::new(), Size::empty())
                         .with_text("0".to_owned())
                         .with_trigger(button_action),
-                    Beton::new(SimpleID::new(), Size::empty())
+                    Button::new(SimpleID::new(), Size::empty())
                         .with_text("0".to_owned())
                         .with_trigger(button_action),
                 ],
                 Orientation::Horizontal,
-            ),
-            //Null::<SimpleEnv>::new(SimpleID::new(), vec![]).erase_move(),
+            ).boxed(),
+            Null::new(SimpleID::new()).boxed(),
         ],
         Orientation::Vertical,
     );
@@ -56,8 +57,6 @@ fn main() {
     let root_path = SimplePath::new(&[],g.id());
     //build the widget tree root
     let mut stor = SimpleStor::new(Box::new(g));
-
-    //TODO Widget resolve impl
 
     //create a sdl window
     let window = c
@@ -92,7 +91,7 @@ fn main() {
             println!("{:?}",event);
 
             //parse event
-            let parsed = parse_event::<SimpleEnv>(&event, bounds); //TODO window size
+            let parsed = parse_event::<SimpleEnv>(&event, bounds);
 
             //feed event into context
             c.link(stor.widget(root_path.clone()).unwrap())
@@ -123,11 +122,9 @@ fn rect_0(r: &Rect) -> Rect {
 }
 
 fn button_action(mut l: Link<SimpleEnv>) {
-    fn button_mutate(w: &mut dyn WidgetMut<SimpleEnv>) {
+    fn button_mutate(mut w: WidgetRefMut<SimpleEnv>) {
         w.debug_type_name();
-        //TODO impl "intelligent" downcast (ref elision, etc.)
-        //let w = w.w_downcast_mut::<&mut dyn WidgetMut<SimpleEnv>>().unwrap();
-        let w = w.downcast_mut::<Beton<SimpleEnv,String>>().unwrap();
+        let w = w.downcast_mut::<Button<SimpleEnv,String>>().unwrap();
         let i: u32 = w.text.parse().unwrap();
         w.text = (i+1).to_string();
     }

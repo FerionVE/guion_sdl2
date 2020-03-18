@@ -34,7 +34,7 @@ where
     pub timer: TimerSubsystem,
     pub validate: Vec<E::WidgetPath>,
     pub invalidate: Vec<E::WidgetPath>,
-    pub mut_fn: Vec<(E::WidgetPath, fn(&mut dyn WidgetMut<E>), bool)>,
+    pub mut_fn: Vec<(E::WidgetPath, fn(WidgetRefMut<E>), bool)>,
 }
 
 impl<E> Core<E>
@@ -101,8 +101,8 @@ where
     let q = c.queue_mut().as_mut();
 
     for (p, f, i) in &q.mut_fn {
-        let mut w = stor._widget_mut(p.refc(), *i).expect("TODO");
-        f(w.widget());
+        let w = stor._widget_mut(p.refc(), *i).expect("TODO");
+        f(w.wref);
     };
     q.mut_fn.clear();
 
