@@ -23,7 +23,7 @@ use qwutils::refc::RefClonable;
 use qwutils::from_into::FromInto;
 
 use guion::core::env::Env as Env;
-use guion::core::ctx::queue::{Queue as GuionQueue,Enqueue as GuionEnqueue};
+use guion::core::ctx::queue::{Queue as GuionQueue};
 use guion::core::event::Destination as GuionDestination;
 
 use guion::core::ctx::aliases::*;

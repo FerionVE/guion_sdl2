@@ -5,10 +5,10 @@ use guion::{
         ctx::{Context as GuionContext, Widgets as GuionWidgets, aliases::WidgetRefMut},
         widget::*,
         style::{StdVerb, Color as GuionColor}, render::link::RenderLink, layout::Orientation, util::bounds::Bounds,
-        layout::Size,
+        layout::Size, layout::SizeAxis,
     },
     standard::handler::StdHandler,
-    widgets::{pane::Pane, button::Button, null::Null},
+    widgets::{pane::Pane, button::Button, null::Null, label::Label, pbar::ProgressBar},
 };
 use guion_sdl2::render::Render;
 use guion_sdl2::*;
@@ -32,23 +32,27 @@ fn main() {
     //create a SimpleCtx context
     let mut c = SimpleCtx::from_sdl2(sdl,ttf).unwrap();
 
+    let pbbounds = Size{x: SizeAxis::empty(), y: SizeAxis{min: 32, preferred: 64, max: Some(128), pressure: 1.0}};
+
     //build a widget
     let g: Pane<_,SimpleEnv> = Pane::new(
         SimpleID::new(),
         vec![
-            Null::new(SimpleID::new()).boxed(),
+            //Null::new(SimpleID::new()).boxed(),
+            Label::new(SimpleID::new()).with_text("Label".to_owned()).boxed(),
             Pane::new(
                 SimpleID::new(),
                 vec![
-                    Button::new(SimpleID::new(), Size::empty())
+                    Button::<_,_>::new(SimpleID::new(), Size::empty())
                         .with_text("0".to_owned())
                         .with_trigger(button_action),
-                    Button::new(SimpleID::new(), Size::empty())
+                    Button::<_,_>::new(SimpleID::new(), Size::empty())
                         .with_text("0".to_owned())
                         .with_trigger(button_action),
                 ],
                 Orientation::Horizontal,
             ).boxed(),
+            ProgressBar::new(SimpleID::new(), Orientation::Horizontal).with_value(0.5).with_size(pbbounds).boxed(),
             Null::new(SimpleID::new()).boxed(),
         ],
         Orientation::Vertical,
@@ -122,7 +126,7 @@ fn rect_0(r: &Rect) -> Rect {
 }
 
 fn button_action(mut l: Link<SimpleEnv>) {
-    fn button_mutate(mut w: WidgetRefMut<SimpleEnv>) {
+    fn button_mutate(mut w: WidgetRefMut<SimpleEnv>,_: &mut SimpleCtx) {
         w.debug_type_name();
         let w = w.downcast_mut::<Button<SimpleEnv,String>>().unwrap();
         let i: u32 = w.text.parse().unwrap();

@@ -75,6 +75,7 @@ pub fn stupid_colors(i: StdStyleVariant) -> [u8;4] {
         StdStyleVariant{obj: Obj::Foreground,pressed: true,..} => [0,192,0,255],
         StdStyleVariant{obj: Obj::Foreground,hovered: true,..} => [64,128,64,255],
         StdStyleVariant{obj: Obj::Foreground,..} => [64,64,64,255],
+        StdStyleVariant{obj: Obj::Active,..} => [0,128,0,255],
         StdStyleVariant{obj: Obj::Border,pressed: true,..} => [0,0,0,255],
         StdStyleVariant{obj: Obj::Border,focused: true,..} => [255,127,0,255],
         StdStyleVariant{obj: Obj::Border,..} => [0,255,0,255],

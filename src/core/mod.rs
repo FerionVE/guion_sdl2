@@ -6,6 +6,7 @@ use sdl2::EventSubsystem;
 use sdl2::TimerSubsystem;
 use sdl2::VideoSubsystem;
 use sdl2::{ttf::Sdl2TtfContext, Sdl};
+use std::collections::VecDeque;
 
 pub mod queue;
 //pub mod imp;
@@ -34,7 +35,7 @@ where
     pub timer: TimerSubsystem,
     pub validate: Vec<E::WidgetPath>,
     pub invalidate: Vec<E::WidgetPath>,
-    pub mut_fn: Vec<(E::WidgetPath, fn(WidgetRefMut<E>), bool)>,
+    pub mut_fn: VecDeque<(E::WidgetPath, fn(WidgetRefMut<E>,&mut E::Context), bool)>,
 }
 
 impl<E> Core<E>
@@ -50,7 +51,7 @@ where
             timer: timer.clone(),
             validate: Vec::with_capacity(4096),
             invalidate: Vec::with_capacity(4096),
-            mut_fn: Vec::with_capacity(4096),
+            mut_fn: VecDeque::with_capacity(4096),
         };
         let video = sdl.video()?;
         let font = TextProd::new(ttf)?;
@@ -98,13 +99,14 @@ where
     E: Env,
     ECQueue<E>: AsRefMut<Queue<E>>,
 {
-    let q = c.queue_mut().as_mut();
+    
 
-    for (p, f, i) in &q.mut_fn {
-        let w = stor._widget_mut(p.refc(), *i).expect("TODO");
-        f(w.wref);
+    while let Some((p, f, i)) = c.queue_mut().as_mut().mut_fn.pop_front() {
+        let w = stor._widget_mut(p.refc(), i).expect("TODO");
+        f(w.wref,c);
     };
-    q.mut_fn.clear();
+
+    let q = c.queue_mut().as_mut();
 
     for p in &q.invalidate {
         invalidate::<E>(stor, p.refc()).expect("Lost Widget in invalidate");
