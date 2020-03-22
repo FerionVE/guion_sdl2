@@ -7,6 +7,7 @@ use sdl2::TimerSubsystem;
 use sdl2::VideoSubsystem;
 use sdl2::{ttf::Sdl2TtfContext, Sdl};
 use std::collections::VecDeque;
+use guion::core::{ctx::{validate, StdEnqueueable}, widget::Widget};
 
 pub mod queue;
 //pub mod imp;
@@ -33,9 +34,10 @@ where
 {
     pub event: EventSubsystem,
     pub timer: TimerSubsystem,
-    pub validate: Vec<E::WidgetPath>,
+    pub validate_render: Vec<E::WidgetPath>,
+    pub validate_size: Vec<(E::WidgetPath,ESize<E>)>,
     pub invalidate: Vec<E::WidgetPath>,
-    pub mut_fn: VecDeque<(E::WidgetPath, fn(WidgetRefMut<E>,&mut E::Context), bool)>,
+    pub mut_fn: VecDeque<StdEnqueueable<E>>,
 }
 
 impl<E> Core<E>
@@ -49,8 +51,9 @@ where
         let queue = Queue {
             event: event.clone(),
             timer: timer.clone(),
-            validate: Vec::with_capacity(4096),
             invalidate: Vec::with_capacity(4096),
+            validate_render: Vec::with_capacity(4096),
+            validate_size: Vec::with_capacity(4096),
             mut_fn: VecDeque::with_capacity(4096),
         };
         let video = sdl.video()?;
@@ -101,10 +104,38 @@ where
 {
     
 
-    while let Some((p, f, i)) = c.queue_mut().as_mut().mut_fn.pop_front() {
+    /*while let Some((p, f, i)) = c.queue_mut().as_mut().mut_fn.pop_front() {
         let w = stor._widget_mut(p.refc(), i).expect("TODO");
         f(w.wref,c);
-    };
+    };*/
+
+    while let Some(e) = c.queue_mut().as_mut().mut_fn.pop_front() {
+        match e {
+            StdEnqueueable::InvalidateWidget { path } => unreachable!(),
+            StdEnqueueable::ValidateWidgetRender { path } => unreachable!(),
+            StdEnqueueable::ValidateWidgetSize { path, size } => unreachable!(),
+            StdEnqueueable::Render { force } => (),
+            StdEnqueueable::Event { event, ts } => todo!(),
+            StdEnqueueable::MutateWidget { path, f, invalidate } => {
+                let w = stor._widget_mut(path.refc(), invalidate).expect("TODO");
+                f(w.wref,c,path);
+            },
+            StdEnqueueable::MutateWidgetClosure { path, f, invalidate } => {
+                let w = stor._widget_mut(path.refc(), invalidate).expect("TODO");
+                f(w.wref,c,path);
+            },
+            StdEnqueueable::MutateRoot { f } => {
+                f(stor,c)
+            },
+            StdEnqueueable::MutateRootClosure { f } => {
+                f(stor,c)
+            },
+            StdEnqueueable::AccessWidget { path, f } => todo!(),
+            StdEnqueueable::AccessWidgetClosure { path, f } => todo!(),
+            StdEnqueueable::AccessRoot { f } => todo!(),
+            StdEnqueueable::AccessRootClosure { f } => todo!(),
+        }
+    }
 
     let q = c.queue_mut().as_mut();
 
@@ -121,8 +152,12 @@ where
 {
     let q = c.queue_mut().as_mut();
 
-    for p in &q.validate {
-        invalidate::<E>(stor, p.refc()).expect("Lost Widget in invalidate");
+    /*for p in &q.validate_size {
+        validate::<E>(stor, p.refc()).expect("Lost Widget in invalidate");
     }
-    q.validate.clear();
+    q.validate_size.clear();*/
+    for p in &q.validate_render {
+        validate::<E>(stor, p.refc()).expect("Lost Widget in invalidate");
+    }
+    q.validate_render.clear();
 }

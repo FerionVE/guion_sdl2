@@ -1,8 +1,9 @@
 extern crate guion_sdl2;
 
+use crate::guion_sdl2::qwutils::ResultNonDebugUnwrap;
 use guion::{
     core::{
-        ctx::{Context as GuionContext, Widgets as GuionWidgets, aliases::WidgetRefMut},
+        ctx::{Context as GuionContext, Widgets as GuionWidgets, aliases::WidgetRefMut, StdEnqueueable},
         widget::*,
         style::{StdVerb, Color as GuionColor}, render::link::RenderLink, layout::Orientation, util::bounds::Bounds,
         layout::Size, layout::SizeAxis,
@@ -32,7 +33,7 @@ fn main() {
     //create a SimpleCtx context
     let mut c = SimpleCtx::from_sdl2(sdl,ttf).unwrap();
 
-    let pbbounds = Size{x: SizeAxis::empty(), y: SizeAxis{min: 32, preferred: 64, max: Some(128), pressure: 1.0}};
+    let pbbounds = Size{x: SizeAxis::empty(), y: SizeAxis{min: 32, preferred: 64, max: Some(64), pressure: 1.0}};
 
     //build a widget
     let g: Pane<_,SimpleEnv> = Pane::new(
@@ -65,7 +66,7 @@ fn main() {
     //create a sdl window
     let window = c
         .video
-        .window("GUION_SDL2", 800, 600)
+        .window("GUION_SDL2", 840, 480)
         .resizable()
         .position_centered()
         .build()
@@ -126,12 +127,20 @@ fn rect_0(r: &Rect) -> Rect {
 }
 
 fn button_action(mut l: Link<SimpleEnv>) {
-    fn button_mutate(mut w: WidgetRefMut<SimpleEnv>,_: &mut SimpleCtx) {
+    fn button_mutate(mut w: WidgetRefMut<SimpleEnv>, _: &mut SimpleCtx, _: SimplePath) {
         w.debug_type_name();
         let w = w.downcast_mut::<Button<SimpleEnv,String>>().unwrap();
         let i: u32 = w.text.parse().unwrap();
         w.text = (i+1).to_string();
     }
-
     l.mutate(button_mutate, true);
+
+    fn update_pbar(s: &mut SimpleStor, _: &mut SimpleCtx) {
+        let mut pbar = s.root.
+            childs_mut().remove(2)
+            .as_widget().unwrap_nodebug();
+        let pbar = pbar.downcast_mut::<ProgressBar<SimpleEnv>>().unwrap();
+        pbar.value = (pbar.value+0.1)%1.0;
+    }
+    l.enqueue(StdEnqueueable::MutateRoot{f: update_pbar});
 }

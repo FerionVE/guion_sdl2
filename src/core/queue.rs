@@ -1,23 +1,12 @@
 use super::*;
-use guion::core::{ctx::StdEnqueueable, widget::Widget};
 
 impl<E> GuionQueue<StdEnqueueable<E>> for Queue<E> where E: Env + Sync, E::Context: GuionContext<E,Queue=Self> {
     fn push(&mut self, v: StdEnqueueable<E>) {
         match v {
-            StdEnqueueable::Render { force } => (),
-            StdEnqueueable::Event { event, ts } => (),
-            StdEnqueueable::MutateWidget { path, f, invalidate } => 
-            self.mut_fn.push_back((path,f,invalidate)),
-            StdEnqueueable::MutateWidgetClosure { path, f, invalidate } => (),
-            StdEnqueueable::MutateRoot { f } => (),
-            StdEnqueueable::MutateRootClosure { f } => (),
-            StdEnqueueable::AccessWidget { path, f } => (),
-            StdEnqueueable::AccessWidgetClosure { path, f } => (),
-            StdEnqueueable::AccessRoot { f } => (),
-            StdEnqueueable::AccessRootClosure { f } => (),
-            StdEnqueueable::InvalidateWidget { path } => (),
-            StdEnqueueable::ValidateWidgetRender { path } => (),
-            StdEnqueueable::ValidateWidgetSize { path, size } => (),
+            StdEnqueueable::InvalidateWidget { path } => self.invalidate.push(path),
+            StdEnqueueable::ValidateWidgetRender { path } => self.validate_render.push(path),
+            StdEnqueueable::ValidateWidgetSize { path, size } => self.validate_size.push((path,size)),
+            _ => self.mut_fn.push_back(v),
         }
     }
     fn send(&self, v: StdEnqueueable<E>) {

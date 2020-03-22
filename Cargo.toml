@@ -7,7 +7,7 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-guion = { git = "https://git.mkg20001.io/ferionve/guion", rev = "a26ec9ed1233551f91dbd91840c14f8d1a9f4d3a" }
+guion = { git = "https://git.mkg20001.io/ferionve/guion", rev = "b5c3e80fddc6d701b70d0e3f407ca073442e5876" }
 #guion = { path = "../guion" }
 #TODO qwutils should export qwutils
 qwutils = { git = "https://github.com/qwertz19281/rust_utils", rev = "3dd92de46947d65ec59a3c2aa8a885d09171ad4c" }
