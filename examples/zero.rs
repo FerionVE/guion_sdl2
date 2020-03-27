@@ -39,15 +39,14 @@ fn main() {
     let g: Pane<_,SimpleEnv> = Pane::new(
         SimpleID::new(),
         vec![
-            //Null::new(SimpleID::new()).boxed(),
             Label::new(SimpleID::new()).with_text("Label".to_owned()).boxed(),
             Pane::new(
                 SimpleID::new(),
                 vec![
-                    Button::<_,_>::new(SimpleID::new(), Size::empty())
+                    Button::new(SimpleID::new(), Size::empty())
                         .with_text("0".to_owned())
                         .with_trigger(button_action),
-                    Button::<_,_>::new(SimpleID::new(), Size::empty())
+                    Button::new(SimpleID::new(), Size::empty())
                         .with_text("0".to_owned())
                         .with_trigger(button_action),
                 ],
@@ -120,12 +119,6 @@ fn main() {
     }
 }
 
-fn rect_0(r: &Rect) -> Rect {
-    let mut r = r.clone();
-    r.reposition((0,0));
-    r
-}
-
 fn button_action(mut l: Link<SimpleEnv>) {
     fn button_mutate(mut w: WidgetRefMut<SimpleEnv>, _: &mut SimpleCtx, _: SimplePath) {
         w.debug_type_name();
@@ -137,7 +130,7 @@ fn button_action(mut l: Link<SimpleEnv>) {
 
     fn update_pbar(s: &mut SimpleStor, _: &mut SimpleCtx) {
         let mut pbar = s.root.
-            childs_mut().remove(2)
+            child_mut(2).unwrap()
             .as_widget().unwrap_nodebug();
         let pbar = pbar.downcast_mut::<ProgressBar<SimpleEnv>>().unwrap();
         pbar.value = (pbar.value+0.1)%1.0;
