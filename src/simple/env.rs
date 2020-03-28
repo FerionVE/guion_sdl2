@@ -12,7 +12,7 @@ use event::consuming::StdConsuming;
 use stor::SimpleStor;
 use handler::Handler;
 use valid::SimpleValidState;
-use std::sync::atomic::Ordering;
+use std::{any::TypeId, sync::atomic::Ordering};
 use ctx::SimpleCtx;
 use path::SimplePath;
 
@@ -44,16 +44,25 @@ type EEEE = Handler<(),SimpleEnv>;
 static ID_ITER: AtomicUsize = AtomicUsize::new(0);
 
 #[derive(Clone,PartialEq,Hash,Debug)]
-pub struct SimpleID {
-    pub v: usize, //TODO protect
+pub enum SimpleID {
+    Dyn(usize),
+    Const(TypeId),
 }
 
 impl SimpleID {
     pub fn new() -> Self {
-        Self{
-            v: ID_ITER.fetch_add(1,Ordering::Relaxed)
-        }
+        SimpleID::Dyn(ID_ITER.fetch_add(1,Ordering::Relaxed))
     }
+}
+
+#[macro_export]
+macro_rules! const_id {
+    () => {
+        {
+            struct Ident;
+            $crate::simple::env::SimpleID::Const(std::any::TypeId::of::<Ident>())
+        }
+    };
 }
 
 impl WidgetID for SimpleID {

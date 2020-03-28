@@ -10,26 +10,9 @@ build-latest:
     - apt-get install -y libsdl2-dev libsdl2-ttf-dev
     - cargo build --verbose
 
-build-nightly:
-  stage: build
-  image: rustlang/rust:nightly
-  script:
-    - apt-get update
-    - apt-get install -y libsdl2-dev libsdl2-ttf-dev
-    - cargo build --verbose
-  allow_failure: true
-
 test-latest:
   stage: test
   image: rust:latest
-  script:
-    - apt-get update
-    - apt-get install -y libsdl2-dev libsdl2-ttf-dev
-    - cargo test --verbose
-
-test-nightly:
-  stage: test
-  image: rustlang/rust:nightly
   script:
     - apt-get update
     - apt-get install -y libsdl2-dev libsdl2-ttf-dev

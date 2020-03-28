@@ -9,7 +9,7 @@ use guion::{
         layout::Size, layout::SizeAxis,
     },
     standard::handler::StdHandler,
-    widgets::{pane::Pane, button::Button, null::Null, label::Label, pbar::ProgressBar},
+    widgets::{pane::Pane, button::Button, null::Null, label::Label, pbar::ProgressBar, checkbox::CheckBox},
 };
 use guion_sdl2::render::Render;
 use guion_sdl2::*;
@@ -53,6 +53,7 @@ fn main() {
                 Orientation::Horizontal,
             ).boxed(),
             ProgressBar::new(SimpleID::new(), Orientation::Horizontal).with_value(0.5).with_size(pbbounds).boxed(),
+            CheckBox::new(SimpleID::new(), Size::empty(), false).with_text("CheckBox".to_owned()).boxed(), //TODO fix Statize+Sized impl for &'static str
             Null::new(SimpleID::new()).boxed(),
         ],
         Orientation::Vertical,
