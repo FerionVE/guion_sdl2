@@ -1,5 +1,5 @@
 use super::*;
-use guion::core::{ctx::invalidate, render::link::RenderLink, widget::WidgetMut};
+use guion::core::{ctx::{invalidate, validate, StdEnqueueable}, render::link::RenderLink};
 use render::font::TextProd;
 use sdl2::EventPump;
 use sdl2::EventSubsystem;
@@ -7,7 +7,6 @@ use sdl2::TimerSubsystem;
 use sdl2::VideoSubsystem;
 use sdl2::{ttf::Sdl2TtfContext, Sdl};
 use std::collections::VecDeque;
-use guion::core::{ctx::{validate, StdEnqueueable}, widget::Widget};
 
 pub mod queue;
 //pub mod imp;

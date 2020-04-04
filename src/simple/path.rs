@@ -22,17 +22,21 @@ impl GuionPath<SimpleEnv> for SimplePath {
     }
     fn attach_subpath(&mut self, sub: &Self) {
         let senf = Arc::make_mut(&mut self.v);
-        
+        senf.extend_from_slice(sub._get());
+        self.slice.end += sub.slice.len();
     }
-    fn id(&self) -> &SimpleID {
-        self.tip()
+    fn id(&self) -> SimpleID {
+        self.tip().clone()
     }
     fn tip(&self) -> &Self::SubPath {
         &self.v[self.slice.end-1]
     }
     fn parent(&self) -> Option<Self> {
-        if self.slice.len() <= 1 {return None;}
-        Some(self.slice(0..self.slice.len()-1))
+        if self.is_empty() {return None;}
+        Some(Self{
+            v: self.v.refc(),
+            slice: self.slice.start .. self.slice.end-1,
+        })
     }
     fn is_empty(&self) -> bool {
         self.slice.len() == 0
@@ -101,7 +105,7 @@ impl AsWidget<'static,SimpleEnv> for SimplePath {
     fn as_ref<'s>(&'s self) -> Resolvable<'s,SimpleEnv> where 'static: 's {
         Resolvable::Path(self.clone().into())
     }
-    fn consume_ref(self) -> Resolvable<'static,SimpleEnv> {
+    fn into_ref(self) -> Resolvable<'static,SimpleEnv> {
         Resolvable::Path(self.clone().into())
     }
 }
@@ -109,7 +113,7 @@ impl AsWidgetMut<'static,SimpleEnv> for SimplePath {
     fn as_mut<'s>(&'s mut self) -> ResolvableMut<'s,SimpleEnv> where 'static: 's {
         ResolvableMut::Path(self.clone().into())
     }
-    fn consume_mut(self) -> ResolvableMut<'static,SimpleEnv> {
+    fn into_mut(self) -> ResolvableMut<'static,SimpleEnv> {
         ResolvableMut::Path(self.clone().into())
     }
 }

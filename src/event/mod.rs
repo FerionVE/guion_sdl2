@@ -1,5 +1,4 @@
 use crate::event::key::Key;
-use crate::event::consuming::SDLConsuming;
 use crate::event::destination::SDLDestination;
 use super::*;
 

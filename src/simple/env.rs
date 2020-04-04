@@ -1,16 +1,13 @@
 use std::sync::atomic::AtomicUsize;
 use guion::core::layout::Size;
 use crate::style::Style;
-use crate::event::{key::Key, Event, destination::StdDest};
+use crate::event::{key::Key, destination::StdDest};
 use crate::render::Render;
 use guion::core::backend::Backend;
-use guion::core::widget::Widget;
 use guion::core::{id::WidgetID, env::{EnvFlexStyleVariant, Env}, style::standard::StdStyleVariant, event::dyn_evt::DynEvent};
 use super::*;
 use sdl2::video::Window;
-use event::consuming::StdConsuming;
 use stor::SimpleStor;
-use handler::Handler;
 use valid::SimpleValidState;
 use std::{any::TypeId, sync::atomic::Ordering};
 use ctx::SimpleCtx;
@@ -38,8 +35,6 @@ impl Backend<SimpleEnv> for SimpleBackend {
     type Style = Style;
     type Size = Size;
 }
-
-type EEEE = Handler<(),SimpleEnv>;
 
 static ID_ITER: AtomicUsize = AtomicUsize::new(0);
 

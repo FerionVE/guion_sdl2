@@ -1,12 +1,8 @@
 use super::*;
-use guion::core::ctx::widgets::Widgets;
-use guion::core::ctx::Context;
 use guion::standard::handler::StdHandler;
 use crate::handler::Handler;
 use crate::simple::env::SimpleEnv;
-use guion::core::{state::handler::AsHandlerStateful, widget::Widget};
-use crate::simple::env::SimpleID;
-use std::collections::HashMap;
+use guion::core::state::handler::AsHandlerStateful;
 use crate::core::Queue;
 use style::Style;
 use sdl2::ttf::Sdl2TtfContext;

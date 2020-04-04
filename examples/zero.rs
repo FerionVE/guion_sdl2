@@ -5,23 +5,21 @@ use guion::{
     core::{
         ctx::{Context as GuionContext, Widgets as GuionWidgets, aliases::WidgetRefMut, StdEnqueueable},
         widget::*,
-        style::{StdVerb, Color as GuionColor}, render::link::RenderLink, layout::Orientation, util::bounds::Bounds,
+        style::StdVerb, render::link::RenderLink, layout::Orientation, util::bounds::Bounds,
         layout::Size, layout::SizeAxis,
     },
-    standard::handler::StdHandler,
     widgets::{pane::Pane, button::Button, null::Null, label::Label, pbar::ProgressBar, checkbox::CheckBox},
 };
 use guion_sdl2::render::Render;
 use guion_sdl2::*;
-use crate::core::{post_render_events, pre_render_events, render_and_events};
+use crate::core::render_and_events;
 use sdl2::event::Event;
-use sdl2::{keyboard::Keycode, pixels::Color as SDLColor, rect::Rect};
+use sdl2::keyboard::Keycode;
 use simple::{
     env::{SimpleEnv, SimpleID},
     stor::SimpleStor, ctx::SimpleCtx, path::SimplePath,
 };
 use event::cast::parse_event;
-use std::any::Any;
 use link::Link;
 
 //minimal example using the simple module
@@ -36,26 +34,30 @@ fn main() {
     let pbbounds = Size{x: SizeAxis::empty(), y: SizeAxis{min: 32, preferred: 64, max: Some(64), pressure: 1.0}};
 
     //build a widget
-    let g: Pane<_,SimpleEnv> = Pane::new(
+    let g = Pane::new(
         SimpleID::new(),
-        vec![
-            Label::new(SimpleID::new()).with_text("Label".to_owned()).boxed(),
+        (
+            Label::new(SimpleID::new())
+                .with_text("Label".to_owned()),
             Pane::new(
                 SimpleID::new(),
-                vec![
-                    Button::new(SimpleID::new(), Size::empty())
+                (
+                    Button::new(SimpleID::new())
                         .with_text("0".to_owned())
                         .with_trigger(button_action),
-                    Button::new(SimpleID::new(), Size::empty())
+                    Button::new(SimpleID::new())
                         .with_text("0".to_owned())
                         .with_trigger(button_action),
-                ],
+                ),
                 Orientation::Horizontal,
-            ).boxed(),
-            ProgressBar::new(SimpleID::new(), Orientation::Horizontal).with_value(0.5).with_size(pbbounds).boxed(),
-            CheckBox::new(SimpleID::new(), Size::empty(), false).with_text("CheckBox".to_owned()).boxed(), //TODO fix Statize+Sized impl for &'static str
-            Null::new(SimpleID::new()).boxed(),
-        ],
+            ),
+            ProgressBar::new(SimpleID::new(), Orientation::Horizontal)
+                .with_value(0.5)
+                .with_size(pbbounds),
+            CheckBox::new(SimpleID::new(), false)
+                .with_text("CheckBox"),
+            Null::new(SimpleID::new()),
+        ),
         Orientation::Vertical,
     );
 

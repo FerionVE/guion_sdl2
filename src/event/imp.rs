@@ -1,6 +1,5 @@
 use crate::event::position::*;
 use crate::event::destination::*;
-use crate::event::consuming::*;
 use super::*;
 use guion::core::event::Variant;
 
