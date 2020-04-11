@@ -121,12 +121,12 @@ impl AsWidgetMut<'static,SimpleEnv> for SimplePath {
 fn slice_range<S>(range: &Range<usize>, slice: S) -> Range<usize> where S: RangeBounds<usize> {
     let (os,oe) = (range.start,range.end);
     let (mut s,mut e) = (os,oe);
-    match range.end_bound() {
+    match slice.end_bound() {
         std::ops::Bound::Included(b) => e = oe.min(b-1+os),
         std::ops::Bound::Excluded(b) => e = oe.min(b+os),
         std::ops::Bound::Unbounded => (),
     }
-    match range.start_bound() {
+    match slice.start_bound() {
         std::ops::Bound::Included(b) => s = os.max(b+os),
         std::ops::Bound::Excluded(b) => s = os.max(b-1+os),
         std::ops::Bound::Unbounded => (),
