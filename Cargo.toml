@@ -1,15 +1,22 @@
 [package]
 name = "guion_sdl2"
-version = "0.1.0"
+version = "0.1.1"
+
 authors = ["qwertz19281 <dellen903@gmail.com>"]
 edition = "2018"
+
 description = "Backend for guion"
+categories = ["gui"]
+keywords = ["gui","ui","sdl2","sdl"]
 license = "MIT OR Apache-2.0"
+
+repository = "https://github.com/ferionve/guion_sdl2"
+readme = "README.md"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-guion = { version = "0.1.0", git = "https://github.com/FerionVE/guion", rev = "47e482b7ca895e2020e0b96cb7cceea14405a296" }
+guion = { version = "0.1.1", git = "https://github.com/FerionVE/guion", rev = "b9e1b1d65cbbe40667665aaf3d93dbb69efa0086" }
 #guion = { path = "../guion_reform" }
 #TODO qwutils should export qwutils
 qwutils = { version = "0.1.0", git = "https://github.com/qwertz19281/rust_utils", rev = "3dd92de46947d65ec59a3c2aa8a885d09171ad4c" }
