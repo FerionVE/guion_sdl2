@@ -1,7 +1,7 @@
 use super::*;
 use env::{SimpleEnv, SimpleID};
 use std::{any::{TypeId, Any}, rc::Rc, sync::Arc, ops::{RangeBounds, Range}, slice::SliceIndex};
-use guion::core::{widget::as_widget::*, ctx::*};
+use guion::{widget::{resolvable::Resolvable, as_widget::*}, ctx::*};
 use qwutils::RefClonable;
 
 #[derive(PartialEq,Clone)]

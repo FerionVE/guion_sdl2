@@ -1,7 +1,7 @@
 use crate::event::position::*;
 use crate::event::destination::*;
 use super::*;
-use guion::core::event::Variant;
+use guion::event::variant::Variant;
 
 //TODO fix C: Clone requirement
 impl<E> Variant<E> for Event where E: Env, EEDest<E>: SDLDestination {

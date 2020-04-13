@@ -1,4 +1,4 @@
-use guion::core::util::bounds::Offset;
+use guion::util::bounds::Offset;
 use super::*;
 
 /// extract the absolute position out of a SDL event

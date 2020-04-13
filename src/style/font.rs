@@ -1,11 +1,11 @@
 use sdl2::pixels::Color;
 use sdl2::ttf::FontStyle;
 use std::path::Path;
-use guion::core::util::bounds::Offset;
-use guion::core::util::bounds::Dims;
-use guion::core::style::font::PreprocessedChar;
-use guion::core::style::font::PreprocessedText;
-use guion::core::backend::Backend;
+use guion::util::bounds::Offset;
+use guion::util::bounds::Dims;
+use guion::style::font::PreprocessedChar;
+use guion::style::font::PreprocessedText;
+use guion::backend::Backend;
 use super::*;
 #[derive(Clone,PartialEq)]
 pub struct Font {

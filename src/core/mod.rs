@@ -1,5 +1,5 @@
 use super::*;
-use guion::core::{ctx::{invalidate, validate, StdEnqueueable}, render::link::RenderLink};
+use guion::{ctx::queue::{invalidate, validate, StdEnqueueable}, render::link::RenderLink};
 use render::font::TextProd;
 use sdl2::EventPump;
 use sdl2::EventSubsystem;
@@ -116,11 +116,11 @@ where
             StdEnqueueable::Render { force } => (),
             StdEnqueueable::Event { event, ts } => todo!(),
             StdEnqueueable::MutateWidget { path, f, invalidate } => {
-                let w = stor._widget_mut(path.refc(), invalidate).expect("TODO");
+                let w = stor._widget_mut(path.clone(), invalidate).expect("TODO");
                 f(w.wref,c,path);
             },
             StdEnqueueable::MutateWidgetClosure { path, f, invalidate } => {
-                let w = stor._widget_mut(path.refc(), invalidate).expect("TODO");
+                let w = stor._widget_mut(path.clone(), invalidate).expect("TODO");
                 f(w.wref,c,path);
             },
             StdEnqueueable::MutateRoot { f } => {
@@ -139,7 +139,7 @@ where
     let q = c.queue_mut().as_mut();
 
     for p in &q.invalidate {
-        invalidate::<E>(stor, p.refc()).expect("Lost Widget in invalidate");
+        invalidate::<E>(stor, p.clone()).expect("Lost Widget in invalidate");
     }
     q.invalidate.clear();
 }
@@ -156,7 +156,7 @@ where
     }
     q.validate_size.clear();*/
     for p in &q.validate_render {
-        validate::<E>(stor, p.refc()).expect("Lost Widget in invalidate");
+        validate::<E>(stor, p.clone()).expect("Lost Widget in invalidate");
     }
     q.validate_render.clear();
 }

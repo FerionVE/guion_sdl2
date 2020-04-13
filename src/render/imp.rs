@@ -1,7 +1,7 @@
 use crate::style::color::Color;
 use sdl2::rect::Rect;
 use sdl2::render::BlendMode;
-use guion::core::{style::cursor::StdCursor, render::widgets::RenderStdWidgets};
+use guion::{style::variant::standard::StdCursor, render::widgets::RenderStdWidgets};
 use super::*;
 use style::{cursor::to_sdl_cursor, Style};
 

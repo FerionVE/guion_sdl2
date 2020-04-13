@@ -2,13 +2,12 @@ extern crate guion_sdl2;
 
 use crate::guion_sdl2::qwutils::ResultNonDebugUnwrap;
 use guion::{
-    core::{
-        ctx::{Context as GuionContext, Widgets as GuionWidgets, aliases::WidgetRefMut, StdEnqueueable},
-        widget::*,
-        style::StdVerb, render::link::RenderLink, layout::Orientation, util::bounds::Bounds,
-        layout::Size, layout::SizeAxis,
-    },
-    widgets::{pane::Pane, button::Button, null::Null, label::Label, pbar::ProgressBar, checkbox::CheckBox},
+    ctx::{Context as GuionContext, queue::StdEnqueueable},
+    widget::*,
+    widget::root::*,
+    style::StdVerb, render::link::RenderLink, layout::Orientation, util::bounds::Bounds,
+    layout::Size, layout::SizeAxis,
+    widgets::{pane::Pane, button::Button, null::Null, label::Label, pbar::ProgressBar, checkbox::CheckBox}, id::standard::StdID, aliases::WidgetRefMut,
 };
 use guion_sdl2::render::Render;
 use guion_sdl2::*;
@@ -16,8 +15,8 @@ use crate::core::render_and_events;
 use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
 use simple::{
-    env::{SimpleEnv, SimpleID},
-    stor::SimpleStor, ctx::SimpleCtx, path::SimplePath,
+    env::{SimpleEnv},
+    stor::SimpleStor, ctx::SimpleCtx, StandardPath,
 };
 use event::cast::parse_event;
 use link::Link;
@@ -35,33 +34,33 @@ fn main() {
 
     //build a widget
     let g = Pane::new(
-        SimpleID::new(),
+        StdID::new(),
         (
-            Label::new(SimpleID::new())
+            Label::new(StdID::new())
                 .with_text("Label".to_owned()),
             Pane::new(
-                SimpleID::new(),
+                StdID::new(),
                 (
-                    Button::new(SimpleID::new())
+                    Button::new(StdID::new())
                         .with_text("0".to_owned())
                         .with_trigger(button_action),
-                    Button::new(SimpleID::new())
+                    Button::new(StdID::new())
                         .with_text("0".to_owned())
                         .with_trigger(button_action),
                 ),
                 Orientation::Horizontal,
             ),
-            ProgressBar::new(SimpleID::new(), Orientation::Horizontal)
+            ProgressBar::new(StdID::new(), Orientation::Horizontal)
                 .with_value(0.5)
                 .with_size(pbbounds),
-            CheckBox::new(SimpleID::new(), false)
+            CheckBox::new(StdID::new(), false)
                 .with_text("CheckBox"),
-            Null::new(SimpleID::new()),
+            Null::new(StdID::new()),
         ),
         Orientation::Vertical,
     );
 
-    let root_path = SimplePath::new(&[],g.id());
+    let root_path = StandardPath::new(&[],g.id());
     //build the widget tree root
     let mut stor = SimpleStor::new(Box::new(g));
 
@@ -123,7 +122,7 @@ fn main() {
 }
 
 fn button_action(mut l: Link<SimpleEnv>) {
-    fn button_mutate(mut w: WidgetRefMut<SimpleEnv>, _: &mut SimpleCtx, _: SimplePath) {
+    fn button_mutate(mut w: WidgetRefMut<SimpleEnv>, _: &mut SimpleCtx, _: StandardPath) {
         w.debug_type_name();
         let w = w.downcast_mut::<Button<SimpleEnv,String>>().unwrap();
         let i: u32 = w.text.parse().unwrap();

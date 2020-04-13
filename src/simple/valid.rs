@@ -1,5 +1,5 @@
 use super::*;
-use guion::core::env::ValidState;
+use guion::env::ValidState;
 
 pub struct SimpleValidState {
     pub rerender: bool,

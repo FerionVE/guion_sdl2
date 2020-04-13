@@ -20,47 +20,46 @@ use sdl2::Sdl;
 
 //use qwutils::*;
 use qwutils::refc::RefClonable;
-use qwutils::from_into::FromInto;
 
-use guion::core::env::Env as Env;
-use guion::core::ctx::queue::{Queue as GuionQueue};
-use guion::core::event::Destination as GuionDestination;
+use guion::env::Env as Env;
+use guion::ctx::queue::{Queue as GuionQueue};
+use guion::event::Destination as GuionDestination;
 
-use guion::core::ctx::aliases::*;
-use guion::core::util::bounds::Offset as Offset;
+use guion::aliases::*;
+use guion::util::bounds::Offset as Offset;
 
-use guion::core::util::bounds::Bounds as Bounds;
-use guion::core::event::key::Key as GuionPressedKey;
-use guion::core::event::key::Key as GuionKey;
-use guion::core::util::border::Border;
-use guion::core::path::{WidgetPath as GuionPath,SubPath as GuionSubPath};
+use guion::util::bounds::Bounds as Bounds;
+use guion::event::key::Key as GuionPressedKey;
+use guion::event::key::Key as GuionKey;
+use guion::util::border::Border;
+use guion::path::{WidgetPath as GuionPath,SubPath as GuionSubPath};
 
 use sdl2::keyboard::Keycode as SDLKeycode;
 use sdl2::mouse::MouseButton as SDLMouseButton;
 use sdl2::mouse::Cursor as SDLCursor;
 
-use guion::core::event::Event as GuionEvent;
+use guion::event::Event as GuionEvent;
 use sdl2::event::Event as SDLEvent;
 
 use std::marker::PhantomData;
 use std::ops::DerefMut;
 use std::ops::Deref;
 
-use guion::core::backend::Backend as GuionBackend;
+use guion::backend::Backend as GuionBackend;
 
-use guion::core::ctx::Widgets as GuionWidgets;
-use guion::core::widget::link::Link;
+use guion::widget::root::Widgets as GuionWidgets;
+use guion::widget::link::Link;
 
-use guion::core::util::AsRefMut;
+use guion::util::AsRefMut;
 
-use guion::core::ctx::handler::Handler as GuionHandler;
-use guion::core::ctx::Context as GuionContext;
+use guion::handler::Handler as GuionHandler;
+use guion::ctx::Context as GuionContext;
 
-use guion::core::render::Render as GuionRender;
+use guion::render::Render as GuionRender;
 
 use sdl2::pixels::Color as SDLColor;
-use guion::core::style::color::Color as GuionColor;
+use guion::style::color::Color as GuionColor;
 
-use guion::core::style::Style as GuionStyle;
+use guion::style::Style as GuionStyle;
 
 use crate::core::*;

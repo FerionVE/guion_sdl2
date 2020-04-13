@@ -1,8 +1,8 @@
 use super::*;
-use guion::standard::handler::StdHandler;
+use guion::handler::standard::StdHandler;
 use crate::handler::Handler;
 use crate::simple::env::SimpleEnv;
-use guion::core::state::handler::AsHandlerStateful;
+use guion::state::handler::AsHandlerStateful;
 use crate::core::Queue;
 use style::Style;
 use sdl2::ttf::Sdl2TtfContext;

@@ -1,4 +1,4 @@
-use guion::core::render::link::RenderLink;
+use guion::render::link::RenderLink;
 use super::*;
 
 impl<S,E> GuionHandler<E> for Handler<S,E> where S: GuionHandler<E>, E: Env + Sync {
