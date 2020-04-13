@@ -38,13 +38,13 @@ impl<E,C> RenderStdWidgets<E> for Render<C> where
         }
     }
     #[inline]
-    fn render_text(&mut self, b: &Bounds, text: &str, style: &EStyle<E>, variant: &ESVariant<E>, ctx: &mut E::Context) {
+    fn render_text(&mut self, b: &Bounds, text: &str, align: (f32,f32), style: &EStyle<E>, variant: &ESVariant<E>, ctx: &mut E::Context) {
         let c = style.color(variant);
         let core: &mut Core<E> = ctx.as_mut();
         let t = core.font.render(text,c).expect("FontError TODO");
         
         let tb = t.rect().size();
-        let b = b.inner_centered(tb.into());
+        let b = b.inner_aligned(tb.into(),align);
 
         if let Some(b) = to_rect(&b) {
             self.c.render_surface(b,&t,t.rect()).expect("TTOOF");

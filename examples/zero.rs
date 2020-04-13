@@ -30,8 +30,10 @@ fn main() {
     //create a SimpleCtx context
     let mut c = SimpleCtx::from_sdl2(sdl,ttf).unwrap();
 
-    let pbbounds = Size{x: SizeAxis::empty(), y: SizeAxis{min: 32, preferred: 64, max: Some(64), pressure: 1.0}};
-
+    //special bounds for progressbar and checkbox
+    let pb_bounds = Size{x: SizeAxis::empty(), y: SizeAxis{min: 32, preferred: 64, max: Some(64), pressure: 1.0}};
+    let cb_bounds = Size{x: SizeAxis::empty(), y: SizeAxis{min: 32, preferred: 32, max: Some(32), pressure: 1.0}};
+    
     //build a widget
     let g = Pane::new(
         StdID::new(),
@@ -52,9 +54,10 @@ fn main() {
             ),
             ProgressBar::new(StdID::new(), Orientation::Horizontal)
                 .with_value(0.5)
-                .with_size(pbbounds),
+                .with_size(pb_bounds),
             CheckBox::new(StdID::new(), false)
-                .with_text("CheckBox"),
+                .with_text("CheckBox")
+                .with_size(cb_bounds),
             Null::new(StdID::new()),
         ),
         Orientation::Vertical,
