@@ -5,15 +5,15 @@ use guion::{
     ctx::{Context as GuionContext, queue::StdEnqueueable},
     widget::*,
     widget::root::*,
-    style::StdVerb, render::link::RenderLink, layout::Orientation, util::bounds::Bounds,
+    style::variant::StdVerb, render::link::RenderLink, layout::Orientation, util::bounds::Bounds,
     layout::Size, layout::SizeAxis,
-    widgets::{pane::Pane, button::Button, null::Null, label::Label, pbar::ProgressBar, checkbox::CheckBox}, id::standard::StdID, aliases::WidgetRefMut,
+    widgets::{pane::Pane, button::Button, null::Null, label::Label, pbar::ProgressBar, checkbox::CheckBox, splitpane::SplitPane}, id::standard::StdID, aliases::WidgetRefMut,
 };
 use guion_sdl2::render::Render;
 use guion_sdl2::*;
 use crate::core::render_and_events;
 use sdl2::event::Event;
-use sdl2::keyboard::Keycode;
+use sdl2::{mouse::{Cursor, SystemCursor}, keyboard::Keycode};
 use simple::{
     env::{SimpleEnv},
     stor::SimpleStor, ctx::SimpleCtx, StandardPath,
@@ -37,11 +37,13 @@ fn main() {
     //build a widget
     let g = Pane::new(
         StdID::new(),
+        Orientation::Vertical,
         (
             Label::new(StdID::new())
                 .with_text("Label".to_owned()),
             Pane::new(
                 StdID::new(),
+                Orientation::Horizontal,
                 (
                     Button::new(StdID::new())
                         .with_text("0".to_owned())
@@ -50,7 +52,6 @@ fn main() {
                         .with_text("0".to_owned())
                         .with_trigger(button_action),
                 ),
-                Orientation::Horizontal,
             ),
             ProgressBar::new(StdID::new(), Orientation::Horizontal)
                 .with_value(0.5)
@@ -58,9 +59,18 @@ fn main() {
             CheckBox::new(StdID::new(), false)
                 .with_text("CheckBox")
                 .with_size(cb_bounds),
-            Null::new(StdID::new()),
+            SplitPane::new(
+                StdID::new(), Orientation::Horizontal, 0.5,
+                (
+                    Button::new(StdID::new())
+                        .with_text("0".to_owned())
+                        .with_trigger(button_action),
+                    Button::new(StdID::new())
+                        .with_text("0".to_owned())
+                        .with_trigger(button_action),
+                ),
+            )
         ),
-        Orientation::Vertical,
     );
 
     let root_path = StandardPath::new(&[],g.id());
@@ -70,7 +80,7 @@ fn main() {
     //create a sdl window
     let window = c
         .video
-        .window("GUION_SDL2", 840, 480)
+        .window("GUION_SDL2", 820, 440)
         .resizable()
         .position_centered()
         .build()
@@ -117,6 +127,8 @@ fn main() {
                 .fill_rect();
             //process queued and render
             render_and_events::<SimpleEnv>(&mut rl, root_path.clone(), &mut stor, &mut c);
+
+            r.update_cursor();
 
             //let sdl render it
             r.present();

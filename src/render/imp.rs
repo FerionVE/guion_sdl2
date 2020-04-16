@@ -5,13 +5,13 @@ use guion::{style::variant::standard::StdCursor, render::widgets::RenderStdWidge
 use super::*;
 use style::{cursor::to_sdl_cursor, Style};
 
-impl<E,C> GuionRender<E> for Render<C> where E: Env, E::Backend: GuionBackend<E,Renderer=Self>, C: RenderTarget, Canvas<C>: RenderSurface {
+impl<E,C> GuionRender<E> for Render<C> where E: Env, ERenderer<E>: AsRefMut<Self>, C: RenderTarget, Canvas<C>: RenderSurface {
 
 }
 
 impl<E,C> RenderStdWidgets<E> for Render<C> where
     E: Env + Sync,
-    E::Backend: GuionBackend<E,Renderer=Self>,
+    ERenderer<E>: AsRefMut<Self>,
     EStyle<E>: AsRefMut<Style>,
     ESColor<E>: Into<Color>,
     ESCursor<E>: Into<StdCursor>,
@@ -56,7 +56,7 @@ impl<E,C> RenderStdWidgets<E> for Render<C> where
     }
     #[inline]
     fn set_cursor(&mut self, b: &Bounds, cursor: ESCursor<E>) {
-        SDLCursor::from_system(to_sdl_cursor(cursor)).unwrap().set() //Cursor::set
+        self.cursor = to_sdl_cursor(cursor);
     }
     #[inline]
     fn draw_text_button(&mut self, b: &Bounds, pressed: bool, caption: &str, style: &EStyle<E>, variant: &ESVariant<E>) {

@@ -2,7 +2,7 @@ use crate::style::color::Color;
 use crate::style::font::Font;
 use crate::style::font::PPChar;
 use crate::style::font::PPText;
-use guion::{env::EnvFlexStyleVariant, style::{StyleVariantSupport, StdVerb, StyleVariantGetStdCursor, variant::standard::{StdCursor, StdStyleVariant, Obj}}};
+use guion::{env::EnvFlexStyleVariant, style::{variant::{StyleVariantSupport, StdVerb, StyleVariantGetStdCursor}, variant::standard::{StdCursor, StdStyleVariant, Obj}}};
 use super::*;
 
 pub mod font;

@@ -1,6 +1,6 @@
 use super::*;
 
-impl<E> GuionQueue<StdEnqueueable<E>> for Queue<E> where E: Env + Sync, E::Context: GuionContext<E,Queue=Self> {
+impl<E> GuionQueue<StdEnqueueable<E>> for Queue<E> where E: Env + Sync, /*ECQueue<E>: AsRefMut<Self>*/ {
     fn push(&mut self, v: StdEnqueueable<E>) {
         match v {
             StdEnqueueable::InvalidateWidget { path } => self.invalidate.push(path),
