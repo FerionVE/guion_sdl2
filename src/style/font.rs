@@ -1,5 +1,4 @@
 use sdl2::pixels::Color;
-use sdl2::ttf::FontStyle;
 use std::path::Path;
 use guion::util::bounds::Offset;
 use guion::util::bounds::Dims;
@@ -12,7 +11,7 @@ pub struct Font {
     pub source: FontSource,
     pub index: u32,
     pub size: u16,
-    pub style: FontStyle,
+    //pub style: FontStyle, //TODO fix
     pub render: FontRender,
 }
 #[derive(Clone,PartialEq)]

@@ -4,6 +4,8 @@ use sdl2::render::BlendMode;
 use guion::{style::variant::standard::StdCursor, render::widgets::RenderStdWidgets};
 use super::*;
 use style::{cursor::to_sdl_cursor, Style};
+use font::glyphs_of_str;
+use rusttype::Scale;
 
 impl<E,C> GuionRender<E> for Render<C> where E: Env, ERenderer<E>: AsRefMut<Self>, C: RenderTarget, Canvas<C>: RenderSurface {
 
@@ -39,15 +41,16 @@ impl<E,C> RenderStdWidgets<E> for Render<C> where
     }
     #[inline]
     fn render_text(&mut self, b: &Bounds, text: &str, align: (f32,f32), style: &EStyle<E>, variant: &ESVariant<E>, ctx: &mut E::Context) {
-        let c = style.color(variant);
-        let core: &mut Core<E> = ctx.as_mut();
-        let t = core.font.render(text,c).expect("FontError TODO");
+        let (glyphs,bounds) = 
+            glyphs_of_str(&self.font,Scale::uniform(24.0), std::i32::MAX as u32, text);
         
-        let tb = t.rect().size();
-        let b = b.inner_aligned(tb.into(),align);
+        let b = b.inner_aligned_f((bounds.x,bounds.y),align);
 
-        if let Some(b) = to_rect(&b) {
-            self.c.render_surface(b,&t,t.rect()).expect("TTOOF");
+        if b.not_empty() {
+            //self.c.set_draw_color(SDLColor::RGBA(255, 0, 0, 255));
+            //self.c.fill_rect(to_rect(&b)).expect("SDL Render Failure @ fill_rect");
+            //self.c.set_blend_mode(BlendMode::Blend);
+            self.render_glyphs(b, Offset::default(), glyphs.into_iter()).expect("TTOOF");
         }
     }
     #[inline]

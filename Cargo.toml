@@ -1,6 +1,6 @@
 [package]
 name = "guion_sdl2"
-version = "0.2.0-dev"
+version = "0.2.0-dev2"
 
 authors = ["qwertz19281 <dellen903@gmail.com>"]
 edition = "2018"
@@ -16,7 +16,7 @@ readme = "README.md"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-guion = { version = "0.2.0-dev", git = "https://github.com/FerionVE/guion", rev = "45f38a7e45723a2478c0d6114ead3661816cf676" }
+guion = { version = "0.2.0-dev2", git = "https://github.com/FerionVE/guion", rev = "dafa8379272983460e0b97d8526ea3fa704810bd" }
 #guion = { path = "../guion" }
 #TODO qwutils should export qwutils
 qwutils = { version = "0.1.1", git = "https://github.com/qwertz19281/rust_utils", rev = "c828ec4d864524e8846f25fc34f17e606accf3cc" }
@@ -25,8 +25,12 @@ qwutils = { version = "0.1.1", git = "https://github.com/qwertz19281/rust_utils"
 [dependencies.sdl2]
 version = "0.33"
 default-features = false
-features = ["ttf"]
+features = []
 #apt install libsdl2-dev libsdl2-ttf-dev
+
+[dependencies.rusttype]
+version = "0.9"
+features = ["gpu_cache"]
 
 [profile.release]
 lto = true

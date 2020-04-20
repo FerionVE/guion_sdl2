@@ -6,14 +6,16 @@ use guion::{
     widget::*,
     widget::root::*,
     style::variant::StdVerb, render::link::RenderLink, layout::Orientation, util::bounds::Bounds,
-    layout::Size, layout::SizeAxis,
-    widgets::{pane::Pane, button::Button, null::Null, label::Label, pbar::ProgressBar, checkbox::CheckBox, splitpane::SplitPane}, id::standard::StdID, aliases::WidgetRefMut,
+    layout::*,
+    widgets::{pane::Pane, button::Button, label::Label, pbar::ProgressBar, checkbox::CheckBox, splitpane::SplitPane},
+    id::standard::StdID,
+    aliases::WidgetRefMut,
 };
 use guion_sdl2::render::Render;
 use guion_sdl2::*;
 use crate::core::render_and_events;
 use sdl2::event::Event;
-use sdl2::{mouse::{Cursor, SystemCursor}, keyboard::Keycode};
+use sdl2::keyboard::Keycode;
 use simple::{
     env::{SimpleEnv},
     stor::SimpleStor, ctx::SimpleCtx, StandardPath,
@@ -25,10 +27,9 @@ use link::Link;
 fn main() {
     //initialze sdl
     let sdl = sdl2::init().unwrap();
-    let ttf = sdl2::ttf::init().unwrap();
 
     //create a SimpleCtx context
-    let mut c = SimpleCtx::from_sdl2(sdl,ttf).unwrap();
+    let mut c = SimpleCtx::from_sdl2(sdl).unwrap();
 
     //special bounds for progressbar and checkbox
     let pb_bounds = Size{x: SizeAxis::empty(), y: SizeAxis{min: 32, preferred: 64, max: Some(64), pressure: 1.0}};
@@ -95,11 +96,7 @@ fn main() {
         //wait/poll events
         if let Some(event) = c.pump.wait_event_timeout(200) {
             match event {
-                Event::Quit { .. }
-                | Event::KeyDown {
-                    keycode: Some(Keycode::Escape),
-                    ..
-                } => break 'running,
+                Event::Quit { .. } => break 'running,
                 _ => {}
             }
 

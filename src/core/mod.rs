@@ -1,11 +1,10 @@
 use super::*;
 use guion::{ctx::queue::{invalidate, validate, StdEnqueueable}, render::link::RenderLink};
-use render::font::TextProd;
 use sdl2::EventPump;
 use sdl2::EventSubsystem;
 use sdl2::TimerSubsystem;
 use sdl2::VideoSubsystem;
-use sdl2::{ttf::Sdl2TtfContext, Sdl};
+use sdl2::{Sdl};
 use std::collections::VecDeque;
 
 pub mod queue;
@@ -22,7 +21,6 @@ where
     pub event: EventSubsystem,
     pub pump: EventPump,
     pub queue: Queue<E>,
-    pub font: TextProd,
     pub default_border: Border,
     pub default_style: EStyle<E>,
 }
@@ -43,7 +41,7 @@ impl<E> Core<E>
 where
     E: Env + Sync,
 {
-    pub fn from_sdl2(sdl: Sdl, ttf: Sdl2TtfContext) -> Result<Self, String> {
+    pub fn from_sdl2(sdl: Sdl) -> Result<Self, String> {
         let event = sdl.event()?;
         let pump = sdl.event_pump()?;
         let timer = sdl.timer()?;
@@ -56,7 +54,6 @@ where
             mut_fn: VecDeque::with_capacity(4096),
         };
         let video = sdl.video()?;
-        let font = TextProd::new(ttf)?;
 
         let default_border = Border::new(4, 4, 4, 4);
         let default_style = EStyle::<E>::static_default();
@@ -70,7 +67,6 @@ where
             sdl,
             default_border,
             default_style,
-            font,
         })
     }
 }

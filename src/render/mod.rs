@@ -1,7 +1,9 @@
 use sdl2::render::Canvas;
-use sdl2::{mouse::SystemCursor, render::RenderTarget};
+use sdl2::{mouse::SystemCursor, render::{Texture, RenderTarget}};
 use super::*;
 use util::RenderSurface;
+use rusttype::Font;
+use font::load_font;
 
 pub mod imp;
 pub mod font;
@@ -12,6 +14,9 @@ pub struct Render<C> where C: RenderTarget, Canvas<C>: RenderSurface {
     pub cursor: SystemCursor,
     pub set_cursor: SystemCursor,
     pub curse: Option<SDLCursor>,
+    pub cache: rusttype::gpu_cache::Cache<'static>,
+    pub cache_tex: Option<Texture<'static>>,
+    pub font: Font<'static>,
 }
 
 impl<C> Render<C> where C: RenderTarget, Canvas<C>: RenderSurface {
@@ -21,6 +26,9 @@ impl<C> Render<C> where C: RenderTarget, Canvas<C>: RenderSurface {
             cursor: SystemCursor::Arrow,
             set_cursor: SystemCursor::Arrow,
             curse: None,
+            cache: rusttype::gpu_cache::Cache::builder().build(),
+            cache_tex: None,
+            font: load_font(),
         }
     }
 
