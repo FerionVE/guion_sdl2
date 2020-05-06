@@ -6,6 +6,8 @@ use sdl2::TimerSubsystem;
 use sdl2::VideoSubsystem;
 use sdl2::{Sdl};
 use std::collections::VecDeque;
+use rusttype::Font;
+use render::font::load_font;
 
 pub mod queue;
 //pub mod imp;
@@ -23,6 +25,7 @@ where
     pub queue: Queue<E>,
     pub default_border: Border,
     pub default_style: EStyle<E>,
+    pub font: Font<'static>,
 }
 
 pub struct Queue<E>
@@ -67,6 +70,7 @@ where
             sdl,
             default_border,
             default_style,
+            font: load_font(),
         })
     }
 }

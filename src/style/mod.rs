@@ -1,6 +1,5 @@
 use crate::style::color::Color;
 use crate::style::font::Font;
-use crate::style::font::PPChar;
 use crate::style::font::PPText;
 use guion::{env::EnvFlexStyleVariant, style::{variant::{StyleVariantSupport, StdVerb, StyleVariantGetStdCursor}, variant::standard::{StdCursor, StdStyleVariant, Obj}}};
 use super::*;
@@ -26,7 +25,6 @@ impl<E> GuionStyle<E> for Style where
     type Cursor = StdCursor;
     type Color = Color;
     type PreprocessedText = PPText;
-    type PreprocessedChar = PPChar;
     type Variant = E::StyleVariant;
 
     fn font(&self, v: &Self::Variant) -> Option<&Self::Font> {

@@ -16,14 +16,14 @@ readme = "README.md"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-guion = { version = "0.2.0-dev2", git = "https://github.com/FerionVE/guion", rev = "dafa8379272983460e0b97d8526ea3fa704810bd" }
+guion = { version = "0.2.0-dev2", git = "https://github.com/FerionVE/guion", rev = "0c31328ff6056e9da7eb24e6b07eb57549e2c63f" }
 #guion = { path = "../guion" }
 #TODO qwutils should export qwutils
 qwutils = { version = "0.1.1", git = "https://github.com/qwertz19281/rust_utils", rev = "c828ec4d864524e8846f25fc34f17e606accf3cc" }
 #qwutils = { path = "../qwutils" }
 
 [dependencies.sdl2]
-version = "0.33"
+version = "0.34"
 default-features = false
 features = []
 #apt install libsdl2-dev libsdl2-ttf-dev

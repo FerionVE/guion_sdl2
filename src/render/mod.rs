@@ -16,7 +16,6 @@ pub struct Render<C> where C: RenderTarget, Canvas<C>: RenderSurface {
     pub curse: Option<SDLCursor>,
     pub cache: rusttype::gpu_cache::Cache<'static>,
     pub cache_tex: Option<Texture<'static>>,
-    pub font: Font<'static>,
 }
 
 impl<C> Render<C> where C: RenderTarget, Canvas<C>: RenderSurface {
@@ -28,7 +27,6 @@ impl<C> Render<C> where C: RenderTarget, Canvas<C>: RenderSurface {
             curse: None,
             cache: rusttype::gpu_cache::Cache::builder().build(),
             cache_tex: None,
-            font: load_font(),
         }
     }
 

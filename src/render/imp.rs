@@ -3,7 +3,7 @@ use sdl2::rect::Rect;
 use sdl2::render::BlendMode;
 use guion::{style::variant::standard::StdCursor, render::widgets::RenderStdWidgets};
 use super::*;
-use style::{cursor::to_sdl_cursor, Style};
+use style::{cursor::to_sdl_cursor, Style, font::PPText};
 use font::glyphs_of_str;
 use rusttype::Scale;
 
@@ -15,6 +15,7 @@ impl<E,C> RenderStdWidgets<E> for Render<C> where
     E: Env + Sync,
     ERenderer<E>: AsRefMut<Self>,
     EStyle<E>: AsRefMut<Style>,
+    ESPPText<E>: AsRefMut<PPText>,
     ESColor<E>: Into<Color>,
     ESCursor<E>: Into<StdCursor>,
     E::Context: AsRefMut<Core<E>>,
@@ -42,7 +43,7 @@ impl<E,C> RenderStdWidgets<E> for Render<C> where
     #[inline]
     fn render_text(&mut self, b: &Bounds, text: &str, align: (f32,f32), style: &EStyle<E>, variant: &ESVariant<E>, ctx: &mut E::Context) {
         let (glyphs,bounds) = 
-            glyphs_of_str(&self.font,Scale::uniform(24.0), std::i32::MAX as u32, text);
+            glyphs_of_str(&ctx.as_ref().font,Scale::uniform(24.0), std::i32::MAX as u32, text);
         
         let b = b.inner_aligned_f((bounds.x,bounds.y),align);
 
@@ -50,12 +51,17 @@ impl<E,C> RenderStdWidgets<E> for Render<C> where
             //self.c.set_draw_color(SDLColor::RGBA(255, 0, 0, 255));
             //self.c.fill_rect(to_rect(&b)).expect("SDL Render Failure @ fill_rect");
             //self.c.set_blend_mode(BlendMode::Blend);
-            self.render_glyphs(b, Offset::default(), glyphs.into_iter()).expect("TTOOF");
+            let color = style.color(variant);
+            self.render_glyphs(b, Offset::default(), color.into().v, glyphs.into_iter()).expect("TTOOF");
         }
     }
     #[inline]
-    fn render_preprocessed_text(&mut self, b: &Bounds, text: &ESPPText<E>, style: &EStyle<E>, variant: &ESVariant<E>, c: &mut E::Context) {
-        todo!()
+    fn render_preprocessed_text(&mut self, b: &Bounds, text: &ESPPText<E>, inner_offset: Offset, style: &EStyle<E>, variant: &ESVariant<E>, c: &mut E::Context) {
+        if b.not_empty() {
+            let color = style.color(variant);
+            let g = text.as_ref().iter_glyphs();
+            self.render_glyphs(*b,inner_offset,color.into().v,g.cloned()).expect("TTOOF");
+        }
     }
     #[inline]
     fn set_cursor(&mut self, b: &Bounds, cursor: ESCursor<E>) {

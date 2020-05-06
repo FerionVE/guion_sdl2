@@ -5,7 +5,7 @@ use guion::util::bounds::Dims;
 
 impl<C> Render<C> where C: RenderTarget, Canvas<C>: RenderSurface {
     //TODO: integrate gpu_cache later
-    pub fn render_glyphs<G: Into<PositionedGlyph<'static>>>(&mut self, b: Bounds, o: Offset, gs: impl Iterator<Item=G>) -> Result<(),String> {
+    pub fn render_glyphs<G: Into<PositionedGlyph<'static>>>(&mut self, b: Bounds, o: Offset, color: SDLColor, gs: impl Iterator<Item=G>) -> Result<(),String> {
         //check for conservative in-bounds
         fn in_bounds(g: &PositionedGlyph, o: Offset, d: Dims) -> bool {
             if let Some(bb) = g.pixel_bounding_box() {
@@ -56,6 +56,9 @@ impl<C> Render<C> where C: RenderTarget, Canvas<C>: RenderSurface {
                 .expect("TODO");
         }).map_err(|e| e.to_string() )?;
 
+        tex_ref.set_color_mod(color.r, color.g, color.b);
+        tex_ref.set_alpha_mod(color.a);
+
         //draw the glyphs
         for g in &gs {
             if in_bounds(g, o, b.size) {
@@ -98,10 +101,12 @@ pub fn glyphs_of_str<'a>(
     let advance_height = v_metrics.ascent - v_metrics.descent + v_metrics.line_gap;
     let mut caret = point(0.0, v_metrics.ascent);
     let mut last_glyph_id = None;
+    let mut max_x = 0f32;
     for c in text.chars() {
         if c.is_control() {
             match c {
                 '\r' | '\n' => {
+                    max_x = max_x.max(caret.x);
                     caret = point(0.0, caret.y + advance_height);
                 }
                 _ => {}
@@ -124,7 +129,8 @@ pub fn glyphs_of_str<'a>(
         caret.x += glyph.unpositioned().h_metrics().advance_width;
         result.push(glyph);
     }
-    let bounds = Vector{x: caret.x, y: caret.y-v_metrics.descent};
+    max_x = max_x.max(caret.x);
+    let bounds = Vector{x: max_x, y: caret.y-v_metrics.descent};
     (result,bounds)
 }
 

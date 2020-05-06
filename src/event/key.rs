@@ -2,7 +2,7 @@ use super::*;
 use qwutils::imp::option::OptionExt;
 #[derive(Clone,Debug)]
 pub enum Key {
-    Kbd(SDLKeycode),
+    Kbd(SDLScancode),
     Mouse(SDLMouseButton,Option<u32>),
 }
 #[derive(Clone,PartialEq)]
@@ -21,9 +21,10 @@ pub enum KeyOrigin {
 impl GuionKey for Key {
     type Origin = KeyOrigin;
     const MOUSE_LEFT: Self = Self::Mouse(SDLMouseButton::Left,None);
-    const ENTER: Self = Self::Kbd(SDLKeycode::Return);
-    const SPACE: Self = Self::Kbd(SDLKeycode::Space);
-    const TAB: Self = Self::Kbd(SDLKeycode::Tab);
+    const ENTER: Self = Self::Kbd(SDLScancode::Return);
+    const SPACE: Self = Self::Kbd(SDLScancode::Space);
+    const TAB: Self = Self::Kbd(SDLScancode::Tab);
+    const BACKSPACE: Self = Self::Kbd(SDLScancode::Backspace);
 
     fn origin(&self) -> Self::Origin {
         match self {

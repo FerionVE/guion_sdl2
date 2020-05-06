@@ -36,7 +36,7 @@ impl GuionWidgets<SimpleEnv> for SimpleStor {
     fn trace_bounds(&self, ctx: &mut SimpleCtx, i: StandardPath, b: &Bounds, force: bool) -> Result<Bounds,()> {
         let l = ctx.link(Resolved{
             wref: Box::new(self.root.base()),
-            path: StandardPath::new(&[], self.root.id()),
+            path: StandardPath::new(&[]),
             stor: self,
         });
         self.root.trace_bounds(l,i,b,force)

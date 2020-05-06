@@ -1,5 +1,5 @@
 use super::*;
-use guion::{util::bounds::Dims, event::{imp::StdVarSup, variant::VariantSupport, variants::RootEvent, variant::Variant}};
+use guion::{util::bounds::Dims, event::{imp::StdVarSup, variant::VariantSupport, variants::{TextInput, RootEvent, MouseScroll}, variant::Variant}};
 use SDLKeycode;
 
 #[allow(unused)]
@@ -20,7 +20,7 @@ where
             scancode,
             keymod,
             repeat,
-        } => ret(process_kbd_evt(keycode,*repeat,false),Some(window_id),timestamp),
+        } => ret(process_kbd_evt(scancode,*repeat,false),Some(window_id),timestamp),
         SDLEvent::KeyUp {
             timestamp,
             window_id,
@@ -28,7 +28,7 @@ where
             scancode,
             keymod,
             repeat,
-        } => ret(process_kbd_evt(keycode,*repeat,true),Some(window_id),timestamp),
+        } => ret(process_kbd_evt(scancode,*repeat,true),Some(window_id),timestamp),
         SDLEvent::TextEditing {
             timestamp,
             window_id,
@@ -40,7 +40,7 @@ where
             timestamp,
             window_id,
             text,
-        } => ret(is,Some(window_id),timestamp),
+        } => ret(RootEvent::TextInput{text: text.to_owned()},Some(window_id),timestamp),
         SDLEvent::MouseMotion {
             timestamp,
             window_id,
@@ -82,7 +82,7 @@ where
             x,
             y,
             direction,
-        } => ret(is,Some(window_id),timestamp),
+        } => ret(RootEvent::MouseScroll{x: (-*x)*8, y: (-*y)*4},Some(window_id),timestamp),
         SDLEvent::JoyAxisMotion {
             timestamp,
             which,
@@ -268,7 +268,7 @@ where
     }
 }
 
-fn process_kbd_evt<E>(key: &Option<SDLKeycode>, repeat: bool, up: bool) -> RootEvent<E> where E: Env, EEKey<E>: From<Key>, {
+fn process_kbd_evt<E>(key: &Option<SDLScancode>, repeat: bool, up: bool) -> RootEvent<E> where E: Env, EEKey<E>: From<Key>, {
     if up {
         RootEvent::KbdUp{
             key: Key::Kbd(key.expect("TODO")).into()

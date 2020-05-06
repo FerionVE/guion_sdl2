@@ -7,7 +7,7 @@ use guion::{
     widget::root::*,
     style::variant::StdVerb, render::link::RenderLink, layout::Orientation, util::bounds::Bounds,
     layout::*,
-    widgets::{pane::Pane, button::Button, label::Label, pbar::ProgressBar, checkbox::CheckBox, splitpane::SplitPane},
+    widgets::{pane::Pane, button::Button, label::Label, pbar::ProgressBar, checkbox::CheckBox, splitpane::SplitPane, textbox::TextBox},
     id::standard::StdID,
     aliases::WidgetRefMut,
 };
@@ -70,11 +70,12 @@ fn main() {
                         .with_text("0".to_owned())
                         .with_trigger(button_action),
                 ),
-            )
+            ),
+            TextBox::new(StdID::new()),
         ),
     );
 
-    let root_path = StandardPath::new(&[],g.id());
+    let root_path = StandardPath::new(&[]);
     //build the widget tree root
     let mut stor = SimpleStor::new(Box::new(g));
 
