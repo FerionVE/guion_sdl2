@@ -28,7 +28,7 @@ pub enum FontRender {
 }
 
 pub struct PPText {
-    lines: Vec<(Vec<PositionedGlyph<'static>>,Rect<f32>)>,
+    lines: Vec<(Vec<Glyph>,Rect<f32>)>,
     size: Vector<f32>,
 }
 
@@ -49,12 +49,8 @@ impl<E> PreprocessedText<E> for PPText where
             (
                 Box::new(
                     chars.iter()
-                    .map(|pg| {
-                        pg.pixel_bounding_box().map(|bb|
-                            Bounds::from_xywh(bb.min.x,bb.min.y,bb.width() as u32,bb.height() as u32) //TODO fix sign conversion
-                        )
-                    })
-                ) as Box<dyn Iterator<Item=Option<Bounds>>>,
+                    .map(Glyph::as_pp_char)
+                ) as Box<dyn Iterator<Item=PPChar>>,
                 Bounds::from_xywh(size.min.x as i32,size.min.y as i32,size.width() as u32,size.height() as u32),
             )
         });
@@ -75,6 +71,8 @@ impl<E> PreprocessedText<E> for PPText where
                 match c {
                     '\r' | '\n' => {
                         max_x = max_x.max(caret.x);
+                        current_line.push(Glyph::Placeholder(caret));
+
                         caret = point(0.0, caret.y + advance_height);
                         let rect = Rect{
                             min: Point{x: 0.0, y: 0.0}, //TODO
@@ -101,14 +99,17 @@ impl<E> PreprocessedText<E> for PPText where
                 }*/
             }
             caret.x += glyph.unpositioned().h_metrics().advance_width;
-            current_line.push(glyph);
+            current_line.push(Glyph::Glyph(glyph));
         }
         let rect = Rect{
             min: Point{x: 0.0, y: 0.0}, //TODO
             max: Point{x: 0.0, y: 0.0},
         };
+        
+        current_line.push(Glyph::Placeholder(caret));
         result.push((current_line,rect));
         max_x = max_x.max(caret.x);
+
         let bounds = Vector{x: max_x, y: caret.y-v_metrics.descent};
         Self{
             lines: result,
@@ -117,10 +118,50 @@ impl<E> PreprocessedText<E> for PPText where
     }
 }
 
+pub enum Glyph {
+    Glyph(PositionedGlyph<'static>),
+    Placeholder(Point<f32>),
+}
+
+impl Glyph {
+    pub fn glyph(&self) -> Option<&PositionedGlyph<'static>> {
+        match self {
+            Glyph::Glyph(g) => Some(g),
+            _ => None,
+        }
+    }
+
+    pub fn as_pp_char(&self) -> PPChar {
+        match self {
+            Glyph::Glyph(g) => {
+                PPChar{
+                    bounds: g.pixel_bounding_box().map(|bb|
+                        Bounds::from_xywh(bb.min.x,bb.min.y,bb.width() as u32,bb.height() as u32) //TODO fix sign conversion
+                    ),
+                    offset: Offset{
+                        x: g.position().x as i32,
+                        y: g.position().y as i32,
+                    }
+                }
+            }
+            Glyph::Placeholder(p) => {
+                PPChar{
+                    bounds: None,
+                    offset: Offset{
+                        x: p.x as i32,
+                        y: p.y as i32,
+                    }
+                }
+            }
+        }
+    }
+}
+
 impl PPText {
     pub fn iter_glyphs(&self) -> impl Iterator<Item=&PositionedGlyph<'static>> {
         self.lines.iter()
         .flat_map(|l| &l.0 )
+        .filter_map(Glyph::glyph)
         //.map(|c| c )
     }
 }
