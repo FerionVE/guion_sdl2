@@ -25,6 +25,10 @@ impl GuionKey for Key {
     const SPACE: Self = Self::Kbd(SDLScancode::Space);
     const TAB: Self = Self::Kbd(SDLScancode::Tab);
     const BACKSPACE: Self = Self::Kbd(SDLScancode::Backspace);
+    const LEFT: Self = Self::Kbd(SDLScancode::Left);
+    const RIGHT: Self = Self::Kbd(SDLScancode::Right);
+    const UP: Self = Self::Kbd(SDLScancode::Up);
+    const DOWN: Self = Self::Kbd(SDLScancode::Down);
 
     fn origin(&self) -> Self::Origin {
         match self {
