@@ -40,7 +40,7 @@ impl<E,C> RenderStdWidgets<E> for Render<C> where
             }
         }
     }
-    #[inline]
+    /*#[inline]
     fn render_text(&mut self, b: &Bounds, text: &str, align: (f32,f32), style: &EStyle<E>, variant: &ESVariant<E>, ctx: &mut E::Context) {
         let (glyphs,bounds) = 
             glyphs_of_str(&ctx.as_ref().font,Scale::uniform(24.0), std::i32::MAX as u32, text);
@@ -54,7 +54,7 @@ impl<E,C> RenderStdWidgets<E> for Render<C> where
             let color = style.color(variant);
             self.render_glyphs(b, Offset::default(), color.into().v, glyphs.into_iter()).expect("TTOOF");
         }
-    }
+    }*/
     #[inline]
     fn render_preprocessed_text(&mut self, b: &Bounds, text: &ESPPText<E>, inner_offset: Offset, style: &EStyle<E>, variant: &ESVariant<E>, c: &mut E::Context) {
         if b.not_empty() {

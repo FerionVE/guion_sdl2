@@ -30,6 +30,9 @@ pub enum FontRender {
 pub struct PPText {
     lines: Vec<(Vec<Glyph>,Rect<f32>)>,
     size: Vector<f32>,
+    ascent: u32,
+    height: u32,
+    distance: u32,
 }
 
 impl<E> PreprocessedText<E> for PPText where
@@ -42,6 +45,15 @@ impl<E> PreprocessedText<E> for PPText where
             w: self.size.x as u32,
             h: self.size.y as u32,
         }
+    }
+    fn line_ascent(&self) -> u32 {
+        self.ascent
+    }
+    fn line_height(&self) -> u32 {
+        self.height
+    }
+    fn line_distance(&self) -> u32 {
+        self.distance
     }
     fn lines<'s>(&'s self) -> CrazyWorkaroundPPIter<'s> {
         let iter = self.lines.iter()
@@ -73,11 +85,12 @@ impl<E> PreprocessedText<E> for PPText where
                         max_x = max_x.max(caret.x);
                         current_line.push(Glyph::Placeholder(caret));
 
-                        caret = point(0.0, caret.y + advance_height);
                         let rect = Rect{
-                            min: Point{x: 0.0, y: 0.0}, //TODO
-                            max: Point{x: 0.0, y: 0.0},
+                            min: Point{x: 0.0, y: caret.y - v_metrics.ascent}, //TODO
+                            max: Point{x: caret.x, y: caret.y - v_metrics.descent},
                         };
+
+                        caret = point(0.0, caret.y + advance_height);
                         result.push((current_line,rect));
                         current_line = Vec::new();
                     }
@@ -102,8 +115,8 @@ impl<E> PreprocessedText<E> for PPText where
             current_line.push(Glyph::Glyph(glyph));
         }
         let rect = Rect{
-            min: Point{x: 0.0, y: 0.0}, //TODO
-            max: Point{x: 0.0, y: 0.0},
+            min: Point{x: 0.0, y: caret.y - v_metrics.ascent}, //TODO
+            max: Point{x: caret.x, y: caret.y - v_metrics.descent},
         };
         
         current_line.push(Glyph::Placeholder(caret));
@@ -114,6 +127,9 @@ impl<E> PreprocessedText<E> for PPText where
         Self{
             lines: result,
             size: bounds,
+            ascent: v_metrics.ascent as u32,
+            height: (v_metrics.ascent - v_metrics.descent) as u32,
+            distance: advance_height as u32,
         }
     }
 }

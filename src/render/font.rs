@@ -63,6 +63,14 @@ impl<C> Render<C> where C: RenderTarget, Canvas<C>: RenderSurface {
         for g in &gs {
             if in_bounds(g, o, b.size) {
                 if let Some((src,dest)) = self.cache.rect_for(0, g).unwrap() {
+                    /*let pbb = g.pixel_bounding_box().unwrap();
+                    self.c.set_draw_color(sdl2::pixels::Color::BLUE);
+                    self.c.fill_rect(sdl2::rect::Rect::new(pbb.min.x - o.x + b.off.x,pbb.min.y - o.y + b.off.y,pbb.width() as u32,pbb.height() as u32) )?;
+
+                    let pb = g.position();
+                    self.c.set_draw_color(sdl2::pixels::Color::RED);
+                    self.c.draw_point(sdl2::rect::Point::new(pb.x as i32 - o.x + b.off.x,pb.y as i32 - o.y + b.off.y) )?;*/
+
                     let cache_dims = self.cache.dimensions();
                     let sx = src.min.x * cache_dims.0 as f32;
                     let sy = src.min.y * cache_dims.1 as f32;
