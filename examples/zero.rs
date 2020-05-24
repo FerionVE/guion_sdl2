@@ -7,7 +7,7 @@ use guion::{
     widget::root::*,
     style::variant::StdVerb, render::link::RenderLink, layout::Orientation, util::bounds::Bounds,
     layout::*,
-    widgets::{pane::Pane, button::Button, label::Label, pbar::ProgressBar, checkbox::CheckBox, splitpane::SplitPane, textbox::TextBox},
+    widgets::{pane::Pane, button::Button, label::Label, pbar::ProgressBar, checkbox::CheckBox, splitpane::SplitPane, textbox::{state::Cursor, TextBox}},
     id::standard::StdID,
     aliases::WidgetRefMut,
 };
@@ -72,6 +72,8 @@ fn main() {
                 ),
             ),
             TextBox::new(StdID::new()),
+            ("Immediate Label".to_owned(),StdID::new()),
+            ("Immediate TextBox".to_owned(),StdID::new(),(0,0),Cursor::default()),
         ),
     );
 

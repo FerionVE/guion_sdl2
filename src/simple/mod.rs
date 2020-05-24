@@ -7,5 +7,6 @@ pub mod ctx;
 use super::*;
 use guion::{id::standard::StdID, path::standard::SimplePath};
 use env::SimpleEnv;
+pub mod immediate_test;
 
 pub type StandardPath = SimplePath<SimpleEnv,StdID>;
