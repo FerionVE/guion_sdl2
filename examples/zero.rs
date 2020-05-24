@@ -2,7 +2,7 @@ extern crate guion_sdl2;
 
 use crate::guion_sdl2::qwutils::ResultNonDebugUnwrap;
 use guion::{
-    ctx::{Context as GuionContext, queue::StdEnqueueable},
+    ctx::{Context as GuionContext, queue::StdEnqueueable, queue::StdOrder},
     widget::*,
     widget::root::*,
     style::variant::StdVerb, render::link::RenderLink, layout::Orientation, util::bounds::Bounds,
@@ -13,7 +13,7 @@ use guion::{
 };
 use guion_sdl2::render::Render;
 use guion_sdl2::*;
-use crate::core::render_and_events;
+use crate::core::*;
 use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
 use simple::{
@@ -34,7 +34,7 @@ fn main() {
     //special bounds for progressbar and checkbox
     let pb_bounds = Size{x: SizeAxis::empty(), y: SizeAxis{min: 32, preferred: 64, max: Some(64), pressure: 1.0}};
     let cb_bounds = Size{x: SizeAxis::empty(), y: SizeAxis{min: 32, preferred: 32, max: Some(32), pressure: 1.0}};
-    
+
     //build a widget
     let g = Pane::new(
         StdID::new(),
@@ -96,27 +96,45 @@ fn main() {
     'running: loop {
         //wait/poll events
         if let Some(event) = c.pump.wait_event_timeout(200) {
-            match event {
-                Event::Quit { .. } => break 'running,
-                _ => {}
+            process_events::<SimpleEnv>(&mut stor, &mut c, StdOrder::PreEvents);
+
+            let mut feed = Some(event);
+            //process all pending events
+            while let Some(event) = feed {
+                match event {
+                    Event::Quit { .. } => break 'running,
+                    _ => {}
+                }
+
+                let rect = r.c.viewport();
+                let bounds = (rect.width(),rect.height());
+                let bbounds = &Bounds::from_xywh(0,0,bounds.0,bounds.1);
+
+                println!("{:?}",event);
+
+                process_events::<SimpleEnv>(&mut stor, &mut c, StdOrder::PreEvent);
+
+                //parse event
+                let parsed = parse_event::<SimpleEnv>(&event, bounds);
+
+                //feed event into context
+                c.link(stor.widget(root_path.clone()).unwrap())
+                    ._event_root(
+                        (parsed.event,bbounds,parsed.ts as u64)
+                    );
+
+                process_events::<SimpleEnv>(&mut stor, &mut c, StdOrder::PostCurrent);
+                process_events::<SimpleEnv>(&mut stor, &mut c, StdOrder::PostEvent);
+
+                feed = c.pump.poll_event();
             }
+
+            process_events::<SimpleEnv>(&mut stor, &mut c, StdOrder::PostEvents);
+
+            eprintln!("Render");
 
             let rect = r.c.viewport();
             let bounds = (rect.width(),rect.height());
-            let bbounds = &Bounds::from_xywh(0,0,bounds.0,bounds.1);
-
-            println!("{:?}",event);
-
-            //parse event
-            let parsed = parse_event::<SimpleEnv>(&event, bounds);
-
-            //feed event into context
-            c.link(stor.widget(root_path.clone()).unwrap())
-                ._event_root(
-                    (parsed.event,bbounds,parsed.ts as u64)
-                );
-
-            eprintln!("Render");
 
             //build the RenderLink
             let mut rl = RenderLink::simple(&mut r, bounds, &mut c);
@@ -141,7 +159,7 @@ fn button_action(mut l: Link<SimpleEnv>) {
         let i: u32 = w.text.parse().unwrap();
         w.text = (i+1).to_string();
     }
-    l.mutate(button_mutate, true);
+    l.mutate(button_mutate);
 
     fn update_pbar(s: &mut SimpleStor, _: &mut SimpleCtx) {
         let mut pbar = s.root.
@@ -150,5 +168,5 @@ fn button_action(mut l: Link<SimpleEnv>) {
         let pbar = pbar.downcast_mut::<ProgressBar<SimpleEnv>>().unwrap();
         pbar.value = (pbar.value+0.1)%1.0;
     }
-    l.enqueue(StdEnqueueable::MutateRoot{f: update_pbar});
+    l.enqueue(StdEnqueueable::MutateRoot{f: update_pbar}, StdOrder::PostCurrent, 0);
 }

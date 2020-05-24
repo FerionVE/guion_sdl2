@@ -26,8 +26,8 @@ impl GuionWidgets<SimpleEnv> for SimpleStor {
             stor: self,
         })
     }
-    fn _widget_mut<'a>(&'a mut self, i: StandardPath, invalidate: bool) -> Result<ResolvedMut<'a,SimpleEnv>,()> {
-        let o = resolve_in_root_mut(&mut *self.root, i, invalidate)?;
+    fn widget_mut<'a>(&'a mut self, i: StandardPath) -> Result<ResolvedMut<'a,SimpleEnv>,()> {
+        let o = resolve_in_root_mut(&mut *self.root, i)?;
         Ok(ResolvedMut{
             wref: o.0,
             path: o.1,

@@ -24,6 +24,8 @@ impl GuionKey for Key {
     const ENTER: Self = Self::Kbd(SDLScancode::Return);
     const SPACE: Self = Self::Kbd(SDLScancode::Space);
     const TAB: Self = Self::Kbd(SDLScancode::Tab);
+    const SHIFT: Self = Self::Kbd(SDLScancode::LShift);
+    const CTRL: Self = Self::Kbd(SDLScancode::LCtrl);
     const BACKSPACE: Self = Self::Kbd(SDLScancode::Backspace);
     const LEFT: Self = Self::Kbd(SDLScancode::Left);
     const RIGHT: Self = Self::Kbd(SDLScancode::Right);

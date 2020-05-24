@@ -1,11 +1,11 @@
 use super::*;
-use guion::{ctx::queue::{invalidate, validate, StdEnqueueable}, render::link::RenderLink};
+use guion::{ctx::queue::{invalidate, validate, StdEnqueueable, StdOrder}, render::link::RenderLink};
 use sdl2::EventPump;
 use sdl2::EventSubsystem;
 use sdl2::TimerSubsystem;
 use sdl2::VideoSubsystem;
 use sdl2::{Sdl};
-use std::collections::VecDeque;
+use std::collections::{HashMap, VecDeque};
 use rusttype::Font;
 use render::font::load_font;
 
@@ -34,10 +34,8 @@ where
 {
     pub event: EventSubsystem,
     pub timer: TimerSubsystem,
-    pub validate_render: Vec<E::WidgetPath>,
-    pub validate_size: Vec<(E::WidgetPath,ESize<E>)>,
-    pub invalidate: Vec<E::WidgetPath>,
-    pub mut_fn: VecDeque<StdEnqueueable<E>>,
+    pub queues: HashMap<StdOrder,Vec<(StdEnqueueable<E>,i64)>>,
+    pub force_render: bool,
 }
 
 impl<E> Core<E>
@@ -51,10 +49,8 @@ where
         let queue = Queue {
             event: event.clone(),
             timer: timer.clone(),
-            invalidate: Vec::with_capacity(4096),
-            validate_render: Vec::with_capacity(4096),
-            validate_size: Vec::with_capacity(4096),
-            mut_fn: VecDeque::with_capacity(4096),
+            queues: HashMap::new(),
+            force_render: true,
         };
         let video = sdl.video()?;
 
@@ -84,79 +80,61 @@ impl<E> AsRefMut<Self> for Core<E> where E: Env {
     }
 }
 
+pub fn process_events<E>(stor: &mut E::Storage, c: &mut E::Context, pass: StdOrder)
+where
+    E: Env,
+    ECQueue<E>: AsRefMut<Queue<E>>,
+{
+    if let Some(mut queue) = c.queue_mut().as_mut().queues.remove(&pass) {
+        queue.sort_by_key(|(_,p)| *p );
+
+        for (e,_) in queue {
+            match e {
+                StdEnqueueable::InvalidateWidget { path } => {
+                    invalidate::<E>(stor, path.clone()).expect("Lost Widget in invalidate");
+                },
+                StdEnqueueable::ValidateWidgetRender { path } => {
+                    validate::<E>(stor, path.clone()).expect("Lost Widget in invalidate");
+                },
+                StdEnqueueable::ValidateWidgetSize { path, size } => todo!(),
+                StdEnqueueable::Render { force } => {
+                    c.queue_mut().as_mut().force_render |= force;
+                },
+                StdEnqueueable::Event { event, ts } => todo!(),
+                StdEnqueueable::MutateWidget { path, f } => {
+                    let w = stor.widget_mut(path.clone()).expect("TODO");
+                    f(w.wref,c,path);
+                },
+                StdEnqueueable::MutateWidgetClosure { path, f } => {
+                    let w = stor.widget_mut(path.clone()).expect("TODO");
+                    f(w.wref,c,path);
+                },
+                StdEnqueueable::MutateRoot { f } => {
+                    f(stor,c)
+                },
+                StdEnqueueable::MutateRootClosure { f } => {
+                    f(stor,c)
+                },
+                StdEnqueueable::AccessWidget { path, f } => todo!(),
+                StdEnqueueable::AccessWidgetClosure { path, f } => todo!(),
+                StdEnqueueable::AccessRoot { f } => todo!(),
+                StdEnqueueable::AccessRootClosure { f } => todo!(),
+            }
+        }
+    }
+}
 /// render widget and process validation
 pub fn render_and_events<E>(r: &mut RenderLink<E>, w: E::WidgetPath, stor: &mut E::Storage, c: &mut E::Context)
 where
     E: Env,
     ECQueue<E>: AsRefMut<Queue<E>>,
 {
-    pre_render_events::<E>(stor, c);
+    process_events::<E>(stor, c, StdOrder::PreRender);
+    r.force |= c.queue().as_ref().force_render;
     let w = c.link(stor.widget(w).expect("Lost Widget in render"));
     r.render_widget(w);
-    post_render_events::<E>(stor, c);
-}
-
-pub fn pre_render_events<E>(stor: &mut E::Storage, c: &mut E::Context)
-where
-    E: Env,
-    ECQueue<E>: AsRefMut<Queue<E>>,
-{
-    
-
-    /*while let Some((p, f, i)) = c.queue_mut().as_mut().mut_fn.pop_front() {
-        let w = stor._widget_mut(p.refc(), i).expect("TODO");
-        f(w.wref,c);
-    };*/
-
-    while let Some(e) = c.queue_mut().as_mut().mut_fn.pop_front() {
-        match e {
-            StdEnqueueable::InvalidateWidget { path } => unreachable!(),
-            StdEnqueueable::ValidateWidgetRender { path } => unreachable!(),
-            StdEnqueueable::ValidateWidgetSize { path, size } => unreachable!(),
-            StdEnqueueable::Render { force } => (),
-            StdEnqueueable::Event { event, ts } => todo!(),
-            StdEnqueueable::MutateWidget { path, f, invalidate } => {
-                let w = stor._widget_mut(path.clone(), invalidate).expect("TODO");
-                f(w.wref,c,path);
-            },
-            StdEnqueueable::MutateWidgetClosure { path, f, invalidate } => {
-                let w = stor._widget_mut(path.clone(), invalidate).expect("TODO");
-                f(w.wref,c,path);
-            },
-            StdEnqueueable::MutateRoot { f } => {
-                f(stor,c)
-            },
-            StdEnqueueable::MutateRootClosure { f } => {
-                f(stor,c)
-            },
-            StdEnqueueable::AccessWidget { path, f } => todo!(),
-            StdEnqueueable::AccessWidgetClosure { path, f } => todo!(),
-            StdEnqueueable::AccessRoot { f } => todo!(),
-            StdEnqueueable::AccessRootClosure { f } => todo!(),
-        }
-    }
-
-    let q = c.queue_mut().as_mut();
-
-    for p in &q.invalidate {
-        invalidate::<E>(stor, p.clone()).expect("Lost Widget in invalidate");
-    }
-    q.invalidate.clear();
-}
-
-pub fn post_render_events<E>(stor: &mut E::Storage, c: &mut E::Context)
-where
-    E: Env,
-    ECQueue<E>: AsRefMut<Queue<E>>,
-{
-    let q = c.queue_mut().as_mut();
-
-    /*for p in &q.validate_size {
-        validate::<E>(stor, p.refc()).expect("Lost Widget in invalidate");
-    }
-    q.validate_size.clear();*/
-    for p in &q.validate_render {
-        validate::<E>(stor, p.clone()).expect("Lost Widget in invalidate");
-    }
-    q.validate_render.clear();
+    c.queue_mut().as_mut().force_render = false;
+    process_events::<E>(stor, c, StdOrder::RenderValidation);
+    process_events::<E>(stor, c, StdOrder::PostCurrent);
+    process_events::<E>(stor, c, StdOrder::PostRender);
 }
