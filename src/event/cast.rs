@@ -82,7 +82,7 @@ where
             x,
             y,
             direction,
-        } => ret(RootEvent::MouseScroll{x: (-*x)*8, y: (-*y)*4},Some(window_id),timestamp),
+        } => ret(RootEvent::MouseScroll{x: (-*x)*8, y: (-*y)*32},Some(window_id),timestamp),
         SDLEvent::JoyAxisMotion {
             timestamp,
             which,

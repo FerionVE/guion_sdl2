@@ -3,12 +3,16 @@ use crate::style::Style;
 use crate::event::{key::Key, destination::StdDest};
 use crate::render::Render;
 use guion::backend::Backend;
-use guion::{env::{EnvFlexStyleVariant, Env}, style::variant::standard::StdStyleVariant, event::dyn_evt::DynEvent, widget::{resolvable::{ResolvableMut, Resolvable}, as_widget::{AsWidgetMut, AsWidget}}};
+use guion::{env::{EnvFlexStyleVariant, Env}, style::variant::standard::StdStyleVariant, event::dyn_evt::DynEvent, widget::{resolvable::{ResolvableMut, Resolvable}, as_widget::{AsWidgetMut, AsWidget}}, widgets::util::state::{AtomStateXMut, AtomStateX}};
 use super::*;
 use sdl2::video::Window;
 use stor::SimpleStor;
 use valid::SimpleValidState;
 use ctx::SimpleCtx;
+
+use std::any::TypeId;
+use guion::state::handler::HandlerStateful;
+use guion::widgets::util::remote_state::*;
 
 #[derive(Clone,PartialEq)]
 pub struct SimpleEnv;
@@ -46,7 +50,10 @@ impl GuionDestination for SimpleDest {
     const INVALID: Self = Self{v: std::usize::MAX};
 }
 
-impl<'w> AsWidget<'w,SimpleEnv> for StandardPath {
+guion::impl_env_stds!(SimpleEnv);
+//guion::impl_remote_state!(u8,SimpleEnv);
+
+/*impl<'w> AsWidget<'w,SimpleEnv> for StandardPath {
     fn as_ref<'s>(&'s self) -> Resolvable<'s,SimpleEnv> where 'w: 's {
         Resolvable::Path(self.clone().into())
     }
@@ -61,4 +68,4 @@ impl<'w> AsWidgetMut<'w,SimpleEnv> for StandardPath {
     fn into_mut(self) -> ResolvableMut<'w,SimpleEnv> {
         ResolvableMut::Path(self.clone().into())
     }
-}
+}*/

@@ -78,12 +78,12 @@ impl<E> PreprocessedText<E> for PPText where
         let mut caret = point(0.0, v_metrics.ascent);
         let mut last_glyph_id = None;
         let mut max_x = 0f32;
-        for c in s.chars() {
+        for (i,c) in s.chars().enumerate() {
             if c.is_control() {
                 match c {
                     '\r' | '\n' => {
                         max_x = max_x.max(caret.x);
-                        current_line.push(Glyph::Placeholder(caret));
+                        current_line.push(Glyph::Placeholder(caret,i));
 
                         let rect = Rect{
                             min: Point{x: 0.0, y: caret.y - v_metrics.ascent}, //TODO
@@ -112,14 +112,14 @@ impl<E> PreprocessedText<E> for PPText where
                 }*/
             }
             caret.x += glyph.unpositioned().h_metrics().advance_width;
-            current_line.push(Glyph::Glyph(glyph));
+            current_line.push(Glyph::Glyph(glyph,i));
         }
         let rect = Rect{
             min: Point{x: 0.0, y: caret.y - v_metrics.ascent}, //TODO
             max: Point{x: caret.x, y: caret.y - v_metrics.descent},
         };
         
-        current_line.push(Glyph::Placeholder(caret));
+        current_line.push(Glyph::Placeholder(caret,s.len()));
         result.push((current_line,rect));
         max_x = max_x.max(caret.x);
 
@@ -135,21 +135,21 @@ impl<E> PreprocessedText<E> for PPText where
 }
 
 pub enum Glyph {
-    Glyph(PositionedGlyph<'static>),
-    Placeholder(Point<f32>),
+    Glyph(PositionedGlyph<'static>,usize),
+    Placeholder(Point<f32>,usize),
 }
 
 impl Glyph {
     pub fn glyph(&self) -> Option<&PositionedGlyph<'static>> {
         match self {
-            Glyph::Glyph(g) => Some(g),
+            Glyph::Glyph(g,_) => Some(g),
             _ => None,
         }
     }
 
     pub fn as_pp_char(&self) -> PPChar {
         match self {
-            Glyph::Glyph(g) => {
+            Glyph::Glyph(g,str_pos) => {
                 PPChar{
                     bounds: g.pixel_bounding_box().map(|bb|
                         Bounds::from_xywh(bb.min.x,bb.min.y,bb.width() as u32,bb.height() as u32) //TODO fix sign conversion
@@ -157,16 +157,18 @@ impl Glyph {
                     offset: Offset{
                         x: g.position().x as i32,
                         y: g.position().y as i32,
-                    }
+                    },
+                    str_pos: *str_pos,
                 }
             }
-            Glyph::Placeholder(p) => {
+            Glyph::Placeholder(p,str_pos) => {
                 PPChar{
                     bounds: None,
                     offset: Offset{
                         x: p.x as i32,
                         y: p.y as i32,
-                    }
+                    },
+                    str_pos: *str_pos,
                 }
             }
         }
