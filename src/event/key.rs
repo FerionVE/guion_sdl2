@@ -31,6 +31,10 @@ impl GuionKey for Key {
     const RIGHT: Self = Self::Kbd(SDLScancode::Right);
     const UP: Self = Self::Kbd(SDLScancode::Up);
     const DOWN: Self = Self::Kbd(SDLScancode::Down);
+    const A: Self = Self::Kbd(SDLScancode::A);
+    const X: Self = Self::Kbd(SDLScancode::X);
+    const C: Self = Self::Kbd(SDLScancode::C);
+    const V: Self = Self::Kbd(SDLScancode::V);
 
     fn origin(&self) -> Self::Origin {
         match self {
