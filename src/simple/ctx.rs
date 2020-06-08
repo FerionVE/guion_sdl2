@@ -2,9 +2,10 @@ use super::*;
 use guion::handler::standard::StdHandler;
 use crate::handler::Handler;
 use crate::simple::env::SimpleEnv;
-use guion::state::handler::AsHandlerStateful;
+use guion::{ctx::clipboard::CtxClipboardAccess, state::handler::AsHandlerStateful};
 use crate::core::Queue;
 use style::Style;
+use qwutils::imp::boolext::BoolExtOption;
 
 pub struct SimpleCtx {
     pub handler: StdHandler<Handler<(),SimpleEnv>,SimpleEnv>,
@@ -87,5 +88,16 @@ impl Deref for SimpleCtx {
 impl DerefMut for SimpleCtx {
     fn deref_mut(&mut self) -> &mut Self::Target {
         AsRefMut::as_mut(self)
+    }
+}
+
+//TODO move to handler of different
+impl CtxClipboardAccess<SimpleEnv> for SimpleCtx {
+    fn clipboard_set_text(&mut self, v: &str) {
+        self.clipboard.set_clipboard_text(v).unwrap();
+    }
+    fn clipboard_get_text(&mut self) -> Option<String> {
+        self.clipboard.has_clipboard_text()
+            .map(|| self.clipboard.clipboard_text().unwrap() )
     }
 }

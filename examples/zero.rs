@@ -73,7 +73,7 @@ fn main() {
             ),
             TextBox::new(StdID::new()),
             ("Immediate Label".to_owned(),StdID::new()),
-            ("Immediate TextBox".to_owned(),StdID::new(),(0,0),Cursor::default()),
+            ("Immediate TextBox".to_owned(),StdID::new(),(0,0),Cursor::default(),None),
         ),
     );
 

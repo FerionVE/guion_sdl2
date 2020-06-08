@@ -30,12 +30,12 @@ impl<'w> AsWidgetMut<'w,SimpleEnv> for (String,StdID) {
     }
 }
 
-impl<'w> AsWidget<'w,SimpleEnv> for (String,StdID,(u32,u32),Cursor) {
+impl<'w> AsWidget<'w,SimpleEnv> for (String,StdID,(u32,u32),Cursor,Option<u32>) {
     fn as_ref<'s>(&'s self) -> guion::widget::resolvable::Resolvable<'s,SimpleEnv> where 'w: 's {
         Resolvable::Widget(
             TextBox::new(self.1.clone())
             .with_text(&self.0)
-            .with_states(&self.2, &self.3)
+            .with_states(&self.2, &self.3, &self.4)
             .boxed_ref()
         )
     }
@@ -44,12 +44,12 @@ impl<'w> AsWidget<'w,SimpleEnv> for (String,StdID,(u32,u32),Cursor) {
     }
 }
 
-impl<'w> AsWidgetMut<'w,SimpleEnv> for (String,StdID,(u32,u32),Cursor) {
+impl<'w> AsWidgetMut<'w,SimpleEnv> for (String,StdID,(u32,u32),Cursor,Option<u32>) {
     fn as_mut<'s>(&'s mut self) -> guion::widget::resolvable::ResolvableMut<'s,SimpleEnv> where 'w: 's {
         ResolvableMut::Widget(
             TextBox::new(self.1.clone())
             .with_text(&mut self.0)
-            .with_states(&mut self.2, &mut self.3)
+            .with_states(&mut self.2, &mut self.3, &mut self.4)
             .boxed()
         )
     }

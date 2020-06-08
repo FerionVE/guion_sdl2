@@ -4,7 +4,7 @@ use sdl2::EventPump;
 use sdl2::EventSubsystem;
 use sdl2::TimerSubsystem;
 use sdl2::VideoSubsystem;
-use sdl2::{Sdl};
+use sdl2::{Sdl, clipboard::ClipboardUtil};
 use std::collections::{HashMap, VecDeque};
 use rusttype::Font;
 use render::font::load_font;
@@ -21,6 +21,7 @@ where
     pub video: VideoSubsystem,
     pub timer: TimerSubsystem,
     pub event: EventSubsystem,
+    pub clipboard: ClipboardUtil,
     pub pump: EventPump,
     pub queue: Queue<E>,
     pub default_border: Border,
@@ -53,6 +54,7 @@ where
             force_render: true,
         };
         let video = sdl.video()?;
+        let clipboard = video.clipboard();
 
         let default_border = Border::new(4, 4, 4, 4);
         let default_style = EStyle::<E>::static_default();
@@ -63,6 +65,7 @@ where
             timer,
             queue,
             video,
+            clipboard,
             sdl,
             default_border,
             default_style,
