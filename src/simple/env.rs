@@ -3,7 +3,7 @@ use crate::style::Style;
 use crate::event::{key::Key, destination::StdDest};
 use crate::render::Render;
 use guion::backend::Backend;
-use guion::{env::{EnvFlexStyleVariant, Env}, style::variant::standard::StdStyleVariant, event::dyn_evt::DynEvent, widget::{resolvable::{ResolvableMut, Resolvable}, as_widget::{AsWidgetMut, AsWidget}}, widgets::util::state::{AtomStateXMut, AtomStateX}};
+use guion::{env::{EnvFlexStyleVariant, Env}, style::variant::standard::StdStyleVariant, event::dyn_evt::DynEvent, widget::{resolvable::{ResolvableMut, Resolvable}, as_widget::{AsWidgetMut, AsWidget}}};
 use super::*;
 use sdl2::video::Window;
 use stor::SimpleStor;
