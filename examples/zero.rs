@@ -18,18 +18,14 @@ use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
 use simple::{
     env::{SimpleEnv},
-    stor::SimpleStor, ctx::SimpleCtx, StandardPath,
+    stor::SimpleStor, ctx::SimpleCtx, StandardPath, Simplion,
 };
 use event::cast::parse_event;
 use link::Link;
 
 //minimal example using the simple module
 fn main() {
-    //initialze sdl
-    let sdl = sdl2::init().unwrap();
-
-    //create a SimpleCtx context
-    let mut c = SimpleCtx::from_sdl2(sdl).unwrap();
+    let mut simplion = Simplion::new();
 
     //special bounds for progressbar and checkbox
     let pb_bounds = Size{x: SizeAxis::empty(), y: SizeAxis{min: 32, preferred: 64, max: Some(64), pressure: 1.0}};
@@ -77,12 +73,9 @@ fn main() {
         ),
     );
 
-    let root_path = StandardPath::new(&[]);
-    //build the widget tree root
-    let mut stor = SimpleStor::new(Box::new(g));
 
     //create a sdl window
-    let window = c
+    let window = simplion.ctx
         .video
         .window("GUION_SDL2", 820, 440)
         .resizable()
@@ -90,68 +83,9 @@ fn main() {
         .build()
         .unwrap();
 
-    //retrieve the canvas and build the renderer
-    let canvas = window.into_canvas().build().unwrap();
-    let mut r = Render::from_canvas(canvas);
+    simplion.push_window(window, g);
 
-    //main loop
-    'running: loop {
-        //wait/poll events
-        if let Some(event) = c.pump.wait_event_timeout(200) {
-            process_events::<SimpleEnv>(&mut stor, &mut c, StdOrder::PreEvents);
-
-            let mut feed = Some(event);
-            //process all pending events
-            while let Some(event) = feed {
-                match event {
-                    Event::Quit { .. } => break 'running,
-                    _ => {}
-                }
-
-                let rect = r.c.viewport();
-                let bounds = (rect.width(),rect.height());
-                let bbounds = &Bounds::from_xywh(0,0,bounds.0,bounds.1);
-
-                println!("{:?}",event);
-
-                process_events::<SimpleEnv>(&mut stor, &mut c, StdOrder::PreEvent);
-
-                //parse event
-                let parsed = parse_event::<SimpleEnv>(&event, bounds);
-
-                //feed event into context
-                c.link(stor.widget(root_path.clone()).unwrap())
-                    ._event_root(
-                        (parsed.event,bbounds,parsed.ts as u64)
-                    );
-
-                process_events::<SimpleEnv>(&mut stor, &mut c, StdOrder::PostCurrent);
-                process_events::<SimpleEnv>(&mut stor, &mut c, StdOrder::PostEvent);
-
-                feed = c.pump.poll_event();
-            }
-
-            process_events::<SimpleEnv>(&mut stor, &mut c, StdOrder::PostEvents);
-
-            eprintln!("Render");
-
-            let rect = r.c.viewport();
-            let bounds = (rect.width(),rect.height());
-
-            //build the RenderLink
-            let mut rl = RenderLink::simple(&mut r, bounds, &mut c);
-            //fill background
-            rl.with(&[StdVerb::ObjBackground])
-                .fill_rect();
-            //process queued and render
-            render_and_events::<SimpleEnv>(&mut rl, root_path.clone(), &mut stor, &mut c);
-
-            r.update_cursor();
-
-            //let sdl render it
-            r.present();
-        }
-    }
+    while simplion.do_events() {}
 }
 
 fn button_action(mut l: Link<SimpleEnv>) {
@@ -164,7 +98,7 @@ fn button_action(mut l: Link<SimpleEnv>) {
     l.mutate(button_mutate);
 
     fn update_pbar(s: &mut SimpleStor, _: &mut SimpleCtx) {
-        let mut pbar = s.root.
+        let mut pbar = s.roots[0].
             child_mut(2).unwrap()
             .as_widget().unwrap_nodebug();
         let pbar = pbar.downcast_mut::<ProgressBar<SimpleEnv>>().unwrap();

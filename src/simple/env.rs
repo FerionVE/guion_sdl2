@@ -31,7 +31,7 @@ impl EnvFlexStyleVariant for SimpleEnv {
 }
 
 impl Backend<SimpleEnv> for SimpleBackend {
-    type Renderer = Render<Window>;
+    type Renderer = Render;
     type Event = DynEvent<SimpleEnv,Key,StdDest<SimpleDest>>; //TODO ditch Consuming
     type Style = Style;
     type Size = Size;

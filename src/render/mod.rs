@@ -1,5 +1,5 @@
 use sdl2::render::Canvas;
-use sdl2::{mouse::SystemCursor, render::{Texture, RenderTarget}};
+use sdl2::{mouse::SystemCursor, render::{Texture, RenderTarget, WindowCanvas}};
 use super::*;
 use util::RenderSurface;
 use rusttype::Font;
@@ -9,8 +9,9 @@ pub mod imp;
 pub mod font;
 pub mod util;
 
-pub struct Render<C> where C: RenderTarget, Canvas<C>: RenderSurface {
-    pub c: Canvas<C>,
+pub struct Render {
+    pub windows: Vec<WindowCanvas>,
+    pub current: usize,
     pub cursor: SystemCursor,
     pub set_cursor: SystemCursor,
     pub curse: Option<SDLCursor>,
@@ -18,10 +19,11 @@ pub struct Render<C> where C: RenderTarget, Canvas<C>: RenderSurface {
     pub cache_tex: Option<Texture<'static>>,
 }
 
-impl<C> Render<C> where C: RenderTarget, Canvas<C>: RenderSurface {
-    pub fn from_canvas(c: Canvas<C>) -> Self {
+impl Render {
+    pub fn new() -> Self {
         Self{
-            c,
+            windows: Vec::new(),
+            current: 0,
             cursor: SystemCursor::Arrow,
             set_cursor: SystemCursor::Arrow,
             curse: None,
@@ -41,28 +43,17 @@ impl<C> Render<C> where C: RenderTarget, Canvas<C>: RenderSurface {
         self.set_cursor = self.cursor;
             self.cursor = SystemCursor::Arrow;
     }
+
+    pub fn window_by_id(&self, window_id: u32) -> Option<usize> {
+        self.windows.iter()
+            .enumerate()
+            .filter(|(_,w)| w.window().id() == window_id )
+            .map(|(i,_)| i )
+            .next()
+    }
 }
 
-impl<C> Deref for Render<C> where C: RenderTarget, Canvas<C>: RenderSurface {
-    type Target = Canvas<C>;
-    fn deref(&self) -> &Self::Target {
-        &self.c
-    }
-}
-impl<C> DerefMut for Render<C> where C: RenderTarget, Canvas<C>: RenderSurface {
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.c
-    }
-}
-impl<C> AsRefMut<Canvas<C>> for Render<C> where C: RenderTarget, Canvas<C>: RenderSurface {
-    fn as_ref(&self) -> &Canvas<C> {
-        &self.c
-    }
-    fn as_mut(&mut self) -> &mut Canvas<C> {
-        &mut self.c
-    }
-}
-impl<C> AsRefMut<Self> for Render<C> where C: RenderTarget, Canvas<C>: RenderSurface {
+impl AsRefMut<Self> for Render {
     fn as_ref(&self) -> &Self {
         self
     }

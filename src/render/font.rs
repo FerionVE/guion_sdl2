@@ -3,7 +3,7 @@ use rusttype::*;
 use sdl2::{render::BlendMode, pixels::PixelFormatEnum};
 use guion::util::bounds::Dims;
 
-impl<C> Render<C> where C: RenderTarget, Canvas<C>: RenderSurface {
+impl Render {
     //TODO: integrate gpu_cache later
     pub fn render_glyphs<G: Into<PositionedGlyph<'static>>>(&mut self, b: Bounds, o: Offset, color: SDLColor, gs: impl Iterator<Item=G>) -> Result<(),String> {
         //check for conservative in-bounds
@@ -27,7 +27,7 @@ impl<C> Render<C> where C: RenderTarget, Canvas<C>: RenderSurface {
         
         //generate the texture if none
         if self.cache_tex.is_none() {
-            let mut t = self.c.create_cache_tex(self.cache.dimensions(), PixelFormatEnum::ARGB8888)?;
+            let mut t = self.windows[self.current].create_cache_tex(self.cache.dimensions(), PixelFormatEnum::ARGB8888)?;
             t.set_blend_mode(BlendMode::Blend);
             self.cache_tex = Some(t);
         }
@@ -89,7 +89,7 @@ impl<C> Render<C> where C: RenderTarget, Canvas<C>: RenderSurface {
 
                     //eprintln!("{}_{}_{}_{} to {}_{}_{}_{}",src.x(),src.y(),src.width(),src.height(),dest.x(),dest.y(),dest.width(),dest.height());
 
-                    self.c.copy(tex_ref, src, dest)?;
+                    self.windows[self.current].copy(tex_ref, src, dest)?;
                 }
             }
         }

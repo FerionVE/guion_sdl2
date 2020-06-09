@@ -7,11 +7,11 @@ use style::{cursor::to_sdl_cursor, Style, font::PPText};
 use font::glyphs_of_str;
 use rusttype::Scale;
 
-impl<E,C> GuionRender<E> for Render<C> where E: Env, ERenderer<E>: AsRefMut<Self>, C: RenderTarget, Canvas<C>: RenderSurface {
+impl<E> GuionRender<E> for Render where E: Env, ERenderer<E>: AsRefMut<Self> {
 
 }
 
-impl<E,C> RenderStdWidgets<E> for Render<C> where
+impl<E> RenderStdWidgets<E> for Render where
     E: Env + Sync,
     ERenderer<E>: AsRefMut<Self>,
     EStyle<E>: AsRefMut<Style>,
@@ -19,24 +19,25 @@ impl<E,C> RenderStdWidgets<E> for Render<C> where
     ESColor<E>: Into<Color>,
     ESCursor<E>: Into<StdCursor>,
     E::Context: AsRefMut<Core<E>>,
-    C: RenderTarget, Canvas<C>: RenderSurface,
 {
     #[inline]
     fn fill_rect(&mut self, b: &Bounds, c: ESColor<E>) {
         if let Some(b) = to_rect(b) {
-            self.c.set_blend_mode(BlendMode::None);
-            self.c.set_draw_color(c.into().v);
-            self.c.fill_rect(Some(b)).expect("SDL Render Failure @ fill_rect");
+            let r = &mut self.windows[self.current];
+            r.set_blend_mode(BlendMode::None);
+            r.set_draw_color(c.into().v);
+            r.fill_rect(Some(b)).expect("SDL Render Failure @ fill_rect");
         }
     }
     #[inline]
     fn border_rect(&mut self, b: &Bounds, c: ESColor<E>, thickness: u32) {
         if thickness == 0 {return;}
-        self.c.set_blend_mode(BlendMode::None);
-        self.c.set_draw_color(c.into().v);
+        let x = &mut self.windows[self.current];
+        x.set_blend_mode(BlendMode::None);
+        x.set_draw_color(c.into().v);
         for i in 0..thickness {
             if let Some(r) = to_rect(&b.step(i as i32)) {
-                self.c.draw_rect(r).expect("SDL Render Failure @ draw_rect");
+                x.draw_rect(r).expect("SDL Render Failure @ draw_rect");
             }
         }
     }
