@@ -1,9 +1,7 @@
-use sdl2::render::Canvas;
-use sdl2::{mouse::SystemCursor, render::{Texture, RenderTarget, WindowCanvas}};
+use sdl2::{mouse::SystemCursor, render::{Texture, WindowCanvas}};
 use super::*;
 use util::RenderSurface;
 use rusttype::Font;
-use font::load_font;
 
 pub mod imp;
 pub mod font;

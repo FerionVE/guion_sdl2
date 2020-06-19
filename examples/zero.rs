@@ -2,25 +2,19 @@ extern crate guion_sdl2;
 
 use crate::guion_sdl2::qwutils::ResultNonDebugUnwrap;
 use guion::{
-    ctx::{Context as GuionContext, queue::StdEnqueueable, queue::StdOrder},
+    ctx::{queue::StdEnqueueable, queue::StdOrder},
     widget::*,
-    widget::root::*,
-    style::variant::StdVerb, render::link::RenderLink, layout::Orientation, util::bounds::Bounds,
+    layout::Orientation,
     layout::*,
     widgets::{pane::Pane, button::Button, label::Label, pbar::ProgressBar, checkbox::CheckBox, splitpane::SplitPane, textbox::{state::Cursor, TextBox}},
     id::standard::StdID,
     aliases::WidgetRefMut,
 };
-use guion_sdl2::render::Render;
 use guion_sdl2::*;
-use crate::core::*;
-use sdl2::event::Event;
-use sdl2::keyboard::Keycode;
 use simple::{
     env::{SimpleEnv},
     stor::SimpleStor, ctx::SimpleCtx, StandardPath, Simplion,
 };
-use event::cast::parse_event;
 use link::Link;
 
 //minimal example using the simple module
@@ -98,8 +92,8 @@ fn button_action(mut l: Link<SimpleEnv>) {
     l.mutate(button_mutate);
 
     fn update_pbar(s: &mut SimpleStor, _: &mut SimpleCtx) {
-        let mut pbar = s.roots[0].
-            child_mut(2).unwrap()
+        let mut pbar = s.roots[0].0
+            .child_mut(2).unwrap()
             .as_widget().unwrap_nodebug();
         let pbar = pbar.downcast_mut::<ProgressBar<SimpleEnv>>().unwrap();
         pbar.value = (pbar.value+0.1)%1.0;

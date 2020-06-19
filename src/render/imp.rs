@@ -4,8 +4,6 @@ use sdl2::render::BlendMode;
 use guion::{style::variant::standard::StdCursor, render::widgets::RenderStdWidgets};
 use super::*;
 use style::{cursor::to_sdl_cursor, Style, font::PPText};
-use font::glyphs_of_str;
-use rusttype::Scale;
 
 impl<E> GuionRender<E> for Render where E: Env, ERenderer<E>: AsRefMut<Self> {
 

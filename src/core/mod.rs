@@ -5,7 +5,7 @@ use sdl2::EventSubsystem;
 use sdl2::TimerSubsystem;
 use sdl2::VideoSubsystem;
 use sdl2::{Sdl, clipboard::ClipboardUtil};
-use std::collections::{HashMap, VecDeque};
+use std::collections::HashMap;
 use rusttype::Font;
 use render::font::load_font;
 

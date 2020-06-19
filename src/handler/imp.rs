@@ -1,4 +1,4 @@
-use guion::render::link::RenderLink;
+use guion::{EventResp, render::link::RenderLink, event::compound::EventCompound};
 use super::*;
 
 impl<S,E> GuionHandler<E> for Handler<S,E> where S: GuionHandler<E>, E: Env + Sync {
@@ -8,18 +8,20 @@ impl<S,E> GuionHandler<E> for Handler<S,E> where S: GuionHandler<E>, E: Env + Sy
         //todo!() //TODO impl everything
     }
     #[inline] 
-    fn _event(l: Link<E>, e: (EEvent<E>,&Bounds,u64)) {
-        S::_event(l,e);
-        //todo!()
+    fn _event_direct(l: Link<E>, e: &EventCompound<E>) -> EventResp {
+        S::_event_direct(l,e)
     }
     #[inline] 
-    fn _event_root(l: Link<E>, e: (EEvent<E>,&Bounds,u64)) {
-        S::_event_root(l,e);
-        //todo!()
+    fn _event_root(l: Link<E>, e: &EventCompound<E>) -> EventResp {
+        S::_event_root(l,e)
     }
     #[inline] 
     fn _size(l: Link<E>) -> ESize<E> {
         //todo!();
         S::_size(l)
+    }
+    #[inline]
+    fn _send_event(l: Link<E>, e: &EventCompound<E>, child: E::WidgetPath) -> Result<EventResp,()> {
+        S::_send_event(l,e,child)
     }
 }

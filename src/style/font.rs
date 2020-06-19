@@ -3,7 +3,6 @@ use std::path::Path;
 use guion::util::bounds::Offset;
 use guion::util::bounds::Dims;
 use guion::style::font::*;
-use guion::backend::Backend;
 use super::*;
 use rusttype::*;
 #[derive(Clone,PartialEq)]

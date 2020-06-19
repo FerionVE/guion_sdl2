@@ -34,14 +34,12 @@ impl<E> GuionStyle<E> for Style where
         v.clone().into().cursor()
     }
     fn color(&self, v: &Self::Variant) -> Self::Color {
-        /*if v.clone().into().hovered {
-            Color::from_rgba8([127,0,255,255])
-        }else{
-            Color::from_rgba8([127,0,0,255])
-        }*/
-
         Color::from_rgba8(stupid_colors(v.clone().into()))
     }
+    fn border(&self, v: &Self::Variant) -> Border {
+        todo!()
+    }
+
     fn preprocess_text(&self, s: &str, c: &mut E::Context) -> Self::PreprocessedText {
         todo!()
     }
