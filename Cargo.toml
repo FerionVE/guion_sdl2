@@ -19,7 +19,7 @@ readme = "README.md"
 guion = { version = "0.2.0-dev2", git = "https://github.com/FerionVE/guion", rev = "0eec2cba746a18ddc7b5f440376f910debd98d4e" }
 #guion = { path = "../guion" }
 #TODO qwutils should export qwutils
-qwutils = { version = "0.2.0", git = "https://github.com/qwertz19281/rust_utils", rev = "d58605ccbbbe4931c122d5b5002251e6e8a47e78" }
+qwutils = { version = "0.2.0", git = "https://github.com/qwertz19281/rust_utils", rev = "ffb307c0a5a293aac82250cdd0f3510655e0e07d" }
 #qwutils = { path = "../qwutils" }
 
 [dependencies.sdl2]
