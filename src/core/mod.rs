@@ -26,6 +26,7 @@ where
     pub queue: Queue<E>,
     pub default_border: Border,
     pub default_style: EStyle<E>,
+    pub default_thicc: u32,
     pub font: Font<'static>,
 }
 
@@ -56,8 +57,9 @@ where
         let video = sdl.video()?;
         let clipboard = video.clipboard();
 
-        let default_border = Border::new(4, 4, 4, 4);
+        let default_border = Border::new(2, 2, 2, 2);
         let default_style = EStyle::<E>::static_default();
+        let default_thicc = 1;
 
         Ok(Self {
             event,
@@ -69,6 +71,7 @@ where
             sdl,
             default_border,
             default_style,
+            default_thicc,
             font: load_font(),
         })
     }

@@ -2,7 +2,7 @@ use super::*;
 use guion::handler::standard::StdHandler;
 use crate::handler::Handler;
 use crate::simple::env::SimpleEnv;
-use guion::{ctx::clipboard::CtxClipboardAccess, state::handler::AsHandlerStateful};
+use guion::{ctx::clipboard::CtxClipboardAccess, state::CtxStdState};
 use crate::core::Queue;
 use style::Style;
 use qwutils::imp::boolext::BoolExtOption;
@@ -50,6 +50,9 @@ impl GuionContext<SimpleEnv> for SimpleCtx {
     fn default_border(&self) -> &Border {
         &self.default_border
     }
+    fn default_thicc(&self) -> u32 {
+        self.default_thicc
+    }
 }
 
 impl AsRefMut<SimpleHandler> for SimpleCtx {
@@ -68,12 +71,12 @@ impl AsRefMut<Core<SimpleEnv>> for SimpleCtx {
         &mut self.handler.sup.inner
     }
 }
-impl AsHandlerStateful<SimpleEnv> for SimpleCtx {
+impl CtxStdState<SimpleEnv> for SimpleCtx {
     type T = SimpleHandler;
-    fn stateful_mut(&mut self) -> &mut Self::T {
+    fn state_mut(&mut self) -> &mut Self::T {
         &mut self.handler
     }
-    fn stateful(&self) -> &Self::T {
+    fn state(&self) -> &Self::T {
         &self.handler
     }
 }
