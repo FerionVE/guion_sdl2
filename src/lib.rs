@@ -61,6 +61,6 @@ use guion::render::Render as GuionRender;
 use sdl2::pixels::Color as SDLColor;
 use guion::style::color::Color as GuionColor;
 
-use guion::style::Style as GuionStyle;
+use guion::style::StyleProvider as GuionStyleProvider;
 
 use crate::core::*;

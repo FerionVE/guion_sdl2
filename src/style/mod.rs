@@ -1,6 +1,6 @@
 use crate::style::color::Color;
 use crate::style::font::Font;
-use crate::style::font::PPText;
+use crate::style::font::Glyphs;
 use guion::{env::EnvFlexStyleVariant, style::{variant::{StyleVariantSupport, StdVerb, StyleVariantGetStdCursor}, variant::standard::{StdCursor, StdStyleVariant, Obj}}};
 use super::*;
 
@@ -15,7 +15,7 @@ pub struct Style {
     cursor: StdCursor,
 }
 
-impl<E> GuionStyle<E> for Style where
+impl<E> GuionStyleProvider<E> for Style where
     E: Env + EnvFlexStyleVariant + Sync,
     E::Backend: GuionBackend<E,Style=Self>,
     E::StyleVariant: Into<StdStyleVariant>,
@@ -24,7 +24,7 @@ impl<E> GuionStyle<E> for Style where
     type Font = Font;
     type Cursor = StdCursor;
     type Color = Color;
-    type PreprocessedText = PPText;
+    type Glyphs = Glyphs;
     type Variant = E::StyleVariant;
 
     fn font(&self, v: &Self::Variant) -> Option<&Self::Font> {
@@ -40,12 +40,12 @@ impl<E> GuionStyle<E> for Style where
         todo!()
     }
 
-    fn preprocess_text(&self, s: &str, c: &mut E::Context) -> Self::PreprocessedText {
+    fn preprocess_text(&self, s: &str, c: &mut E::Context) -> Self::Glyphs {
         todo!()
     }
 
     #[inline]
-    fn is_cached_valid(&self, s: &Self::PreprocessedText, _c: &mut E::Context) -> bool {
+    fn is_cached_valid(&self, s: &Self::Glyphs, _c: &mut E::Context) -> bool {
         todo!()
     }
 

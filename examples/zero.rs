@@ -23,7 +23,7 @@ fn main() {
 
     //special bounds for progressbar and checkbox
     let pb_bounds = Size{x: SizeAxis::empty(), y: SizeAxis{min: 32, preferred: 64, max: Some(64), pressure: 1.0}};
-    let cb_bounds = Size{x: SizeAxis::empty(), y: SizeAxis{min: 32, preferred: 32, max: Some(32), pressure: 1.0}};
+    let cb_bounds = Size{x: SizeAxis::empty(), y: SizeAxis::fixed(24)};
 
     //build a widget
     let g = Pane::new(

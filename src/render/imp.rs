@@ -3,7 +3,7 @@ use sdl2::rect::Rect;
 use sdl2::render::BlendMode;
 use guion::{style::variant::standard::StdCursor, render::widgets::RenderStdWidgets};
 use super::*;
-use style::{cursor::to_sdl_cursor, Style, font::PPText};
+use style::{cursor::to_sdl_cursor, Style, font::Glyphs};
 
 impl<E> GuionRender<E> for Render where E: Env, ERenderer<E>: AsRefMut<Self> {
 
@@ -13,7 +13,7 @@ impl<E> RenderStdWidgets<E> for Render where
     E: Env + Sync,
     ERenderer<E>: AsRefMut<Self>,
     EStyle<E>: AsRefMut<Style>,
-    ESPPText<E>: AsRefMut<PPText>,
+    ESGlyphs<E>: AsRefMut<Glyphs>,
     ESColor<E>: Into<Color>,
     ESCursor<E>: Into<StdCursor>,
     E::Context: AsRefMut<Core<E>>,
@@ -55,7 +55,7 @@ impl<E> RenderStdWidgets<E> for Render where
         }
     }*/
     #[inline]
-    fn render_preprocessed_text(&mut self, b: &Bounds, text: &ESPPText<E>, inner_offset: Offset, style: &EStyle<E>, variant: &ESVariant<E>, c: &mut E::Context) {
+    fn render_preprocessed_text(&mut self, b: &Bounds, text: &ESGlyphs<E>, inner_offset: Offset, style: &EStyle<E>, variant: &ESVariant<E>, c: &mut E::Context) {
         if b.not_empty() {
             let color = style.color(variant);
             let g = text.as_ref().iter_glyphs();

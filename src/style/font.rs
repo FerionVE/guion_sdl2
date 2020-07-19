@@ -1,8 +1,9 @@
 use sdl2::pixels::Color;
 use std::path::Path;
 use guion::util::bounds::Offset;
-use guion::util::bounds::Dims;
-use guion::style::font::*;
+use guion::util::{bounds::Dims};
+use guion::style::font::Glyphs as GuionGlyphs;
+use guion::style::font::{GlyphInfo,CrazyWorkaroundPPIter};
 use super::*;
 use rusttype::*;
 #[derive(Clone,PartialEq)]
@@ -26,7 +27,7 @@ pub enum FontRender {
     BlendedWrapped(Color,u32),
 }
 
-pub struct PPText {
+pub struct Glyphs {
     lines: Vec<(Vec<Glyph>,Rect<f32>)>,
     size: Vector<f32>,
     ascent: u32,
@@ -34,11 +35,12 @@ pub struct PPText {
     distance: u32,
 }
 
-impl<E> PreprocessedText<E> for PPText where
+impl<E> GuionGlyphs<E> for Glyphs where
     E: Env + EnvFlexStyleVariant + Sync,
-    EStyle<E>: GuionStyle<E,PreprocessedText=Self>,
     E::Context: AsRefMut<Core<E>>
 {
+    type Glyph = GlyphInfo;
+
     fn size(&self) -> Dims { 
         Dims{
             w: self.size.x as u32,
@@ -54,14 +56,14 @@ impl<E> PreprocessedText<E> for PPText where
     fn line_distance(&self) -> u32 {
         self.distance
     }
-    fn lines<'s>(&'s self) -> CrazyWorkaroundPPIter<'s> {
+    fn lines<'s>(&'s self) -> CrazyWorkaroundPPIter<'s,GlyphInfo> {
         let iter = self.lines.iter()
             .map(|(chars,size)| {
             (
                 Box::new(
                     chars.iter()
                     .map(Glyph::as_pp_char)
-                ) as Box<dyn Iterator<Item=PPChar>>,
+                ) as Box<dyn Iterator<Item=GlyphInfo>>,
                 Bounds::from_xywh(size.min.x as i32,size.min.y as i32,size.width() as u32,size.height() as u32),
             )
         });
@@ -146,10 +148,10 @@ impl Glyph {
         }
     }
 
-    pub fn as_pp_char(&self) -> PPChar {
+    pub fn as_pp_char(&self) -> GlyphInfo {
         match self {
             Glyph::Glyph(g,str_pos) => {
-                PPChar{
+                GlyphInfo{
                     bounds: g.pixel_bounding_box().map(|bb|
                         Bounds::from_xywh(bb.min.x,bb.min.y,bb.width() as u32,bb.height() as u32) //TODO fix sign conversion
                     ),
@@ -161,7 +163,7 @@ impl Glyph {
                 }
             }
             Glyph::Placeholder(p,str_pos) => {
-                PPChar{
+                GlyphInfo{
                     bounds: None,
                     offset: Offset{
                         x: p.x as i32,
@@ -174,7 +176,7 @@ impl Glyph {
     }
 }
 
-impl PPText {
+impl Glyphs {
     pub fn iter_glyphs(&self) -> impl Iterator<Item=&PositionedGlyph<'static>> {
         self.lines.iter()
         .flat_map(|l| &l.0 )
@@ -183,7 +185,7 @@ impl PPText {
     }
 }
 
-impl AsRefMut<Self> for PPText {
+impl AsRefMut<Self> for Glyphs {
     fn as_ref(&self) -> &Self {
         self
     }
