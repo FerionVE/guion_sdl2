@@ -25,8 +25,7 @@ where
     pub pump: EventPump,
     pub queue: Queue<E>,
     pub default_border: Border,
-    pub default_style: EStyle<E>,
-    pub default_thicc: u32,
+    pub style_provider: EStyle<E>,
     pub font: Font<'static>,
 }
 
@@ -58,8 +57,7 @@ where
         let clipboard = video.clipboard();
 
         let default_border = Border::new(2, 2, 2, 2);
-        let default_style = EStyle::<E>::static_default();
-        let default_thicc = 1;
+        let style_provider = EStyle::<E>::static_default();
 
         Ok(Self {
             event,
@@ -70,8 +68,7 @@ where
             clipboard,
             sdl,
             default_border,
-            default_style,
-            default_thicc,
+            style_provider,
             font: load_font(),
         })
     }

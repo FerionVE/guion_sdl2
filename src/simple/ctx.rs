@@ -44,14 +44,8 @@ impl GuionContext<SimpleEnv> for SimpleCtx {
     fn _handler(&self) -> &Self::Handler {
         &self.handler
     }
-    fn default_style(&self) -> &Style {
-        &self.default_style
-    }
-    fn default_border(&self) -> &Border {
-        &self.default_border
-    }
-    fn default_thicc(&self) -> u32 {
-        self.default_thicc
+    fn style_provider(&self) -> &EStyle<SimpleEnv> {
+        &self.style_provider
     }
 }
 

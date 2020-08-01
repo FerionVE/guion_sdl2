@@ -85,7 +85,7 @@ fn main() {
 fn button_action(mut l: Link<SimpleEnv>) {
     fn button_mutate(mut w: WidgetRefMut<SimpleEnv>, _: &mut SimpleCtx, _: StandardPath) {
         w.debug_type_name();
-        let w = w.downcast_mut::<Button<SimpleEnv,String>>().unwrap();
+        let w = w.downcast_mut::<Button<SimpleEnv,String,()>>().unwrap();
         let i: u32 = w.text.parse().unwrap();
         w.text = (i+1).to_string();
     }
@@ -95,7 +95,7 @@ fn button_action(mut l: Link<SimpleEnv>) {
         let mut pbar = s.roots[0].0
             .child_mut(2).unwrap()
             .as_widget().unwrap_nodebug();
-        let pbar = pbar.downcast_mut::<ProgressBar<SimpleEnv>>().unwrap();
+        let pbar = pbar.downcast_mut::<ProgressBar<SimpleEnv,()>>().unwrap();
         pbar.value = (pbar.value+0.1)%1.0;
     }
     l.enqueue(StdEnqueueable::MutateRoot{f: update_pbar}, StdOrder::PostCurrent, 0);

@@ -16,7 +16,7 @@ readme = "README.md"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-guion = { version = "0.2.0-dev2", git = "https://github.com/FerionVE/guion", rev = "be07381bebcf242d5758c72288e9b2adf641cd67" }
+guion = { version = "0.2.0-dev2", git = "https://github.com/FerionVE/guion", rev = "965d22d23dc8f5cb401e5f7a3e7950a516b3a196" }
 #guion = { path = "../guion" }
 #TODO qwutils should export qwutils
 qwutils = { version = "0.2.0", git = "https://github.com/qwertz19281/rust_utils", rev = "ffb307c0a5a293aac82250cdd0f3510655e0e07d" }

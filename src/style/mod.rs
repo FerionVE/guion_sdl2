@@ -1,7 +1,7 @@
 use crate::style::color::Color;
 use crate::style::font::Font;
 use crate::style::font::Glyphs;
-use guion::{env::EnvFlexStyleVariant, style::{variant::{StyleVariantSupport, StdVerb, StyleVariantGetStdCursor}, variant::standard::{StdCursor, StdStyleVariant, Obj}}};
+use guion::{env::EnvFlexStyleVariant, style::{variant::{StyleVariantSupport, StdTag, StyleVariantGetStdCursor}, variant::standard::{StdCursor, StdStyleVariant, Obj, BorderPtr}}};
 use super::*;
 
 pub mod font;
@@ -37,7 +37,15 @@ impl<E> GuionStyleProvider<E> for Style where
         Color::from_rgba8(stupid_colors(v.clone().into()))
     }
     fn border(&self, v: &Self::Variant) -> Border {
-        todo!()
+        let v: StdStyleVariant = v.clone().into();
+        let thicc = match v.border_ptr {
+            BorderPtr::Default => 2,
+            BorderPtr::Outer => 2,
+            BorderPtr::Visual => 1,
+            BorderPtr::Specific(v) => return v,
+            _ => 2,
+        };
+        Border::uniform(thicc * v.border_mul)
     }
 
     fn preprocess_text(&self, s: &str, c: &mut E::Context) -> Self::Glyphs {

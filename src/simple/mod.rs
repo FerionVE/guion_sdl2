@@ -5,7 +5,7 @@ pub mod valid;
 //pub mod style;
 pub mod ctx;
 use super::*;
-use guion::{id::standard::StdID, path::standard::SimplePath, widget::WidgetMut, ctx::queue::StdOrder, render::link::RenderLink, style::variant::StdVerb};
+use guion::{id::standard::StdID, path::standard::SimplePath, widget::WidgetMut, ctx::queue::StdOrder, render::link::RenderLink, style::variant::StdTag};
 use env::SimpleEnv;
 use ctx::SimpleCtx;
 use stor::SimpleStor;
@@ -84,6 +84,7 @@ impl Simplion {
                             filter_path: path,
                             filter_bounds: true,
                         },
+                        Default::default(),
                         true,
                     );
                     
@@ -110,7 +111,7 @@ impl Simplion {
                 //build the RenderLink
                 let mut rl = RenderLink::simple(&mut self.renderer, bounds, &mut self.ctx);
                 //fill background
-                rl.with(&[StdVerb::ObjBackground])
+                rl.with(StdTag::ObjBackground)
                     .fill_rect();
                 //process queued and render
                 render_and_events::<SimpleEnv>(&mut rl, path, &mut self.stor, &mut self.ctx);
