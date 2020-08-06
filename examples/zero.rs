@@ -6,9 +6,9 @@ use guion::{
     widget::*,
     layout::Orientation,
     layout::*,
-    widgets::{pane::Pane, button::Button, label::Label, pbar::ProgressBar, checkbox::CheckBox, splitpane::SplitPane, textbox::{state::Cursor, TextBox}},
+    widgets::{pane::Pane, button::Button, label::Label, pbar::ProgressBar, checkbox::CheckBox, splitpane::SplitPane, textbox::{state::Cursor, TextBox}, util::{state::AtomStateMut, caption::CaptionMut}},
     id::standard::StdID,
-    aliases::WidgetRefMut,
+    aliases::WidgetRefMut, path::standard::SimplePath,
 };
 use guion_sdl2::*;
 use simple::{
@@ -16,6 +16,43 @@ use simple::{
     stor::SimpleStor, ctx::SimpleCtx, StandardPath, Simplion,
 };
 use link::Link;
+use root::Widgets;
+
+guion::const_std_id!(RootPane ProgBar);
+
+/// WIP macro
+macro_rules! sizion {
+    (# $min:literal ~ $pref:literal - $max:tt @ $p:literal | $($m:tt)*) => {
+        Size{
+            x: sizion!(#$min ~ $pref - $max @ $p),
+            y: sizion!($($m)*),
+        }
+    };
+    (# $min:literal ~ $pref:literal - None @ $p:literal) => {
+        SizeAxis{min:$min,preferred:$pref,max:None,pressure:$p}
+    };
+    (# $min:literal ~ $pref:literal - $max:literal @ $p:literal) => {
+        SizeAxis{min:$min,preferred:$pref,max:Some($max),pressure:$p}
+    };
+    (# $min:literal ~ $pref:literal - $max:tt $($m:tt)*) => {
+        sizion!(#$min ~ $pref - $max @ 1.0 $($m)*)
+    };
+    ($min:literal ~ $pref:literal - $max:literal $($m:tt)*) => {
+        sizion!(#$min ~ $pref - $max $($m)*)
+    };
+    ($min:literal ~ $pref:literal - $($m:tt)*) => {
+        sizion!(#$min ~ $pref - $pref $($m)*)
+    };
+    ($min:literal ~ $pref:literal $($m:tt)*) => {
+        sizion!(#$min ~ $pref - None $($m)*)
+    };
+    (~ $pref:literal $($m:tt)*) => {
+        sizion!($pref ~ $pref $($m)*)
+    };
+    ($($m:tt)*) => {
+        sizion!(0 ~ $($m)*)
+    };
+}
 
 //minimal example using the simple module
 fn main() {
@@ -25,9 +62,12 @@ fn main() {
     let pb_bounds = Size{x: SizeAxis::empty(), y: SizeAxis{min: 32, preferred: 64, max: Some(64), pressure: 1.0}};
     let cb_bounds = Size{x: SizeAxis::empty(), y: SizeAxis::fixed(24)};
 
+    let pb_bounds = sizion!(0|32~64-);
+    let cb_bounds = sizion!(0|~24-);
+
     //build a widget
     let g = Pane::new(
-        StdID::new(),
+        RootPane(),
         Orientation::Vertical,
         (
             Label::new(StdID::new())
@@ -44,7 +84,7 @@ fn main() {
                         .with_trigger(button_action),
                 ),
             ),
-            ProgressBar::new(StdID::new(), Orientation::Horizontal)
+            ProgressBar::new(ProgBar(), Orientation::Horizontal)
                 .with_value(0.5)
                 .with_size(pb_bounds),
             CheckBox::new(StdID::new(), false)
@@ -85,18 +125,21 @@ fn main() {
 fn button_action(mut l: Link<SimpleEnv>) {
     fn button_mutate(mut w: WidgetRefMut<SimpleEnv>, _: &mut SimpleCtx, _: StandardPath) {
         w.debug_type_name();
-        let w = w.downcast_mut::<Button<SimpleEnv,String,()>>().unwrap();
-        let i: u32 = w.text.parse().unwrap();
-        w.text = (i+1).to_string();
+        let text = w.traitcast_mut::<dyn CaptionMut>().unwrap();
+        let i: u32 = text.caption().parse().unwrap();
+        text.replace(&(i+1).to_string());
     }
     l.mutate(button_mutate);
 
-    fn update_pbar(s: &mut SimpleStor, _: &mut SimpleCtx) {
-        let mut pbar = s.roots[0].0
+    fn update_pbar(s: &mut SimpleStor, c: &mut SimpleCtx) {
+        /*let mut pbar = s.roots[0].0
             .child_mut(2).unwrap()
-            .as_widget().unwrap_nodebug();
-        let pbar = pbar.downcast_mut::<ProgressBar<SimpleEnv,()>>().unwrap();
-        pbar.value = (pbar.value+0.1)%1.0;
+            .as_widget().unwrap_nodebug();*/
+        let pbar_path = SimplePath::new(&[RootPane(),ProgBar()]);
+        let mut pbar = s.widget_mut(pbar_path).unwrap();
+
+        let pbar = pbar.traitcast_mut::<dyn AtomStateMut<SimpleEnv,f32>>().unwrap();
+        pbar.set( (pbar.get(c)+0.1)%1.0, c );
     }
     l.enqueue(StdEnqueueable::MutateRoot{f: update_pbar}, StdOrder::PostCurrent, 0);
 }

@@ -3,7 +3,7 @@ use rusttype::*;
 use sdl2::{render::BlendMode, pixels::PixelFormatEnum};
 use guion::util::bounds::Dims;
 
-impl Render {
+impl<E> Render<E> where E: Env {
     //TODO: integrate gpu_cache later
     pub fn render_glyphs<G: Into<PositionedGlyph<'static>>>(&mut self, b: Bounds, o: Offset, color: SDLColor, gs: impl Iterator<Item=G>) -> Result<(),String> {
         //check for conservative in-bounds

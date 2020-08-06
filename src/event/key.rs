@@ -36,6 +36,7 @@ impl GuionKey for Key {
     const C: Self = Self::Kbd(SDLScancode::C);
     const V: Self = Self::Kbd(SDLScancode::V);
 
+    #[inline]
     fn origin(&self) -> Self::Origin {
         match self {
             Key::Kbd(_) => KeyOrigin::Kbd(),
@@ -45,6 +46,7 @@ impl GuionKey for Key {
 }
 
 impl PartialEq for Key {
+    #[inline]
     fn eq(&self, o: &Self) -> bool {
         match self {
             Key::Kbd(key) => match o {

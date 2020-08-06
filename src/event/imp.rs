@@ -22,6 +22,7 @@ impl<E> Variant<E> for Event where E: Env, EEDest<E>: SDLDestination {
 }
 
 impl Debug for Event {
+    #[inline]
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         Ok(())
     }

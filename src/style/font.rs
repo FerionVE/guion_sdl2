@@ -41,18 +41,22 @@ impl<E> GuionGlyphs<E> for Glyphs where
 {
     type Glyph = GlyphInfo;
 
+    #[inline]
     fn size(&self) -> Dims { 
         Dims{
             w: self.size.x as u32,
             h: self.size.y as u32,
         }
     }
+    #[inline]
     fn line_ascent(&self) -> u32 {
         self.ascent
     }
+    #[inline]
     fn line_height(&self) -> u32 {
         self.height
     }
+    #[inline]
     fn line_distance(&self) -> u32 {
         self.distance
     }
@@ -141,6 +145,7 @@ pub enum Glyph {
 }
 
 impl Glyph {
+    #[inline]
     pub fn glyph(&self) -> Option<&PositionedGlyph<'static>> {
         match self {
             Glyph::Glyph(g,_) => Some(g),
@@ -186,9 +191,11 @@ impl Glyphs {
 }
 
 impl AsRefMut<Self> for Glyphs {
+    #[inline]
     fn as_ref(&self) -> &Self {
         self
     }
+    #[inline]
     fn as_mut(&mut self) -> &mut Self {
         self
     }

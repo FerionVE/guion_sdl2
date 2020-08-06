@@ -32,44 +32,47 @@ impl GuionContext<SimpleEnv> for SimpleCtx {
     type Handler = SimpleHandler;
     type Queue = Queue<SimpleEnv>;
 
+    #[inline]
     fn queue_mut(&mut self) -> &mut Self::Queue {
         &mut self.queue
     }
+    #[inline]
     fn queue(&self) -> &Self::Queue {
         &self.queue
     }
-    fn _handler_mut(&mut self) -> &mut Self::Handler {
-        &mut self.handler
-    }
-    fn _handler(&self) -> &Self::Handler {
-        &self.handler
-    }
+    #[inline]
     fn style_provider(&self) -> &EStyle<SimpleEnv> {
         &self.style_provider
     }
 }
 
 impl AsRefMut<SimpleHandler> for SimpleCtx {
+    #[inline]
     fn as_ref(&self) -> &SimpleHandler {
         &self.handler
     }
+    #[inline]
     fn as_mut(&mut self) -> &mut SimpleHandler {
         &mut self.handler
     }
 }
 impl AsRefMut<Core<SimpleEnv>> for SimpleCtx {
+    #[inline]
     fn as_ref(&self) -> &Core<SimpleEnv> {
         &self.handler.sup.inner
     }
+    #[inline]
     fn as_mut(&mut self) -> &mut Core<SimpleEnv> {
         &mut self.handler.sup.inner
     }
 }
 impl CtxStdState<SimpleEnv> for SimpleCtx {
     type T = SimpleHandler;
+    #[inline]
     fn state_mut(&mut self) -> &mut Self::T {
         &mut self.handler
     }
+    #[inline]
     fn state(&self) -> &Self::T {
         &self.handler
     }
@@ -78,11 +81,13 @@ impl CtxStdState<SimpleEnv> for SimpleCtx {
 impl Deref for SimpleCtx {
     type Target = Core<SimpleEnv>;
     
+    #[inline]
     fn deref(&self) -> &Self::Target {
         AsRefMut::as_ref(self)
     }
 }
 impl DerefMut for SimpleCtx {
+    #[inline]
     fn deref_mut(&mut self) -> &mut Self::Target {
         AsRefMut::as_mut(self)
     }
@@ -90,9 +95,11 @@ impl DerefMut for SimpleCtx {
 
 //TODO move to handler of different
 impl CtxClipboardAccess<SimpleEnv> for SimpleCtx {
+    #[inline]
     fn clipboard_set_text(&mut self, v: &str) {
         self.clipboard.set_clipboard_text(v).unwrap();
     }
+    #[inline]
     fn clipboard_get_text(&mut self) -> Option<String> {
         self.clipboard.has_clipboard_text()
             .map(|| self.clipboard.clipboard_text().unwrap() )

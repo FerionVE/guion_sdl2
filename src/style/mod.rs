@@ -18,7 +18,7 @@ pub struct Style {
 impl<E> GuionStyleProvider<E> for Style where
     E: Env + EnvFlexStyleVariant + Sync,
     E::Backend: GuionBackend<E,Style=Self>,
-    E::StyleVariant: Into<StdStyleVariant>,
+    E::StyleVariant: Into<StdStyleVariant<E>>,
     E::Context: AsRefMut<Core<E>>
 {
     type Font = Font;
@@ -27,17 +27,21 @@ impl<E> GuionStyleProvider<E> for Style where
     type Glyphs = Glyphs;
     type Variant = E::StyleVariant;
 
+    #[inline]
     fn font(&self, v: &Self::Variant) -> Option<&Self::Font> {
         todo!()
     }
+    #[inline]
     fn cursor(&self, v: &Self::Variant) -> Self::Cursor {
-        v.clone().into().cursor()
+        StyleVariantGetStdCursor::cursor(&v.clone().into())
     }
+    #[inline]
     fn color(&self, v: &Self::Variant) -> Self::Color {
         Color::from_rgba8(stupid_colors(v.clone().into()))
     }
+    #[inline]
     fn border(&self, v: &Self::Variant) -> Border {
-        let v: StdStyleVariant = v.clone().into();
+        let v: StdStyleVariant<E> = v.clone().into();
         let thicc = match v.border_ptr {
             BorderPtr::Default => 2,
             BorderPtr::Outer => 2,
@@ -48,6 +52,7 @@ impl<E> GuionStyleProvider<E> for Style where
         Border::uniform(thicc * v.border_mul)
     }
 
+    #[inline]
     fn preprocess_text(&self, s: &str, c: &mut E::Context) -> Self::Glyphs {
         todo!()
     }
@@ -57,6 +62,7 @@ impl<E> GuionStyleProvider<E> for Style where
         todo!()
     }
 
+    #[inline]
     fn static_default() -> Self {
         Default::default()
     }
@@ -73,7 +79,7 @@ impl AsRefMut<Self> for Style {
     }
 }
 
-pub fn stupid_colors(i: StdStyleVariant) -> [u8;4] {
+pub fn stupid_colors<E>(i: StdStyleVariant<E>) -> [u8;4] where E: Env {
     match i {
         StdStyleVariant{obj: Obj::Text,..} => [255,255,255,255],
         StdStyleVariant{obj: Obj::Foreground,pressed: true,..} => [0,192,0,255],

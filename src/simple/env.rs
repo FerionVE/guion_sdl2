@@ -23,11 +23,11 @@ impl Env for SimpleEnv {
     type ValidState = SimpleValidState;
 }
 impl EnvFlexStyleVariant for SimpleEnv {
-    type StyleVariant = StdStyleVariant;
+    type StyleVariant = StdStyleVariant<SimpleEnv>;
 }
 
 impl Backend<SimpleEnv> for SimpleBackend {
-    type Renderer = Render;
+    type Renderer = Render<SimpleEnv>;
     type Event = DynEvent<SimpleEnv,Key,StdDest<SimpleDest>>; //TODO ditch Consuming
     type EventFilter = StdFilter<SimpleEnv>;
     type Style = Style;
@@ -51,6 +51,7 @@ guion::impl_env_stds!(SimpleEnv);
 //guion::impl_remote_state!(u8,SimpleEnv);
 
 impl Debug for SimpleEnv {
+    #[inline]
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         todo!()
     }

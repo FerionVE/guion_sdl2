@@ -16,7 +16,7 @@ readme = "README.md"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-guion = { version = "0.2.0-dev2", git = "https://github.com/FerionVE/guion", rev = "965d22d23dc8f5cb401e5f7a3e7950a516b3a196" }
+guion = { version = "0.2.0-dev2", git = "https://github.com/FerionVE/guion", rev = "91e20b7cd7da0c206209523a413b0dca6731788f" }
 #guion = { path = "../guion" }
 #TODO qwutils should export qwutils
 qwutils = { version = "0.2.0", git = "https://github.com/qwertz19281/rust_utils", rev = "ffb307c0a5a293aac82250cdd0f3510655e0e07d" }
@@ -33,5 +33,5 @@ version = "0.9"
 features = ["gpu_cache"]
 
 [profile.release]
-lto = true
+#lto = true # rust-sdl2 UB
 codegen-units = 1

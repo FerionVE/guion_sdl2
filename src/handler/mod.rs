@@ -9,6 +9,7 @@ pub struct Handler<S,E> where S: GuionHandler<E>, E: Env + Sync + 'static {
 }
 
 impl<S,E> Handler<S,E> where S: GuionHandler<E>, E: Env + Sync + 'static {
+    #[inline]
     pub fn new(inner: Core<E>, sup: S) -> Self {
         Self{
             sup,

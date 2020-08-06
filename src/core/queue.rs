@@ -10,9 +10,11 @@ impl<E> GuionQueue<StdEnqueueable<E>,StdOrder> for Queue<E> where E: Env + Sync,
 }
 
 impl<E> AsRefMut<Self> for Queue<E> where E: Env {
+    #[inline]
     fn as_ref(&self) -> &Self {
         self
     }
+    #[inline]
     fn as_mut(&mut self) -> &mut Self {
         self
     }

@@ -15,12 +15,15 @@ use SDLEvent;
 use event::cast::{event_dest_window, parse_event};
 pub mod immediate_test;
 use guion::{event::{filter::StdFilter, compound::EventCompound}};
+use guion::render::widgets::RenderStdWidgets;
+use crate::render::imp::LOK;
+use std::sync::atomic::Ordering;
 
 pub type StandardPath = SimplePath<SimpleEnv,StdID>;
 
 pub struct Simplion {
     pub stor: SimpleStor,
-    pub renderer: Render,
+    pub renderer: Render<SimpleEnv>,
     pub ctx: SimpleCtx,
 }
 
@@ -104,22 +107,31 @@ impl Simplion {
 
             for widx in 0..self.stor.roots.len() { //TODO move render single windows to stor root
                 self.renderer.current = widx;
+                let a = LOK.load(Ordering::Acquire);
+                self.renderer.windows[widx].set_viewport(None);
                 let rect = self.renderer.windows[widx].viewport();
+                LOK.store(a, Ordering::Release);
                 let bounds = (rect.width(),rect.height());
                 let path = self.stor.path_for_root(widx);
 
-                //build the RenderLink
-                let mut rl = RenderLink::simple(&mut self.renderer, bounds, &mut self.ctx);
-                //fill background
-                rl.with(StdTag::ObjBackground)
-                    .fill_rect();
-                //process queued and render
-                render_and_events::<SimpleEnv>(&mut rl, path, &mut self.stor, &mut self.ctx);
+                    //build the RenderLink
+                    let mut rl: RenderLink<SimpleEnv> = RenderLink::simple(
+                        &mut self.renderer,
+                        bounds,
+                        &mut self.ctx,
+                    );
+                    //fill background
+                    rl.with(StdTag::ObjBackground)
+                        .fill_rect(&mut self.ctx);
+                    //process queued and render
+                    render_and_events::<SimpleEnv>(&mut rl, path, &mut self.stor, &mut self.ctx);
 
-                self.renderer.update_cursor();
+                    rl.r.update_cursor();
 
-                //let sdl render it
-                self.renderer.windows[widx].present();
+                    //let sdl render it
+                    rl.r.windows[widx].present();
+
+                    drop(rl);
             }
         }
         true

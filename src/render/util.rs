@@ -6,6 +6,7 @@ pub trait RenderSurface {
 }
 
 impl RenderSurface for Canvas<Window> {
+    #[inline]
     fn render_surface(&mut self, dest: Rect, src: &SurfaceRef, src_box: Rect) -> Result<(),String> {
         let t = self.texture_creator();
         let t = t
@@ -14,6 +15,7 @@ impl RenderSurface for Canvas<Window> {
         
         self.copy(&t,src_box,dest)
     }
+    #[inline]
     fn create_cache_tex(&mut self, size: (u32,u32), p: PixelFormatEnum) -> Result<Texture<'static>,String> {
         let t = self.texture_creator();
         let t = Box::leak(Box::new(t));

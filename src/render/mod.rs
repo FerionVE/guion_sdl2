@@ -7,7 +7,7 @@ pub mod imp;
 pub mod font;
 pub mod util;
 
-pub struct Render {
+pub struct Render<E> where E: Env {
     pub windows: Vec<WindowCanvas>,
     pub current: usize,
     pub cursor: SystemCursor,
@@ -15,9 +15,13 @@ pub struct Render {
     pub curse: Option<SDLCursor>,
     pub cache: rusttype::gpu_cache::Cache<'static>,
     pub cache_tex: Option<Texture<'static>>,
+
+    pub live_bounds: Bounds,
+    pub live_viewport: Bounds,
+    pub live_style: ESVariant<E>,
 }
 
-impl Render {
+impl<E> Render<E> where E: Env {
     pub fn new() -> Self {
         Self{
             windows: Vec::new(),
@@ -27,6 +31,10 @@ impl Render {
             curse: None,
             cache: rusttype::gpu_cache::Cache::builder().build(),
             cache_tex: None,
+
+            live_bounds: Default::default(),
+            live_viewport: Default::default(),
+            live_style: Default::default(),
         }
     }
 
@@ -51,10 +59,12 @@ impl Render {
     }
 }
 
-impl AsRefMut<Self> for Render {
+impl<E> AsRefMut<Self> for Render<E> where E: Env {
+    #[inline]
     fn as_ref(&self) -> &Self {
         self
     }
+    #[inline]
     fn as_mut(&mut self) -> &mut Self {
         self
     }
