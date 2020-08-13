@@ -1,6 +1,6 @@
 [package]
 name = "guion_sdl2"
-version = "0.2.0-dev2"
+version = "0.2.0-dev3"
 
 authors = ["qwertz19281 <dellen903@gmail.com>"]
 edition = "2018"
@@ -16,7 +16,7 @@ readme = "README.md"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-guion = { version = "0.2.0-dev2", git = "https://github.com/FerionVE/guion", rev = "91e20b7cd7da0c206209523a413b0dca6731788f" }
+guion = { version = "0.2.0-dev3", git = "https://github.com/FerionVE/guion", rev = "8376d3058827f21cd2dbb9fa139a507ff86c4df3" }
 #guion = { path = "../guion" }
 #TODO qwutils should export qwutils
 qwutils = { version = "0.2.0", git = "https://github.com/qwertz19281/rust_utils", rev = "ffb307c0a5a293aac82250cdd0f3510655e0e07d" }

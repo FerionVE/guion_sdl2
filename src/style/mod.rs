@@ -1,8 +1,9 @@
 use crate::style::color::Color;
 use crate::style::font::Font;
 use crate::style::font::Glyphs;
-use guion::{env::EnvFlexStyleVariant, style::{variant::{StyleVariantSupport, StdTag, StyleVariantGetStdCursor}, variant::standard::{StdCursor, StdStyleVariant, Obj, BorderPtr}}};
+use guion::{env::EnvFlexStyleVariant, style::{variant::{StyleVariantSupport, StdTag, StyleVariantGetStdCursor}, variant::standard::*}};
 use super::*;
+use std::ops::Mul;
 
 pub mod font;
 pub mod cursor;
@@ -41,15 +42,7 @@ impl<E> GuionStyleProvider<E> for Style where
     }
     #[inline]
     fn border(&self, v: &Self::Variant) -> Border {
-        let v: StdStyleVariant<E> = v.clone().into();
-        let thicc = match v.border_ptr {
-            BorderPtr::Default => 2,
-            BorderPtr::Outer => 2,
-            BorderPtr::Visual => 1,
-            BorderPtr::Specific(v) => return v,
-            _ => 2,
-        };
-        Border::uniform(thicc * v.border_mul)
+        stupid_border(v.clone().into())
     }
 
     #[inline]
@@ -79,8 +72,18 @@ impl AsRefMut<Self> for Style {
     }
 }
 
-pub fn stupid_colors<E>(i: StdStyleVariant<E>) -> [u8;4] where E: Env {
-    match i {
+pub fn stupid_border<E>(v: StdStyleVariant<E>) -> Border where E: Env {
+    match v {
+        StdStyleVariant{design: Design::Flat,..} => Border::empty(),
+        StdStyleVariant{border_ptr: BorderPtr::Outer,..} => Border::uniform(2),
+        StdStyleVariant{border_ptr: BorderPtr::Visual,..} => Border::uniform(1),
+        StdStyleVariant{border_ptr: BorderPtr::Specific(v),..} => return v,
+        _ => Border::uniform(2),
+    }.mul(v.border_mul)
+}
+
+pub fn stupid_colors<E>(v: StdStyleVariant<E>) -> [u8;4] where E: Env {
+    match v {
         StdStyleVariant{obj: Obj::Text,..} => [255,255,255,255],
         StdStyleVariant{obj: Obj::Foreground,pressed: true,..} => [0,192,0,255],
         StdStyleVariant{obj: Obj::Foreground,hovered: true,..} => [64,128,64,255],

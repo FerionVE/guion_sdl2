@@ -2,7 +2,7 @@ extern crate guion_sdl2;
 
 use guion::{
     widgets::textbox::TextBox,
-    id::standard::StdID,
+    id::standard::StdID, validation::{validated::Validated, Validation},
 };
 use guion_sdl2::*;
 use simple::Simplion;
@@ -12,7 +12,8 @@ fn main() {
     let mut simplion = Simplion::new();
 
     //build a widget
-    let g = TextBox::new(StdID::new());
+    let g = TextBox::new(StdID::new())
+        .with_text(Validated::new("".to_owned()));
 
 
     //create a sdl window

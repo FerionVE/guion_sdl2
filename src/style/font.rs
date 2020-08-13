@@ -3,7 +3,7 @@ use std::path::Path;
 use guion::util::bounds::Offset;
 use guion::util::{bounds::Dims};
 use guion::style::font::Glyphs as GuionGlyphs;
-use guion::style::font::{GlyphInfo,CrazyWorkaroundPPIter};
+use guion::{widget::cast::Statize, style::font::{GlyphInfo,CrazyWorkaroundPPIter}};
 use super::*;
 use rusttype::*;
 #[derive(Clone,PartialEq)]
@@ -137,6 +137,10 @@ impl<E> GuionGlyphs<E> for Glyphs where
             distance: advance_height as u32,
         }
     }
+}
+
+unsafe impl<E> Statize<E> for Glyphs {
+    type Statur = Glyphs;
 }
 
 pub enum Glyph {

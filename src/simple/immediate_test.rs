@@ -2,7 +2,7 @@ use super::*;
 use guion::{widgets::{textbox::{state::Cursor, TextBox}, label::Label}, widget::{resolvable::{ResolvableMut, Resolvable}, as_widget::{AsWidgetMut, AsWidget}}};
 
 use guion::widget::WBaseMut; //baka import
-use guion::widget::WBase;
+use guion::{validation::validated::Validated, widget::WBase};
 
 impl<'w> AsWidget<'w,SimpleEnv> for (String,StdID) {
     fn as_ref<'s>(&'s self) -> guion::widget::resolvable::Resolvable<'s,SimpleEnv> where 'w: 's {
