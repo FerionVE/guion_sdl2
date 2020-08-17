@@ -8,7 +8,7 @@ use super::*;
 use stor::SimpleStor;
 use valid::SimpleValidState;
 use ctx::SimpleCtx;
-use std::fmt::Debug;
+use std::{any::Any, fmt::Debug};
 
 #[derive(Clone,PartialEq)]
 pub struct SimpleEnv;
@@ -21,6 +21,7 @@ impl Env for SimpleEnv {
     type WidgetID = StdID;
     type WidgetPath = StandardPath;
     type ValidState = SimpleValidState;
+    type Message = Box<dyn Any>;
 }
 impl EnvFlexStyleVariant for SimpleEnv {
     type StyleVariant = StdStyleVariant<SimpleEnv>;

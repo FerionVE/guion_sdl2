@@ -52,13 +52,13 @@ impl GuionWidgets<SimpleEnv> for SimpleStor {
             path,
         })
     }
-    fn trace_bounds(&self, ctx: &mut SimpleCtx, i: StandardPath, b: &Bounds, force: bool) -> Result<Bounds,()> {
+    fn trace_bounds(&self, ctx: &mut SimpleCtx, i: StandardPath, b: &Bounds, e: &ESVariant<SimpleEnv>, force: bool) -> Result<Bounds,()> {
         let l = ctx.link(Resolved{
             wref: Box::new(self.base()),
             path: StandardPath::new(&[]),
             stor: self,
         });
-        Widget::trace_bounds(self,l,i,b,force)
+        Widget::trace_bounds(self,l,i,b,e,force)
     }
 }
 
@@ -84,7 +84,7 @@ impl<'w> Widget<'w,SimpleEnv> for SimpleStor {
         //eprintln!("e{}",passed);
         passed
     }
-    fn _size(&self, l: Link<SimpleEnv>) -> ESize<SimpleEnv> {
+    fn _size(&self, _: Link<SimpleEnv>, _: &ESVariant<SimpleEnv>) -> ESize<SimpleEnv> {
         Size::empty()
     }
     fn childs(&self) -> usize {
@@ -101,7 +101,7 @@ impl<'w> Widget<'w,SimpleEnv> for SimpleStor {
     fn into_childs(self: Box<Self>) -> Vec<Resolvable<'w,SimpleEnv>> {
         todo!()
     }
-    fn child_bounds(&self, _: Link<SimpleEnv>, _: &Bounds, _: bool) -> Result<Vec<Bounds>,()> {
+    fn child_bounds(&self, _: Link<SimpleEnv>, _: &Bounds, _: &ESVariant<SimpleEnv>, _: bool) -> Result<Vec<Bounds>,()> {
         Ok(self.roots.iter()
             .map(|r| Bounds::from_size(r.1) )
             .collect::<Vec<_>>())

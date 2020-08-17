@@ -16,9 +16,9 @@ impl<S,E> GuionHandler<E> for Handler<S,E> where S: GuionHandler<E>, E: Env + Sy
         S::_event_root(l,e)
     }
     #[inline] 
-    fn _size(l: Link<E>) -> ESize<E> {
+    fn _size(l: Link<E>, e: &ESVariant<E>) -> ESize<E> {
         //todo!();
-        S::_size(l)
+        S::_size(l,e)
     }
     #[inline]
     fn _send_event(l: Link<E>, e: &EventCompound<E>, child: E::WidgetPath) -> Result<EventResp,()> {

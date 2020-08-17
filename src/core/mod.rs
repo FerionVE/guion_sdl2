@@ -122,6 +122,10 @@ where
                 StdEnqueueable::AccessWidgetClosure { path, f } => todo!(),
                 StdEnqueueable::AccessRoot { f } => todo!(),
                 StdEnqueueable::AccessRootClosure { f } => todo!(),
+                StdEnqueueable::MutMessage { path, msg } => {
+                    let mut w = stor.widget_mut(path.clone()).expect("TODO");
+                    w.message(msg)
+                },
             }
         }
     }

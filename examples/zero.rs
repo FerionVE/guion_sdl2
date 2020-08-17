@@ -102,7 +102,7 @@ fn button_action(mut l: Link<SimpleEnv>) {
         let i: u32 = text.caption().parse().unwrap();
         text.replace(&(i+1).to_string());
     }
-    l.mutate(button_mutate);
+    l.for_child(0).unwrap().mutate(button_mutate);
 
     fn update_pbar(s: &mut SimpleStor, c: &mut SimpleCtx) {
         /*let mut pbar = s.roots[0].0
