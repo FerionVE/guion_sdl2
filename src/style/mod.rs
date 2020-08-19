@@ -75,9 +75,9 @@ impl AsRefMut<Self> for Style {
 pub fn stupid_border<E>(v: StdStyleVariant<E>) -> Border where E: Env {
     match v {
         StdStyleVariant{design: Design::Flat,..} => Border::empty(),
-        StdStyleVariant{border_ptr: BorderPtr::Outer,..} => Border::uniform(2),
-        StdStyleVariant{border_ptr: BorderPtr::Visual,..} => Border::uniform(1),
-        StdStyleVariant{border_ptr: BorderPtr::Specific(v),..} => return v,
+        StdStyleVariant{border: BorderPtr::Outer,..} => Border::uniform(2),
+        StdStyleVariant{border: BorderPtr::Visual,..} => Border::uniform(1),
+        StdStyleVariant{border: BorderPtr::Specific(v),..} => return v,
         _ => Border::uniform(2),
     }.mul(v.border_mul)
 }

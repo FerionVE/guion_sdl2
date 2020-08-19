@@ -79,17 +79,17 @@ impl Simplion {
 
                     self.stor.roots[widx].1 = bounds.into();
 
-                    let e = EventCompound(
-                        parsed.event,
-                        Bounds::default(),
-                        parsed.ts as u64,
-                        StdFilter{
+                    let e = EventCompound{
+                        event: parsed.event,
+                        bounds: Bounds::default(),
+                        ts: parsed.ts as u64,
+                        filter: StdFilter{
                             filter_path: path,
                             filter_bounds: true,
                         },
-                        Default::default(),
-                        true,
-                    );
+                        style: Default::default(),
+                        flag: true,
+                    };
                     
                     let mut link = self.ctx.link(self.stor.resolved());
                     link._event_root(&e);
