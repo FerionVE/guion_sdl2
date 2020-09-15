@@ -1,6 +1,6 @@
 use crate::simple::env::SimpleEnv;
 use super::*;
-use guion::{widget::{Widget, WidgetMut, cast::Statize}, widget::{resolved::{ResolvedMut, Resolved}, root::{resolve_in_root, resolve_in_root_mut}}, widget::resolvable::{ResolvableMut, Resolvable}, util::bounds::Dims, layout::Size};
+use guion::{widget::{Widget, WidgetMut, cast::Statize}, widget::{resolved::{ResolvedMut, Resolved}, root::{resolve_in_root, resolve_in_root_mut}}, widget::resolvable::{ResolvableMut, Resolvable}, util::bounds::Dims, layout::StdGonstraints, layout::Gonstraints};
 use ctx::SimpleCtx;
 use guion::{EventResp, widget::WBaseMut};
 
@@ -85,7 +85,7 @@ impl<'w> Widget<'w,SimpleEnv> for SimpleStor {
         passed
     }
     fn _size(&self, _: Link<SimpleEnv>, _: &ESVariant<SimpleEnv>) -> ESize<SimpleEnv> {
-        Size::empty()
+        Gonstraints::empty()
     }
     fn childs(&self) -> usize {
         self.roots.len()

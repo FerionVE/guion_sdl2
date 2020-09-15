@@ -26,8 +26,8 @@ fn main() {
     let mut simplion = Simplion::new();
 
     //special bounds for progressbar and checkbox
-    let pb_bounds = Size{x: SizeAxis::empty(), y: SizeAxis{min: 32, preferred: 64, max: Some(64), pressure: 1.0}};
-    let cb_bounds = Size{x: SizeAxis::empty(), y: SizeAxis::fixed(24)};
+    //let pb_bounds = Size{x: SizeAxis::empty(), y: SizeAxis{min: 32, preferred: 64, max: Some(64), pressure: 1.0}};
+    //let cb_bounds = Size{x: SizeAxis::empty(), y: SizeAxis::fixed(24)};
 
     let b_bounds = constraint!(~0-|64);
     let pb_bounds = constraint!(~0-|32~48);

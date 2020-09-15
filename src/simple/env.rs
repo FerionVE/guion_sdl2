@@ -1,8 +1,7 @@
-use guion::layout::Size;
 use crate::style::Style;
 use crate::event::{key::Key, destination::StdDest};
 use crate::render::Render;
-use guion::backend::Backend;
+use guion::{backend::Backend, layout::StdGonstraints};
 use guion::{env::{EnvFlexStyleVariant, Env}, style::variant::standard::StdStyleVariant, event::{filter::StdFilter, dyn_evt::DynEvent}, widget::{resolvable::{ResolvableMut, Resolvable}, as_widget::{AsWidgetMut, AsWidget}}};
 use super::*;
 use stor::SimpleStor;
@@ -32,7 +31,7 @@ impl Backend<SimpleEnv> for SimpleBackend {
     type Event = DynEvent<SimpleEnv,Key,StdDest<SimpleDest>>; //TODO ditch Consuming
     type EventFilter = StdFilter<SimpleEnv>;
     type Style = Style;
-    type Size = Size;
+    type Size = StdGonstraints;
 }
 
 //TODO move this to guion
