@@ -1,16 +1,7 @@
 extern crate guion_sdl2;
 
 use crate::guion_sdl2::qwutils::ResultNonDebugUnwrap;
-use guion::{
-    ctx::{queue::StdEnqueueable, queue::StdOrder},
-    widget::*,
-    layout::Orientation,
-    layout::*,
-    widgets::{pane::Pane, button::Button, label::Label, pbar::ProgressBar, checkbox::CheckBox, splitpane::SplitPane, textbox::{state::Cursor, TextBox}, util::{state::AtomStateMut, caption::CaptionMut}},
-    id::standard::StdID,
-    aliases::WidgetRefMut, path::standard::SimplePath,
-    constraint,const_std_id, validation::validated::Validated,
-};
+use guion::{aliases::WidgetRefMut, const_std_id, constraint, ctx::{queue::StdEnqueueable, queue::StdOrder}, id::standard::StdID, layout::Orientation, layout::*, path::standard::SimplePath, validation::validated::Validated, widget::*, widgets::{area::Area, button::Button, checkbox::CheckBox, label::Label, pane::Pane, pbar::ProgressBar, splitpane::SplitPane, textbox::{state::Cursor, TextBox}, util::{state::AtomStateMut, caption::CaptionMut}}};
 use guion_sdl2::*;
 use simple::{
     env::{SimpleEnv},
@@ -29,7 +20,7 @@ fn main() {
     //let pb_bounds = Size{x: SizeAxis::empty(), y: SizeAxis{min: 32, preferred: 64, max: Some(64), pressure: 1.0}};
     //let cb_bounds = Size{x: SizeAxis::empty(), y: SizeAxis::fixed(24)};
 
-    let b_bounds = constraint!(~0-|64);
+    let b_bounds = constraint!(~40-|64);
     let pb_bounds = constraint!(~0-|32~48);
     let cb_bounds = constraint!(~0-|24);
 
@@ -41,20 +32,24 @@ fn main() {
             Label::new(StdID::new())
                 .with_size(cb_bounds.clone())
                 .with_text(Validated::new("Label".to_owned())),
-            Pane::new(
+            Area::new(
                 StdID::new(),
-                Orientation::Horizontal,
-                (
-                    Button::new(StdID::new())
-                        .with_size(b_bounds.clone())
-                        .with_text("0".to_owned())
-                        .with_trigger(button_action),
-                    Button::new(StdID::new())
-                        .with_size(b_bounds.clone())
-                        .with_text("0".to_owned())
-                        .with_trigger(button_action),
+                Pane::new(
+                    StdID::new(),
+                    Orientation::Horizontal,
+                    (
+                        Button::new(StdID::new())
+                            .with_size(b_bounds.clone())
+                            .with_text("0".to_owned())
+                            .with_trigger(button_action),
+                        Button::new(StdID::new())
+                            .with_size(b_bounds.clone())
+                            .with_text("0".to_owned())
+                            .with_trigger(button_action),
+                    ),
                 ),
-            ),
+            )
+                .with_state((0,0)),
             ProgressBar::new(ProgBar(), Orientation::Horizontal)
                 .with_value(0.5)
                 .with_size(pb_bounds.clone()),
