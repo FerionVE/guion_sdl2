@@ -57,6 +57,10 @@ impl<E> Render<E> where E: Env {
             .map(|(i,_)| i )
             .next()
     }
+
+    pub fn live_sdl2_rect(&self) -> Bounds { //TODO fix sdl2 relative viewport bounds
+        self.live_bounds - self.live_viewport.off
+    }
 }
 
 impl<E> AsRefMut<Self> for Render<E> where E: Env {

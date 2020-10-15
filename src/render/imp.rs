@@ -55,10 +55,10 @@ impl<E> RenderStdWidgets<E> for Render<E> where
     #[inline]
     fn fill_rect(&mut self, c: &mut E::Context) {
         let a = LOK.load(Ordering::Acquire);
-        let b = &self.live_bounds;
+        let b = self.live_sdl2_rect();
         let color = c.style_provider().color(&self.live_style);
 
-        if let Some(b) = to_rect(b) {
+        if let Some(b) = to_rect(&b) {
             let r = &mut self.windows[self.current];
             r.set_blend_mode(BlendMode::None);
             r.set_draw_color(color.into().v);
@@ -69,7 +69,7 @@ impl<E> RenderStdWidgets<E> for Render<E> where
     #[inline]
     fn fill_border_inner(&mut self, c: &mut E::Context) {
         let a = LOK.load(Ordering::Acquire);
-        let b = &self.live_bounds;
+        let b = self.live_sdl2_rect();
         let color = c.style_provider().color(&self.live_style);
         let thickness = c.style_provider().border(&self.live_style).top;
 
@@ -102,12 +102,12 @@ impl<E> RenderStdWidgets<E> for Render<E> where
     #[inline]
     fn render_preprocessed_text(&mut self, text: &ESGlyphs<E>, inner_offset: Offset, c: &mut E::Context) {
         let a = LOK.load(Ordering::Acquire);
-        let b = &self.live_bounds;
+        let b = self.live_sdl2_rect();
 
         if b.not_empty() {
             let color = c.style_provider().color(&self.live_style);
             let g = text.as_ref().iter_glyphs();
-            self.render_glyphs(*b,inner_offset,color.into().v,g.cloned()).expect("TTOOF");
+            self.render_glyphs(b,inner_offset,color.into().v,g.cloned()).expect("TTOOF");
         }
         LOK.store(a, Ordering::Release);
     }
@@ -121,9 +121,10 @@ impl<E> RenderStdWidgets<E> for Render<E> where
 }
 #[inline]
 pub fn to_rect(b: &Bounds) -> Option<Rect> {
-    if b.size.w > 0 && b.size.h > 0 {
+    Some(Rect::new(b.off.x,b.off.y,b.size.w,b.size.h))
+    /*if b.size.w > 0 && b.size.h > 0 {
         Some(Rect::new(b.off.x,b.off.y,b.size.w,b.size.h))
     }else{
         None
-    }
+    }*/
 }

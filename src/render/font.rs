@@ -45,14 +45,14 @@ impl<E> Render<E> where E: Env {
         self.cache.cache_queued(|r,d| {
             let r = sdl2::rect::Rect::new(r.min.x as i32, r.min.y as i32, r.width(), r.height());
             
-            //we have to generate BGRA(!) here. Why? only god knows
+            //we have to generate BGRA(!) here. Why? only god knows (https://wiki.libsdl.org/SDL_PixelFormatEnum#SDL_PIXELFORMAT_.2A32_aliases sdl2 defaulting to big endian??)
             let mut data = vec![0xFF;d.len()*4];
             for (i,p) in d.iter().enumerate() {
                 data[i*4+3] = *p;
             }
 
             tex_ref
-                .update(r, &data, 1)
+                .update(r, &data, (r.width()*4) as usize)
                 .expect("TODO");
         }).map_err(|e| e.to_string() )?;
 
@@ -64,12 +64,12 @@ impl<E> Render<E> where E: Env {
             if in_bounds(g, o, b.size) {
                 if let Some((src,dest)) = self.cache.rect_for(0, g).unwrap() {
                     /*let pbb = g.pixel_bounding_box().unwrap();
-                    self.c.set_draw_color(sdl2::pixels::Color::BLUE);
-                    self.c.fill_rect(sdl2::rect::Rect::new(pbb.min.x - o.x + b.off.x,pbb.min.y - o.y + b.off.y,pbb.width() as u32,pbb.height() as u32) )?;
+                    self.windows[self.current].set_draw_color(sdl2::pixels::Color::BLUE);
+                    self.windows[self.current].fill_rect(sdl2::rect::Rect::new(pbb.min.x - o.x + b.off.x,pbb.min.y - o.y + b.off.y,pbb.width() as u32,pbb.height() as u32) )?;
 
                     let pb = g.position();
-                    self.c.set_draw_color(sdl2::pixels::Color::RED);
-                    self.c.draw_point(sdl2::rect::Point::new(pb.x as i32 - o.x + b.off.x,pb.y as i32 - o.y + b.off.y) )?;*/
+                    self.windows[self.current].set_draw_color(sdl2::pixels::Color::RED);
+                    self.windows[self.current].draw_point(sdl2::rect::Point::new(pb.x as i32 - o.x + b.off.x,pb.y as i32 - o.y + b.off.y) )?;*/
 
                     let cache_dims = self.cache.dimensions();
                     let sx = src.min.x * cache_dims.0 as f32;
@@ -93,7 +93,7 @@ impl<E> Render<E> where E: Env {
                 }
             }
         }
-        //self.c.copy(tex_ref, sdl2::rect::Rect::new(0,0,256,256), sdl2::rect::Rect::new(0,0,256,256)).expect("F");
+        //self.windows[self.current].copy(tex_ref, sdl2::rect::Rect::new(0,0,256,256), sdl2::rect::Rect::new(0,0,256,256)).expect("F");
         Ok(())
     }
 }
