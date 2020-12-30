@@ -36,12 +36,12 @@ impl Simplion {
             ctx: SimpleCtx::from_sdl2(sdl).unwrap(),
         }
     }
-    pub fn push_canvas<W>(&mut self, x: Canvas<Window>, w: W) where W: WidgetMut<'static,SimpleEnv> {
+    pub fn push_canvas<W>(&mut self, x: Canvas<Window>, w: W) where W: WidgetMut<SimpleEnv>+'static {
         assert_eq!(self.stor.roots.len(),self.renderer.windows.len());
-        self.stor.roots.push((w.boxed(),x.window().size().into()));
+        self.stor.roots.push((w.boxed_mut(),x.window().size().into()));
         self.renderer.windows.push(x);
     }
-    pub fn push_window<W>(&mut self, x: Window, w: W) where W: WidgetMut<'static,SimpleEnv> {
+    pub fn push_window<W>(&mut self, x: Window, w: W) where W: WidgetMut<SimpleEnv>+'static {
         self.push_canvas(x.into_canvas().build().unwrap(),w)
     }
     pub fn do_events(&mut self) -> bool {

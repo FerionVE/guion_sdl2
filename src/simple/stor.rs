@@ -64,7 +64,7 @@ impl GuionWidgets<SimpleEnv> for SimpleStor {
 
 //TODO protecc the fake-widget
 /// fake-widget impl for real windows mapping
-impl<'w> Widget<'w,SimpleEnv> for SimpleStor {
+impl Widget<SimpleEnv> for SimpleStor {
     fn id(&self) -> StdID {
         self._id
     }
@@ -90,15 +90,15 @@ impl<'w> Widget<'w,SimpleEnv> for SimpleStor {
     fn childs(&self) -> usize {
         self.roots.len()
     }
-    fn child<'s>(&'s self, i: usize) -> Result<Resolvable<'s,SimpleEnv>,()> where 'w: 's {
+    fn child(&self, i: usize) -> Result<Resolvable<SimpleEnv>,()> {
         self.roots.get(i)
             .map(|w| Resolvable::Widget(Box::new((*(w.0)).base())) )
             .ok_or(())
     }
-    fn into_child(self: Box<Self>, i: usize) -> Result<Resolvable<'w,SimpleEnv>,()> {
+    fn into_child<'w>(self: Box<Self>, i: usize) -> Result<Resolvable<'w,SimpleEnv>,()> where Self: 'w {
         todo!()
     }
-    fn into_childs(self: Box<Self>) -> Vec<Resolvable<'w,SimpleEnv>> {
+    fn into_childs<'w>(self: Box<Self>) -> Vec<Resolvable<'w,SimpleEnv>> where Self: 'w {
         todo!()
     }
     fn child_bounds(&self, _: Link<SimpleEnv>, _: &Bounds, _: &ESVariant<SimpleEnv>, _: bool) -> Result<Vec<Bounds>,()> {
@@ -111,19 +111,19 @@ impl<'w> Widget<'w,SimpleEnv> for SimpleStor {
     }
 }
 
-impl<'w> WidgetMut<'w,SimpleEnv> for SimpleStor {
-    fn child_mut<'s>(&'s mut self, i: usize) -> Result<guion::widget::resolvable::ResolvableMut<'s,SimpleEnv>,()> where 'w: 's {
+impl WidgetMut<SimpleEnv> for SimpleStor {
+    fn child_mut(&mut self, i: usize) -> Result<guion::widget::resolvable::ResolvableMut<SimpleEnv>,()> {
         self.roots.get_mut(i)
             .map(|w| ResolvableMut::Widget(Box::new(&mut *(w.0))) )
             .ok_or(())
     }
-    fn into_child_mut(self: Box<Self>, i: usize) -> Result<guion::widget::resolvable::ResolvableMut<'w,SimpleEnv>,()> {
+    fn into_child_mut<'w>(self: Box<Self>, i: usize) -> Result<guion::widget::resolvable::ResolvableMut<'w,SimpleEnv>,()> where Self: 'w {
         todo!()
     }
-    fn childs_mut<'s>(&'s mut self) -> Vec<guion::widget::resolvable::ResolvableMut<'s,SimpleEnv>> where 'w: 's {
+    fn childs_mut(&mut self) -> Vec<guion::widget::resolvable::ResolvableMut<SimpleEnv>> {
         todo!()
     }
-    fn into_childs_mut(self: Box<Self>) -> Vec<guion::widget::resolvable::ResolvableMut<'w,SimpleEnv>> {
+    fn into_childs_mut<'w>(self: Box<Self>) -> Vec<guion::widget::resolvable::ResolvableMut<'w,SimpleEnv>> where Self: 'w {
         todo!()
     }
 }

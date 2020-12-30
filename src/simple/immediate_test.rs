@@ -1,59 +1,70 @@
 use super::*;
-use guion::{widgets::{textbox::{state::Cursor, TextBox}, label::Label}, widget::{resolvable::{ResolvableMut, Resolvable}, as_widget::{AsWidgetMut, AsWidget}}};
+use guion::{constraint, widget::{resolvable::{ResolvableMut, Resolvable}, as_widget::{AsWidgetMut, AsWidget}}, widgets::{label::Label, textbox::{state::Cursor, TextBox}, util::remote_state::RemoteState}};
 
 use guion::widget::WBaseMut; //baka import
 use guion::{validation::validated::Validated, widget::WBase};
 
-impl<'w> AsWidget<'w,SimpleEnv> for (String,StdID) {
-    fn as_ref<'s>(&'s self) -> guion::widget::resolvable::Resolvable<'s,SimpleEnv> where 'w: 's {
-        Resolvable::Widget(
-            Label::new(self.1.clone())
-            .with_text(&self.0)
-            .boxed_ref()
+pub struct ImmediateLabel {
+    pub id: StdID,
+    pub text: String,
+}
+pub struct ImmediateTextBox {
+    pub id: StdID,
+    pub text: String,
+}
+
+impl AsWidget<SimpleEnv> for ImmediateLabel {
+    fn as_ref(&self) -> guion::widget::resolvable::Resolvable<SimpleEnv> {
+        Resolvable::from_widget(
+            Label::immediate(self.id.clone(),&self.text)
+                .with_size(constraint!(~0-|24))
         )
     }
-    fn into_ref(self) -> guion::widget::resolvable::Resolvable<'w,SimpleEnv> {
-        todo!()
+    fn into_ref<'w>(self) -> guion::widget::resolvable::Resolvable<'w,SimpleEnv> where Self: 'w {
+        Resolvable::from_widget(
+            Label::immediate(self.id.clone(),self.text)
+                .with_size(constraint!(~0-|24))
+        )
     }
 }
 
-impl<'w> AsWidgetMut<'w,SimpleEnv> for (String,StdID) {
-    fn as_mut<'s>(&'s mut self) -> guion::widget::resolvable::ResolvableMut<'s,SimpleEnv> where 'w: 's {
-        ResolvableMut::Widget(
-            Label::new(self.1.clone())
-            .with_text(&mut self.0)
-            .boxed()
+impl AsWidgetMut<SimpleEnv> for ImmediateLabel {
+    fn as_mut(&mut self) -> guion::widget::resolvable::ResolvableMut<SimpleEnv> {
+        ResolvableMut::from_widget(
+            Label::immediate(self.id.clone(),&mut self.text)
+                .with_size(constraint!(~0-|24))
         )
     }
-    fn into_mut(self) -> guion::widget::resolvable::ResolvableMut<'w,SimpleEnv> {
-        todo!()
+    fn into_mut<'w>(self) -> guion::widget::resolvable::ResolvableMut<'w,SimpleEnv> where Self: 'w {
+        ResolvableMut::from_widget(
+            Label::immediate(self.id.clone(),self.text)
+                .with_size(constraint!(~0-|24))
+        )
     }
 }
 
-impl<'w> AsWidget<'w,SimpleEnv> for (String,StdID,(u32,u32),Cursor,Option<u32>) {
-    fn as_ref<'s>(&'s self) -> guion::widget::resolvable::Resolvable<'s,SimpleEnv> where 'w: 's {
-        Resolvable::Widget(
-            TextBox::new(self.1.clone())
-            .with_text(&self.0)
-            .with_states(&self.2, &self.3, &self.4)
-            .boxed_ref()
+impl AsWidget<SimpleEnv> for ImmediateTextBox {
+    fn as_ref(&self) -> guion::widget::resolvable::Resolvable<SimpleEnv> {
+        Resolvable::from_widget(
+            TextBox::immediate(self.id.clone(),&self.text)
         )
     }
-    fn into_ref(self) -> guion::widget::resolvable::Resolvable<'w,SimpleEnv> {
-        todo!()
+    fn into_ref<'w>(self) -> guion::widget::resolvable::Resolvable<'w,SimpleEnv> where Self: 'w {
+        Resolvable::from_widget(
+            TextBox::immediate(self.id.clone(),self.text)
+        )
     }
 }
 
-impl<'w> AsWidgetMut<'w,SimpleEnv> for (String,StdID,(u32,u32),Cursor,Option<u32>) {
-    fn as_mut<'s>(&'s mut self) -> guion::widget::resolvable::ResolvableMut<'s,SimpleEnv> where 'w: 's {
-        ResolvableMut::Widget(
-            TextBox::new(self.1.clone())
-            .with_text(&mut self.0)
-            .with_states(&mut self.2, &mut self.3, &mut self.4)
-            .boxed()
+impl AsWidgetMut<SimpleEnv> for ImmediateTextBox {
+    fn as_mut(&mut self) -> guion::widget::resolvable::ResolvableMut<SimpleEnv> {
+        ResolvableMut::from_widget(
+            TextBox::immediate(self.id.clone(),&mut self.text)
         )
     }
-    fn into_mut(self) -> guion::widget::resolvable::ResolvableMut<'w,SimpleEnv> {
-        todo!()
+    fn into_mut<'w>(self) -> guion::widget::resolvable::ResolvableMut<'w,SimpleEnv> where Self: 'w {
+        ResolvableMut::from_widget(
+            TextBox::immediate(self.id.clone(),self.text)
+        )
     }
 }

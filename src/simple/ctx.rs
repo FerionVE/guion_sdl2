@@ -1,5 +1,5 @@
 use super::*;
-use guion::handler::standard::StdHandler;
+use guion::{handler::standard::StdHandler, state::dyn_state::DynState};
 use crate::handler::Handler;
 use crate::simple::env::SimpleEnv;
 use guion::{ctx::clipboard::CtxClipboardAccess, state::CtxStdState};
@@ -103,5 +103,14 @@ impl CtxClipboardAccess<SimpleEnv> for SimpleCtx {
     fn clipboard_get_text(&mut self) -> Option<String> {
         self.clipboard.has_clipboard_text()
             .map(|| self.clipboard.clipboard_text().unwrap() )
+    }
+}
+
+impl DynState<SimpleEnv> for SimpleCtx {
+    fn remote_state_or_default<T>(&self, id: StdID) -> T where T: Default + Clone + 'static {
+        self.handler.remote_state_or_default(id)
+    }
+    fn push_remote_state<T>(&mut self, id: StdID, v: T) where T: 'static {
+        self.handler.push_remote_state(id,v)
     }
 }

@@ -2,8 +2,8 @@ extern crate guion_sdl2;
 
 use crate::guion_sdl2::qwutils::ResultNonDebugUnwrap;
 use guion::{aliases::WidgetRefMut, const_std_id, constraint, ctx::{queue::StdEnqueueable, queue::StdOrder}, id::standard::StdID, layout::Orientation, layout::*, path::standard::SimplePath, validation::validated::Validated, widget::*, widgets::{area::Area, button::Button, checkbox::CheckBox, label::Label, pane::Pane, pbar::ProgressBar, splitpane::SplitPane, textbox::{state::Cursor, TextBox}, util::{state::AtomStateMut, caption::CaptionMut}}};
-use guion_sdl2::*;
-use simple::{
+use guion_sdl2::{simple::immediate_test::{ImmediateLabel, ImmediateTextBox}};
+use guion_sdl2::simple::{
     env::{SimpleEnv},
     stor::SimpleStor, ctx::SimpleCtx, StandardPath, Simplion,
 };
@@ -30,7 +30,7 @@ fn main() {
         Orientation::Vertical,
         (
             Label::new(StdID::new())
-                .with_size(cb_bounds.clone())
+                .with_size(cb_bounds)
                 .with_text(Validated::new("Label".to_owned())),
             Area::new(
                 StdID::new(),
@@ -39,11 +39,11 @@ fn main() {
                     Orientation::Horizontal,
                     (
                         Button::new(StdID::new())
-                            .with_size(b_bounds.clone())
+                            .with_size(b_bounds)
                             .with_text("0".to_owned())
                             .with_trigger(button_action),
                         Button::new(StdID::new())
-                            .with_size(b_bounds.clone())
+                            .with_size(b_bounds)
                             .with_text("0".to_owned())
                             .with_trigger(button_action),
                     ),
@@ -52,26 +52,26 @@ fn main() {
                 .with_state((0,0)),
             ProgressBar::new(ProgBar(), Orientation::Horizontal)
                 .with_value(0.5)
-                .with_size(pb_bounds.clone()),
+                .with_size(pb_bounds),
             CheckBox::new(StdID::new(), false)
-                .with_text("CheckBox")
-                .with_size(cb_bounds.clone()),
+                .with_text("CheckBox".to_owned())
+                .with_size(cb_bounds),
             SplitPane::new(
                 StdID::new(), Orientation::Horizontal, 0.5,
                 (
                     Button::new(StdID::new())
-                        .with_size(b_bounds.clone())
+                        .with_size(b_bounds)
                         .with_text("0".to_owned())
                         .with_trigger(button_action),
                     Button::new(StdID::new())
-                        .with_size(b_bounds.clone())
+                        .with_size(b_bounds)
                         .with_text("0".to_owned())
                         .with_trigger(button_action),
                 ),
             ),
             TextBox::new(StdID::new()),
-            ("Immediate Label".to_owned(),StdID::new()),
-            ("Immediate TextBox".to_owned(),StdID::new(),(0,0),Cursor::default(),None),
+            ImmediateLabel{text:"Immediate Label".to_owned(),id:StdID::new()} ,
+            ImmediateTextBox{text:"Immediate TextBox".to_owned(),id:StdID::new()},
         ),
     );
 
