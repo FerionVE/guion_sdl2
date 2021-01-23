@@ -1,3 +1,5 @@
+use guion::style::standard::cursor::StdCursor;
+
 use super::*;
 
 impl Default for Style {

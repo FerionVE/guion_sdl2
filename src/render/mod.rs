@@ -18,7 +18,8 @@ pub struct Render<E> where E: Env {
 
     pub live_bounds: Bounds,
     pub live_viewport: Bounds,
-    pub live_style: ESVariant<E>,
+    pub live_style: EStyle<E>,
+    pub live_selector: ESSelector<E>,
 }
 
 impl<E> Render<E> where E: Env {
@@ -35,6 +36,7 @@ impl<E> Render<E> where E: Env {
             live_bounds: Default::default(),
             live_viewport: Default::default(),
             live_style: Default::default(),
+            live_selector: Default::default(),
         }
     }
 

@@ -1,4 +1,5 @@
 use super::*;
+use guion::style::standard::cursor::StdCursor;
 use sdl2::mouse::SystemCursor;
 
 pub fn to_sdl_cursor<C: Into<StdCursor>>(c: C) -> SystemCursor {

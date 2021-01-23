@@ -28,7 +28,7 @@ impl SimpleCtx {
 
 pub type SimpleHandler = StdHandler<Handler<(),SimpleEnv>,SimpleEnv>;
 
-impl GuionContext<SimpleEnv> for SimpleCtx {
+impl GContext<SimpleEnv> for SimpleCtx {
     type Handler = SimpleHandler;
     type Queue = Queue<SimpleEnv>;
 
@@ -39,10 +39,6 @@ impl GuionContext<SimpleEnv> for SimpleCtx {
     #[inline]
     fn queue(&self) -> &Self::Queue {
         &self.queue
-    }
-    #[inline]
-    fn style_provider(&self) -> &EStyle<SimpleEnv> {
-        &self.style_provider
     }
 }
 

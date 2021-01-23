@@ -291,7 +291,7 @@ pub struct ParsedEvent<E> where E: Env {
 
 fn ret<E,T>(event: T, ts: &u32) -> ParsedEvent<E> where E: Env, EEvent<E>: VariantSupport<T,E>, T: Variant<E> {
     ParsedEvent{
-        event: GuionEvent::from(event),
+        event: GEvent::from(event),
         ts: *ts,
     }
 }

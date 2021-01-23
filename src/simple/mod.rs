@@ -5,7 +5,8 @@ pub mod valid;
 //pub mod style;
 pub mod ctx;
 use super::*;
-use guion::{id::standard::StdID, path::standard::SimplePath, widget::WidgetMut, ctx::queue::StdOrder, render::link::RenderLink, style::variant::StdTag};
+use guion::style::selectag::standard::StdSelectag;
+use guion::{id::standard::StdID, path::standard::SimplePath, widget::WidgetMut, ctx::queue::StdOrder, render::link::RenderLink};
 use env::SimpleEnv;
 use ctx::SimpleCtx;
 use stor::SimpleStor;
@@ -121,7 +122,7 @@ impl Simplion {
                         &mut self.ctx,
                     );
                     //fill background
-                    rl.with(StdTag::ObjBackground)
+                    rl.with(StdSelectag::ObjBackground)
                         .fill_rect(&mut self.ctx);
                     //process queued and render
                     render_and_events::<SimpleEnv>(&mut rl, path, &mut self.stor, &mut self.ctx);

@@ -36,7 +36,7 @@ impl SimpleStor {
     }
 }
 
-impl GuionWidgets<SimpleEnv> for SimpleStor {
+impl GWidgets<SimpleEnv> for SimpleStor {
     fn widget<'a>(&'a self, i: StandardPath) -> Result<Resolved<'a,SimpleEnv>,()> {
         let (wref,path) = resolve_in_root(self, i)?;
         Ok(Resolved{
@@ -52,7 +52,7 @@ impl GuionWidgets<SimpleEnv> for SimpleStor {
             path,
         })
     }
-    fn trace_bounds(&self, ctx: &mut SimpleCtx, i: StandardPath, b: &Bounds, e: &ESVariant<SimpleEnv>, force: bool) -> Result<Bounds,()> {
+    fn trace_bounds(&self, ctx: &mut SimpleCtx, i: StandardPath, b: &Bounds, e: &EStyle<SimpleEnv>, force: bool) -> Result<Bounds,()> {
         let l = ctx.link(Resolved{
             wref: Box::new(self.base()),
             path: StandardPath::new(&[]),
@@ -84,7 +84,7 @@ impl Widget<SimpleEnv> for SimpleStor {
         //eprintln!("e{}",passed);
         passed
     }
-    fn _size(&self, _: Link<SimpleEnv>, _: &ESVariant<SimpleEnv>) -> ESize<SimpleEnv> {
+    fn _size(&self, _: Link<SimpleEnv>, _: &EStyle<SimpleEnv>) -> ESize<SimpleEnv> {
         Gonstraints::empty()
     }
     fn childs(&self) -> usize {
@@ -101,7 +101,7 @@ impl Widget<SimpleEnv> for SimpleStor {
     fn into_childs<'w>(self: Box<Self>) -> Vec<Resolvable<'w,SimpleEnv>> where Self: 'w {
         todo!()
     }
-    fn child_bounds(&self, _: Link<SimpleEnv>, _: &Bounds, _: &ESVariant<SimpleEnv>, _: bool) -> Result<Vec<Bounds>,()> {
+    fn child_bounds(&self, _: Link<SimpleEnv>, _: &Bounds, _: &EStyle<SimpleEnv>, _: bool) -> Result<Vec<Bounds>,()> {
         Ok(self.roots.iter()
             .map(|r| Bounds::from_size(r.1) )
             .collect::<Vec<_>>())

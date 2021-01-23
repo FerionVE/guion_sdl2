@@ -2,7 +2,7 @@ use sdl2::pixels::Color;
 use std::path::Path;
 use guion::util::bounds::Offset;
 use guion::util::{bounds::Dims};
-use guion::style::font::Glyphs as GuionGlyphs;
+use guion::style::font::Glyphs as GGlyphs;
 use guion::{widget::cast::Statize, style::font::{GlyphInfo,CrazyWorkaroundPPIter}};
 use super::*;
 use rusttype::*;
@@ -35,8 +35,8 @@ pub struct Glyphs {
     distance: u32,
 }
 
-impl<E> GuionGlyphs<E> for Glyphs where
-    E: Env + EnvFlexStyleVariant + Sync,
+impl<E> GGlyphs<E> for Glyphs where
+    E: Env + Sync,
     E::Context: AsRefMut<Core<E>>
 {
     type Glyph = GlyphInfo;

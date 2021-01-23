@@ -1,6 +1,6 @@
 use super::*;
 
-pub trait SDLDestination: GuionDestination {
+pub trait SDLDestination: GDestination {
     const JOYPAD: Self;
     const CONTROLLER: Self;
     const GESTURE: Self;
@@ -92,18 +92,18 @@ pub trait SDLDestination: GuionDestination {
     }
 }
 #[derive(Clone)]
-pub struct StdDest<D> where D: GuionDestination {
+pub struct StdDest<D> where D: GDestination {
     pub v: D,
 }
 
-impl<D> GuionDestination for StdDest<D> where D: GuionDestination {
+impl<D> GDestination for StdDest<D> where D: GDestination {
     const ROOT: Self = Self{v: D::ROOT};
     const FOCUSED: Self = Self{v: D::FOCUSED};
     const HOVERED: Self = Self{v: D::HOVERED};
     const INVALID: Self = Self{v: D::INVALID};
 }
 
-impl<D> SDLDestination for StdDest<D> where D: GuionDestination {
+impl<D> SDLDestination for StdDest<D> where D: GDestination {
     const JOYPAD: Self = Self{v: D::FOCUSED};
     const CONTROLLER: Self = Self{v: D::FOCUSED};
     const GESTURE: Self = Self{v: D::ROOT};

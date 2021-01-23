@@ -4,7 +4,7 @@ pub struct Color {
     pub v: SDLColor,
 }
 
-impl GuionColor for Color {
+impl GColor for Color {
     #[inline]
     fn from_rgba8(c: [u8;4]) -> Self {
         Self{

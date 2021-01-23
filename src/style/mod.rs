@@ -1,7 +1,9 @@
 use crate::style::color::Color;
 use crate::style::font::Font;
 use crate::style::font::Glyphs;
-use guion::{env::EnvFlexStyleVariant, style::{variant::{StyleVariantSupport, StdTag, StyleVariantGetStdCursor}, variant::standard::*}};
+use guion::style::standard::cursor::StdCursor;
+use self::selector::*;
+
 use super::*;
 use std::ops::Mul;
 
@@ -9,6 +11,7 @@ pub mod font;
 pub mod cursor;
 pub mod default;
 pub mod color;
+pub mod selector;
 
 #[derive(Clone)]
 pub struct Style {
@@ -16,33 +19,33 @@ pub struct Style {
     cursor: StdCursor,
 }
 
-impl<E> GuionStyleProvider<E> for Style where
-    E: Env + EnvFlexStyleVariant + Sync,
-    E::Backend: GuionBackend<E,Style=Self>,
-    E::StyleVariant: Into<StdStyleVariant<E>>,
+impl<E> GStyle<E> for Style where
+    E: Env + Default + Sync,
+    //E::Backend: GBackend<E,Style=Self>,
+    //E::StyleSelector: Into<Selector<E>>,
     E::Context: AsRefMut<Core<E>>
 {
     type Font = Font;
     type Cursor = StdCursor;
     type Color = Color;
     type Glyphs = Glyphs;
-    type Variant = E::StyleVariant;
+    type Selector = Selector<E>;
 
     #[inline]
-    fn font(&self, v: &Self::Variant) -> Option<&Self::Font> {
+    fn font(&self, v: &Self::Selector, _: &mut E::Context) -> Option<&Self::Font> {
         todo!()
     }
     #[inline]
-    fn cursor(&self, v: &Self::Variant) -> Self::Cursor {
-        StyleVariantGetStdCursor::cursor(&v.clone().into())
+    fn cursor(&self, v: &Self::Selector, _: &mut E::Context) -> Self::Cursor {
+        self.cursor.clone()
     }
     #[inline]
-    fn color(&self, v: &Self::Variant) -> Self::Color {
-        Color::from_rgba8(stupid_colors(v.clone().into()))
+    fn color(&self, v: &Self::Selector, _: &mut E::Context) -> Self::Color {
+        Color::from_rgba8(stupid_colors(v.clone().filled()))
     }
     #[inline]
-    fn border(&self, v: &Self::Variant) -> Border {
-        stupid_border(v.clone().into())
+    fn border(&self, v: &Self::Selector, _: &mut E::Context) -> Border {
+        stupid_border(v.clone().filled())
     }
 
     #[inline]
@@ -55,9 +58,8 @@ impl<E> GuionStyleProvider<E> for Style where
         todo!()
     }
 
-    #[inline]
-    fn static_default() -> Self {
-        Default::default()
+    fn and(&self, s: &Self) -> Self {
+        self.clone() //TODO
     }
 }
 
@@ -72,28 +74,27 @@ impl AsRefMut<Self> for Style {
     }
 }
 
-pub fn stupid_border<E>(v: StdStyleVariant<E>) -> Border where E: Env {
+pub fn stupid_border<E>(v: SelectorFilled<E>) -> Border where E: Env {
     match v {
-        StdStyleVariant{design: Design::Flat,..} => Border::empty(),
-        StdStyleVariant{border: BorderPtr::Outer,..} => Border::uniform(2),
-        StdStyleVariant{border: BorderPtr::Visual,..} => Border::uniform(1),
-        StdStyleVariant{border: BorderPtr::Specific(v),..} => return v,
+        SelectorFilled{border: BorderPtr::Outer,design: Design::Flat,..} => Border::empty(),
+        SelectorFilled{border: BorderPtr::Outer,..} => Border::uniform(2),
+        SelectorFilled{border: BorderPtr::Visual,..} => Border::uniform(1),
         _ => Border::uniform(2),
-    }.mul(v.border_mul)
+    }
 }
 
-pub fn stupid_colors<E>(v: StdStyleVariant<E>) -> [u8;4] where E: Env {
+pub fn stupid_colors<E>(v: SelectorFilled<E>) -> [u8;4] where E: Env {
     match v {
-        StdStyleVariant{obj: Obj::Text,..} => [255,255,255,255],
-        StdStyleVariant{obj: Obj::Foreground,pressed: true,..} => [0,192,0,255],
-        StdStyleVariant{obj: Obj::Foreground,hovered: true,..} => [64,128,64,255],
-        StdStyleVariant{obj: Obj::Foreground,..} => [64,64,64,255],
-        StdStyleVariant{obj: Obj::Active,..} => [0,128,0,255],
-        StdStyleVariant{obj: Obj::Border,pressed: true,..} => [0,0,0,255],
-        StdStyleVariant{obj: Obj::Border,focused: true,..} => [255,127,0,255],
-        StdStyleVariant{obj: Obj::Border,..} => [0,255,0,255],
-        StdStyleVariant{obj: Obj::Background,..} => [32,32,32,255],
-        StdStyleVariant{obj: Obj::Default,..} => [32,32,32,255],
+        SelectorFilled{obj: Obj::Text,..} => [255,255,255,255],
+        SelectorFilled{obj: Obj::Foreground,pressed: true,..} => [0,192,0,255],
+        SelectorFilled{obj: Obj::Foreground,hovered: true,..} => [64,128,64,255],
+        SelectorFilled{obj: Obj::Foreground,..} => [64,64,64,255],
+        SelectorFilled{obj: Obj::Active,..} => [0,128,0,255],
+        SelectorFilled{obj: Obj::Border,pressed: true,..} => [0,0,0,255],
+        SelectorFilled{obj: Obj::Border,focused: true,..} => [255,127,0,255],
+        SelectorFilled{obj: Obj::Border,..} => [0,255,0,255],
+        SelectorFilled{obj: Obj::Background,..} => [32,32,32,255],
+        SelectorFilled{obj: Obj::Default,..} => [32,32,32,255],
         _ => [127,0,0,255],
     }
 }

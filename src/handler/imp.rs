@@ -1,7 +1,7 @@
 use guion::{EventResp, render::link::RenderLink, event::compound::EventCompound};
 use super::*;
 
-impl<S,E> GuionHandler<E> for Handler<S,E> where S: GuionHandler<E>, E: Env + Sync {
+impl<S,E> GHandler<E> for Handler<S,E> where S: GHandler<E>, E: Env + Sync {
     #[inline] 
     fn _render(l: Link<E>, r: &mut RenderLink<E>) {
         S::_render(l,r)
@@ -16,7 +16,7 @@ impl<S,E> GuionHandler<E> for Handler<S,E> where S: GuionHandler<E>, E: Env + Sy
         S::_event_root(l,e)
     }
     #[inline] 
-    fn _size(l: Link<E>, e: &ESVariant<E>) -> ESize<E> {
+    fn _size(l: Link<E>, e: &EStyle<E>) -> ESize<E> {
         //todo!();
         S::_size(l,e)
     }

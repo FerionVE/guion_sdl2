@@ -18,7 +18,7 @@ pub enum KeyOrigin {
     Mouse(Option<u32>),
 }
 
-impl GuionKey for Key {
+impl GKey for Key {
     type Origin = KeyOrigin;
     const MOUSE_LEFT: Self = Self::Mouse(SDLMouseButton::Left,None);
     const ENTER: Self = Self::Kbd(SDLScancode::Return);

@@ -2,15 +2,16 @@ use crate::style::Style;
 use crate::event::{key::Key, destination::StdDest};
 use crate::render::Render;
 use guion::{backend::Backend, layout::StdGonstraints};
-use guion::{env::{EnvFlexStyleVariant, Env}, style::variant::standard::StdStyleVariant, event::{filter::StdFilter, dyn_evt::DynEvent}, widget::{resolvable::{ResolvableMut, Resolvable}, as_widget::{AsWidgetMut, AsWidget}}};
+use guion::{env::{Env}, event::{filter::StdFilter, dyn_evt::DynEvent}, widget::{resolvable::{ResolvableMut, Resolvable}, as_widget::{AsWidgetMut, AsWidget}}};
 use super::*;
 use stor::SimpleStor;
 use valid::SimpleValidState;
 use ctx::SimpleCtx;
 use std::{any::Any, fmt::Debug};
 
-#[derive(Clone,PartialEq)]
+#[derive(Clone,PartialEq,Default)]
 pub struct SimpleEnv;
+#[derive(Clone,PartialEq,Default)]
 pub struct SimpleBackend;
 
 impl Env for SimpleEnv {
@@ -21,9 +22,6 @@ impl Env for SimpleEnv {
     type WidgetPath = StandardPath;
     type ValidState = SimpleValidState;
     type Message = Box<dyn Any>;
-}
-impl EnvFlexStyleVariant for SimpleEnv {
-    type StyleVariant = StdStyleVariant<SimpleEnv>;
 }
 
 impl Backend<SimpleEnv> for SimpleBackend {
@@ -40,7 +38,7 @@ pub struct SimpleDest {
     pub v: usize,
 }
 
-impl GuionDestination for SimpleDest {
+impl GDestination for SimpleDest {
     const ROOT: Self = Self{v: 0};
     const FOCUSED: Self = Self{v: 1};
     const HOVERED: Self = Self{v: 2};

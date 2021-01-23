@@ -1,6 +1,6 @@
 use super::*;
 
-impl<E> GuionQueue<StdEnqueueable<E>,StdOrder> for Queue<E> where E: Env + Sync, /*ECQueue<E>: AsRefMut<Self>*/ {
+impl<E> GQueue<StdEnqueueable<E>,StdOrder> for Queue<E> where E: Env + Sync, /*ECQueue<E>: AsRefMut<Self>*/ {
     fn push(&mut self, v: StdEnqueueable<E>, o: StdOrder, p: i64) {
         self.queues.entry(o).or_default().push((v,p))
     }
