@@ -7,8 +7,6 @@ use super::*;
 use style::{cursor::to_sdl_cursor, Style, font::Glyphs};
 use std::sync::atomic::{Ordering, AtomicU8};
 
-pub static LOK: AtomicU8 = AtomicU8::new(42);
-
 impl<E> GRender<E> for Render<E> where E: Env, ERenderer<E>: AsRefMut<Self> {
     #[inline]
     fn _style(&self) -> &EStyle<E> {
@@ -28,29 +26,21 @@ impl<E> GRender<E> for Render<E> where E: Env, ERenderer<E>: AsRefMut<Self> {
     }
     #[inline(never)]
     fn _set_style(&mut self, v: &EStyle<E>) {
-        let a = LOK.load(Ordering::Acquire);
         self.live_style = v.clone();
-        LOK.store(a, Ordering::Release);
     }
     #[inline(never)]
     fn _set_selector(&mut self, v: &ESSelector<E>) {
-        let a = LOK.load(Ordering::Acquire);
         self.live_selector = v.clone();
-        LOK.store(a, Ordering::Release);
     }
     #[inline(never)]
     fn _set_bounds(&mut self, v: &Bounds) {
-        let a = LOK.load(Ordering::Acquire);
         self.live_bounds = v.clone();
-        LOK.store(a, Ordering::Release);
     }
     #[inline(never)]
     fn _set_viewport(&mut self, v: &Bounds) {
-        let a = LOK.load(Ordering::Acquire);
         self.live_viewport = v.clone();
         let r = &mut self.windows[self.current];
         r.set_viewport(to_rect(&self.live_viewport));
-        LOK.store(a, Ordering::Release);
     }
 }
 
@@ -65,7 +55,6 @@ impl<E> RenderStdWidgets<E> for Render<E> where
 {
     #[inline]
     fn fill_rect(&mut self, c: &mut E::Context) {
-        let a = LOK.load(Ordering::Acquire);
         let b = self.live_sdl2_rect();
         let color = self.live_style.color(&self.live_selector,c);
 
@@ -75,11 +64,9 @@ impl<E> RenderStdWidgets<E> for Render<E> where
             r.set_draw_color(color.into().v);
             r.fill_rect(Some(b)).expect("SDL Render Failure @ fill_rect");
         }
-        LOK.store(a, Ordering::Release);
     }
     #[inline]
     fn fill_border_inner(&mut self, c: &mut E::Context) {
-        let a = LOK.load(Ordering::Acquire);
         let b = self.live_sdl2_rect();
         let color = self.live_style.color(&self.live_selector,c);
         let thickness = self.live_style.border(&self.live_selector,c).top;
@@ -93,7 +80,6 @@ impl<E> RenderStdWidgets<E> for Render<E> where
                 x.draw_rect(r).expect("SDL Render Failure @ draw_rect");
             }
         }
-        LOK.store(a, Ordering::Release);
     }
     /*#[inline]
     fn render_text(&mut self, b: &Bounds, text: &str, align: (f32,f32), style: &EStyle<E>, variant: &EStyle<E>, ctx: &mut E::Context) {
@@ -112,7 +98,6 @@ impl<E> RenderStdWidgets<E> for Render<E> where
     }*/
     #[inline]
     fn render_preprocessed_text(&mut self, text: &ESGlyphs<E>, inner_offset: Offset, c: &mut E::Context) {
-        let a = LOK.load(Ordering::Acquire);
         let b = self.live_sdl2_rect();
 
         if b.not_empty() {
@@ -120,14 +105,11 @@ impl<E> RenderStdWidgets<E> for Render<E> where
             let g = text.as_ref().iter_glyphs();
             self.render_glyphs(b,inner_offset,color.into().v,g.cloned()).expect("TTOOF");
         }
-        LOK.store(a, Ordering::Release);
     }
     #[inline]
     fn set_cursor(&mut self, c: &mut E::Context) {
-        let a = LOK.load(Ordering::Acquire);
         let cursor = self.live_style.cursor(&self.live_selector,c);
         self.cursor = to_sdl_cursor(cursor);
-        LOK.store(a, Ordering::Release);
     }
 
     fn set_cursor_specific(&mut self, cursor: &ESCursor<E>, c: &mut E::Context) {

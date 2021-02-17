@@ -17,7 +17,6 @@ use event::cast::{event_dest_window, parse_event};
 pub mod immediate_test;
 use guion::{event::{filter::StdFilter, compound::EventCompound}};
 use guion::render::widgets::RenderStdWidgets;
-use crate::render::imp::LOK;
 use std::sync::atomic::Ordering;
 
 pub type StandardPath = SimplePath<SimpleEnv,StdID>;
@@ -108,10 +107,8 @@ impl Simplion {
 
             for widx in 0..self.stor.roots.len() { //TODO move render single windows to stor root
                 self.renderer.current = widx;
-                let a = LOK.load(Ordering::Acquire);
                 self.renderer.windows[widx].set_viewport(None);
                 let rect = self.renderer.windows[widx].viewport();
-                LOK.store(a, Ordering::Release);
                 let bounds = (rect.width(),rect.height());
                 let path = self.stor.path_for_root(widx);
 
