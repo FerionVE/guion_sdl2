@@ -12,6 +12,8 @@ where
 {
     let is = Event { e: s.clone(), ws: (window_size.0 as f32, window_size.1 as f32) };
 
+    use sdl2::event::WindowEvent;
+
     match s {
         SDLEvent::KeyDown {
             timestamp,
@@ -242,28 +244,28 @@ where
             window_id,
             win_event,
         } => match win_event {
-            sdl2::event::WindowEvent::None => ret(is,timestamp),
-            sdl2::event::WindowEvent::Shown => ret(is,timestamp),
-            sdl2::event::WindowEvent::Hidden => ret(is,timestamp),
-            sdl2::event::WindowEvent::Exposed => ret(is,timestamp),
-            sdl2::event::WindowEvent::Moved(x,y) => ret(RootEvent::WindowMove{
+            WindowEvent::None => ret(is,timestamp),
+            WindowEvent::Shown => ret(is,timestamp),
+            WindowEvent::Hidden => ret(is,timestamp),
+            WindowEvent::Exposed => ret(is,timestamp),
+            WindowEvent::Moved(x,y) => ret(RootEvent::WindowMove{
                 pos: Offset{x: *x, y: *y},
                 size: Dims::from(window_size),
             },timestamp),
-            sdl2::event::WindowEvent::Resized(w,h) => ret(RootEvent::WindowResize{
+            WindowEvent::Resized(w,h) => ret(RootEvent::WindowResize{
                 size: Dims{w: *w as u32, h: *h as u32},
             },timestamp),
-            sdl2::event::WindowEvent::SizeChanged(_, _) => ret(is,timestamp),
-            sdl2::event::WindowEvent::Minimized => ret(is,timestamp),
-            sdl2::event::WindowEvent::Maximized => ret(is,timestamp),
-            sdl2::event::WindowEvent::Restored => ret(is,timestamp),
-            sdl2::event::WindowEvent::Enter => ret(is,timestamp),
-            sdl2::event::WindowEvent::Leave => ret(RootEvent::MouseLeaveWindow{},timestamp),
-            sdl2::event::WindowEvent::FocusGained => ret(is,timestamp),
-            sdl2::event::WindowEvent::FocusLost => ret(is,timestamp),
-            sdl2::event::WindowEvent::Close => ret(is,timestamp),
-            sdl2::event::WindowEvent::TakeFocus => ret(is,timestamp),
-            sdl2::event::WindowEvent::HitTest => ret(is,timestamp),
+            WindowEvent::SizeChanged(_, _) => ret(is,timestamp),
+            WindowEvent::Minimized => ret(is,timestamp),
+            WindowEvent::Maximized => ret(is,timestamp),
+            WindowEvent::Restored => ret(is,timestamp),
+            WindowEvent::Enter => ret(is,timestamp),
+            WindowEvent::Leave => ret(RootEvent::MouseLeaveWindow{},timestamp),
+            WindowEvent::FocusGained => ret(is,timestamp),
+            WindowEvent::FocusLost => ret(is,timestamp),
+            WindowEvent::Close => ret(is,timestamp),
+            WindowEvent::TakeFocus => ret(is,timestamp),
+            WindowEvent::HitTest => ret(is,timestamp),
         },
     }
 }

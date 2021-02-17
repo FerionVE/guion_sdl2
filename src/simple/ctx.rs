@@ -42,6 +42,16 @@ impl GContext<SimpleEnv> for SimpleCtx {
     }
 }
 
+impl AsRefMut<Self> for SimpleCtx {
+    #[inline]
+    fn as_ref(&self) -> &Self {
+        self
+    }
+    #[inline]
+    fn as_mut(&mut self) -> &mut Self {
+        self
+    }
+}
 impl AsRefMut<SimpleHandler> for SimpleCtx {
     #[inline]
     fn as_ref(&self) -> &SimpleHandler {

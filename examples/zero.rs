@@ -92,7 +92,11 @@ fn main() {
 
 fn button_action(mut l: Link<SimpleEnv>) {
     fn button_mutate(mut w: WidgetRefMut<SimpleEnv>, _: &mut SimpleCtx, _: StandardPath) {
-        w.debug_type_name();
+        let mut debug_type_names = vec![];
+        w.debug_type_name(&mut debug_type_names);
+        for i in debug_type_names {
+            eprintln!("\t{}",i);
+        }
         let text = w.traitcast_mut::<dyn CaptionMut<SimpleEnv>>().unwrap();
         let i: u32 = text.caption().parse().unwrap();
         text.replace(&(i+1).to_string());
