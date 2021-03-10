@@ -29,6 +29,7 @@ use guion::aliases::*;
 use guion::util::bounds::Offset as Offset;
 
 use guion::util::bounds::Bounds as Bounds;
+use guion::util::error::GuionError;
 use guion::event::key::Key as GPressedKey;
 use guion::event::key::Key as GKey;
 use guion::util::border::Border;

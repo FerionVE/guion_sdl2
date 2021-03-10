@@ -152,14 +152,14 @@ impl Glyph {
     #[inline]
     pub fn glyph(&self) -> Option<&PositionedGlyph<'static>> {
         match self {
-            Glyph::Glyph(g,_) => Some(g),
+            Self::Glyph(g,_) => Some(g),
             _ => None,
         }
     }
 
     pub fn as_pp_char(&self) -> GlyphInfo {
         match self {
-            Glyph::Glyph(g,str_pos) => {
+            Self::Glyph(g,str_pos) => {
                 GlyphInfo{
                     bounds: g.pixel_bounding_box().map(|bb|
                         Bounds::from_xywh(bb.min.x,bb.min.y,bb.width() as u32,bb.height() as u32) //TODO fix sign conversion
@@ -171,7 +171,7 @@ impl Glyph {
                     str_pos: *str_pos,
                 }
             }
-            Glyph::Placeholder(p,str_pos) => {
+            Self::Placeholder(p,str_pos) => {
                 GlyphInfo{
                     bounds: None,
                     offset: Offset{

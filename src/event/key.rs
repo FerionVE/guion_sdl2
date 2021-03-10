@@ -39,8 +39,8 @@ impl GKey for Key {
     #[inline]
     fn origin(&self) -> Self::Origin {
         match self {
-            Key::Kbd(_) => KeyOrigin::Kbd(),
-            Key::Mouse(_,o) => KeyOrigin::Mouse(*o),
+            Self::Kbd(_) => KeyOrigin::Kbd(),
+            Self::Mouse(_,o) => KeyOrigin::Mouse(*o),
         }
     }
 }
@@ -49,11 +49,11 @@ impl PartialEq for Key {
     #[inline]
     fn eq(&self, o: &Self) -> bool {
         match self {
-            Key::Kbd(key) => match o {
+            Self::Kbd(key) => match o {
                 Key::Kbd(okey) => key == okey,
                 _ => false,
             }
-            Key::Mouse(key,origin) => match o {
+            Self::Mouse(key,origin) => match o {
                 Key::Mouse(okey,oorigin) => 
                     key == okey && origin.with_if(oorigin,|a,b| a==b ).unwrap_or(true),
                 _ => false,

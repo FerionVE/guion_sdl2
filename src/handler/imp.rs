@@ -21,7 +21,7 @@ impl<S,E> GHandler<E> for Handler<S,E> where S: GHandler<E>, E: Env + Sync {
         S::_size(l,e)
     }
     #[inline]
-    fn _send_event(l: Link<E>, e: &EventCompound<E>, child: E::WidgetPath) -> Result<EventResp,()> {
+    fn _send_event(l: Link<E>, e: &EventCompound<E>, child: E::WidgetPath) -> Result<EventResp,GuionError<E>> {
         S::_send_event(l,e,child)
     }
 }

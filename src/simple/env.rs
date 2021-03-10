@@ -2,7 +2,7 @@ use crate::style::Style;
 use crate::event::{key::Key, destination::StdDest};
 use crate::render::Render;
 use guion::{backend::Backend, layout::StdGonstraints};
-use guion::{env::{Env}, event::{filter::StdFilter, dyn_evt::DynEvent}, widget::{resolvable::{ResolvableMut, Resolvable}, as_widget::{AsWidgetMut, AsWidget}}};
+use guion::{env::{Env}, event::{filter::StdFilter, standard::dyn_evt::DynEvent}, widget::{resolvable::{ResolvableMut, Resolvable}, as_widget::{AsWidgetMut, AsWidget}}};
 use super::*;
 use stor::SimpleStor;
 use valid::SimpleValidState;
@@ -45,8 +45,50 @@ impl GDestination for SimpleDest {
     const INVALID: Self = Self{v: std::usize::MAX};
 }
 
-guion::impl_env_stds!(SimpleEnv);
+//guion::impl_env_stds!(SimpleEnv);
 //guion::impl_remote_state!(u8,SimpleEnv);
+
+impl AsWidget<SimpleEnv> for StandardPath {
+    #[inline]
+    fn as_ref(&self) -> guion::widget::resolvable::Resolvable<SimpleEnv> {
+        guion::widget::resolvable::Resolvable::Path(self.clone().into())
+    }
+    #[inline]
+    fn into_ref<'w>(self) -> guion::widget::resolvable::Resolvable<'w,SimpleEnv> where Self: 'w {
+        guion::widget::resolvable::Resolvable::Path(self.clone().into())
+    }
+}
+impl AsWidgetMut<SimpleEnv> for StandardPath {
+    #[inline]
+    fn as_mut(&mut self) -> guion::widget::resolvable::ResolvableMut<SimpleEnv> {
+        guion::widget::resolvable::ResolvableMut::Path(self.clone().into())
+    }
+    #[inline]
+    fn into_mut<'w>(self) -> guion::widget::resolvable::ResolvableMut<'w,SimpleEnv> where Self: 'w {
+        guion::widget::resolvable::ResolvableMut::Path(self.clone().into())
+    }
+}
+
+/*impl AsWidget<SimpleEnv> for <SimpleEnv as Env>::WidgetPath {
+    #[inline]
+    fn as_ref(&self) -> guion::widget::resolvable::Resolvable<SimpleEnv> {
+        guion::widget::resolvable::Resolvable::Path(self.clone().into())
+    }
+    #[inline]
+    fn into_ref<'w>(self) -> guion::widget::resolvable::Resolvable<'w,SimpleEnv> where Self: 'w {
+        guion::widget::resolvable::Resolvable::Path(self.clone().into())
+    }
+}
+impl AsWidgetMut<SimpleEnv> for <SimpleEnv as Env>::WidgetPath {
+    #[inline]
+    fn as_mut(&mut self) -> guion::widget::resolvable::ResolvableMut<SimpleEnv> {
+        guion::widget::resolvable::ResolvableMut::Path(self.clone().into())
+    }
+    #[inline]
+    fn into_mut<'w>(self) -> guion::widget::resolvable::ResolvableMut<'w,SimpleEnv> where Self: 'w {
+        guion::widget::resolvable::ResolvableMut::Path(self.clone().into())
+    }
+}*/
 
 impl Debug for SimpleEnv {
     #[inline]

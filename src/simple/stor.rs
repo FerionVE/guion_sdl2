@@ -5,7 +5,7 @@ use ctx::SimpleCtx;
 use guion::{EventResp, widget::WBaseMut};
 
 pub struct SimpleStor {
-    pub roots: Vec<(WidgetRefMut<'static,SimpleEnv>,Dims)>,
+    pub roots: Vec<(Box<dyn AsWidgetMut<SimpleEnv>+'static>,Dims)>,
     pub _id: StdID,
 }
 
@@ -18,7 +18,7 @@ impl SimpleStor {
     }
 
     pub fn path_for_root(&self, i: usize) -> StandardPath {
-        StandardPath::new(&[self.roots[i].0.id()])
+        (*self.roots[i].0).as_ref().in_parent_path(SimplePath::new(&[])) //TODO empty default constructor for path
     }
 
     pub fn resolved(&self) -> Resolved<SimpleEnv> {
@@ -37,7 +37,7 @@ impl SimpleStor {
 }
 
 impl GWidgets<SimpleEnv> for SimpleStor {
-    fn widget<'a>(&'a self, i: StandardPath) -> Result<Resolved<'a,SimpleEnv>,()> {
+    fn widget<'a>(&'a self, i: StandardPath) -> Result<Resolved<'a,SimpleEnv>,GuionError<SimpleEnv>> {
         let (wref,path) = resolve_in_root(self, i)?;
         Ok(Resolved{
             wref,
@@ -45,14 +45,14 @@ impl GWidgets<SimpleEnv> for SimpleStor {
             stor: self,
         })
     }
-    fn widget_mut<'a>(&'a mut self, i: StandardPath) -> Result<ResolvedMut<'a,SimpleEnv>,()> {
+    fn widget_mut<'a>(&'a mut self, i: StandardPath) -> Result<ResolvedMut<'a,SimpleEnv>,GuionError<SimpleEnv>> {
         let (wref,path) = resolve_in_root_mut(self, i)?;
         Ok(ResolvedMut{
             wref,
             path,
         })
     }
-    fn trace_bounds(&self, ctx: &mut SimpleCtx, i: StandardPath, b: &Bounds, e: &EStyle<SimpleEnv>, force: bool) -> Result<Bounds,()> {
+    fn trace_bounds(&self, ctx: &mut SimpleCtx, i: StandardPath, b: &Bounds, e: &EStyle<SimpleEnv>, force: bool) -> Result<Bounds,GuionError<SimpleEnv>> {
         let l = ctx.link(Resolved{
             wref: Box::new(self.base()),
             path: StandardPath::new(&[]),
@@ -92,7 +92,7 @@ impl Widget<SimpleEnv> for SimpleStor {
     }
     fn child(&self, i: usize) -> Result<Resolvable<SimpleEnv>,()> {
         self.roots.get(i)
-            .map(|w| Resolvable::Widget(Box::new((*(w.0)).base())) )
+            .map(|w| (*w.0).as_ref() )
             .ok_or(())
     }
     fn into_child<'w>(self: Box<Self>, i: usize) -> Result<Resolvable<'w,SimpleEnv>,()> where Self: 'w {
@@ -114,7 +114,7 @@ impl Widget<SimpleEnv> for SimpleStor {
 impl WidgetMut<SimpleEnv> for SimpleStor {
     fn child_mut(&mut self, i: usize) -> Result<guion::widget::resolvable::ResolvableMut<SimpleEnv>,()> {
         self.roots.get_mut(i)
-            .map(|w| ResolvableMut::Widget(Box::new(&mut *(w.0))) )
+            .map(|w| (*w.0).as_mut() )
             .ok_or(())
     }
     fn into_child_mut<'w>(self: Box<Self>, i: usize) -> Result<guion::widget::resolvable::ResolvableMut<'w,SimpleEnv>,()> where Self: 'w {

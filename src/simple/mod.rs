@@ -6,6 +6,7 @@ pub mod valid;
 pub mod ctx;
 use super::*;
 use guion::style::selectag::standard::StdSelectag;
+use guion::widget::as_widget::AsWidgetMut;
 use guion::{id::standard::StdID, path::standard::SimplePath, widget::WidgetMut, ctx::queue::StdOrder, render::link::RenderLink};
 use env::SimpleEnv;
 use ctx::SimpleCtx;
@@ -36,12 +37,12 @@ impl Simplion {
             ctx: SimpleCtx::from_sdl2(sdl).unwrap(),
         }
     }
-    pub fn push_canvas<W>(&mut self, x: Canvas<Window>, w: W) where W: WidgetMut<SimpleEnv>+'static {
+    pub fn push_canvas<W>(&mut self, x: Canvas<Window>, w: W) where W: AsWidgetMut<SimpleEnv>+'static {
         assert_eq!(self.stor.roots.len(),self.renderer.windows.len());
-        self.stor.roots.push((w.boxed_mut(),x.window().size().into()));
+        self.stor.roots.push((Box::new(w),x.window().size().into()));
         self.renderer.windows.push(x);
     }
-    pub fn push_window<W>(&mut self, x: Window, w: W) where W: WidgetMut<SimpleEnv>+'static {
+    pub fn push_window<W>(&mut self, x: Window, w: W) where W: AsWidgetMut<SimpleEnv>+'static {
         self.push_canvas(x.into_canvas().build().unwrap(),w)
     }
     pub fn do_events(&mut self) -> bool {

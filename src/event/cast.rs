@@ -1,5 +1,5 @@
 use super::*;
-use guion::{util::bounds::Dims, event::{imp::StdVarSup, variant::VariantSupport, variants::RootEvent, variant::Variant}};
+use guion::{util::bounds::Dims, event::{imp::StdVarSup, variant::VariantSupport, standard::variants::RootEvent, variant::Variant}};
 use SDLKeycode;
 
 #[allow(unused)]
