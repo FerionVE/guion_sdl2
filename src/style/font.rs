@@ -124,7 +124,7 @@ impl<E> GGlyphs<E> for Glyphs where
             max: Point{x: caret.x, y: caret.y - v_metrics.descent},
         };
         
-        current_line.push(Glyph::Placeholder(caret,s.len()));
+        current_line.push(Glyph::Placeholder(caret,s.chars().count()));
         result.push((current_line,rect));
         max_x = max_x.max(caret.x);
 

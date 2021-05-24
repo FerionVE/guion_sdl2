@@ -17,7 +17,7 @@ readme = "README.md"
 
 [dependencies]
 #guion = "0.4"
-guion = { version = "0.4", git = "https://github.com/FerionVE/guion", rev = "4832aa64" }
+guion = { version = "0.4", git = "https://github.com/FerionVE/guion", rev = "1679bd0a" }
 #guion = { path = "../guion" }
 #TODO qwutils should export qwutils
 qwutils = "0.3"

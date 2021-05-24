@@ -82,7 +82,7 @@ impl Simplion {
 
                     let e = EventCompound{
                         event: parsed.event,
-                        bounds: Bounds::default(),
+                        bounds: Bounds::default(), //TODO window bounds?
                         ts: parsed.ts as u64,
                         filter: StdFilter{
                             filter_path: path,

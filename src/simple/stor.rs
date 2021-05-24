@@ -18,13 +18,14 @@ impl SimpleStor {
     }
 
     pub fn path_for_root(&self, i: usize) -> StandardPath {
-        (*self.roots[i].0).as_ref().in_parent_path(SimplePath::new(&[])) //TODO empty default constructor for path
+        (*self.roots[i].0).as_ref().in_parent_path(SimplePath::new(&[]),true) //TODO empty default constructor for path
     }
 
     pub fn resolved(&self) -> Resolved<SimpleEnv> {
         Resolved{
             wref: Box::new(self as &dyn Widget<SimpleEnv>),
             path: StandardPath::empty(),
+            direct_path: StandardPath::empty(),
             stor: self,
         }
     }
@@ -32,30 +33,23 @@ impl SimpleStor {
         ResolvedMut{
             wref: Box::new(self as &mut dyn WidgetMut<SimpleEnv>),
             path: StandardPath::empty(),
+            direct_path: StandardPath::empty(),
         }
     }
 }
 
 impl GWidgets<SimpleEnv> for SimpleStor {
     fn widget<'a>(&'a self, i: StandardPath) -> Result<Resolved<'a,SimpleEnv>,GuionError<SimpleEnv>> {
-        let (wref,path) = resolve_in_root(self, i)?;
-        Ok(Resolved{
-            wref,
-            path,
-            stor: self,
-        })
+        resolve_in_root(self, i.refc(), i, self)
     }
     fn widget_mut<'a>(&'a mut self, i: StandardPath) -> Result<ResolvedMut<'a,SimpleEnv>,GuionError<SimpleEnv>> {
-        let (wref,path) = resolve_in_root_mut(self, i)?;
-        Ok(ResolvedMut{
-            wref,
-            path,
-        })
+        resolve_in_root_mut(self, |s| s as &dyn Widget<_>, |s| s as &mut dyn WidgetMut<_>, i.refc(), i)
     }
     fn trace_bounds(&self, ctx: &mut SimpleCtx, i: StandardPath, b: &Bounds, e: &EStyle<SimpleEnv>, force: bool) -> Result<Bounds,GuionError<SimpleEnv>> {
         let l = ctx.link(Resolved{
             wref: Box::new(self.base()),
-            path: StandardPath::new(&[]),
+            path: StandardPath::empty(),
+            direct_path: StandardPath::empty(),
             stor: self,
         });
         Widget::trace_bounds(self,l,i,b,e,force)

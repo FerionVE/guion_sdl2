@@ -22,6 +22,7 @@ impl Env for SimpleEnv {
     type WidgetPath = StandardPath;
     type ValidState = SimpleValidState;
     type Message = Box<dyn Any>;
+    type Error = GuionError<SimpleEnv>;
 }
 
 impl Backend<SimpleEnv> for SimpleBackend {
@@ -47,6 +48,7 @@ impl GDestination for SimpleDest {
 
 //guion::impl_env_stds!(SimpleEnv);
 //guion::impl_remote_state!(u8,SimpleEnv);
+//guion::impl_as_widget_for_path!(SimpleEnv;StandardPath);
 
 impl AsWidget<SimpleEnv> for StandardPath {
     #[inline]
